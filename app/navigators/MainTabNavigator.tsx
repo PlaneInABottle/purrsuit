@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { HomeScreen } from "@/screens/HomeScreen"
 import { CaptureScreen } from "@/screens/CaptureScreen"
 import { StatsScreen } from "@/screens/StatsScreen"
+import { ProfileScreen } from "@/screens/ProfileScreen"
 import { useAppTheme } from "@/theme/context"
 import type { MainTabParamList } from "./navigationTypes"
 
@@ -62,6 +63,14 @@ export const MainTabNavigator = () => {
         options={{
           tabBarLabel: "Stats",
           tabBarIcon: ({ color }) => <TabIcon icon="📊" color={color} />,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => <TabIcon icon="⚙️" color={color} />,
         }}
       />
     </Tab.Navigator>
