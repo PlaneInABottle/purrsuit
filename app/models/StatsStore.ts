@@ -31,8 +31,8 @@ export const StatsStoreModel = types
     longestStreak: types.optional(types.number, 0),
     lastEncounterDate: types.maybe(types.string), // ISO date string (YYYY-MM-DD)
 
-    // Location tracking
-    uniqueLocations: types.optional(types.array(types.string), []),
+    // Location tracking - maps location name to count
+    locationCounts: types.optional(types.map(types.number), {}),
 
     // Achievements
     achievements: types.optional(types.array(Achievement), []),
@@ -42,7 +42,15 @@ export const StatsStoreModel = types
      * Get total unique locations visited
      */
     get uniqueLocationCount() {
-      return self.uniqueLocations.length
+      return self.locationCounts.size
+    },
+    /**
+     * Get top locations sorted by frequency
+     */
+    get topLocations() {
+      return Array.from(self.locationCounts.entries())
+        .map(([location, count]) => ({ location, count }))
+        .sort((a, b) => b.count - a.count)
     },
     /**
      * Get percentage of cats vs total
@@ -101,8 +109,9 @@ export const StatsStoreModel = types
       else if (petType === "other") self.otherCount += 1
 
       // Update location tracking
-      if (location && !self.uniqueLocations.includes(location)) {
-        self.uniqueLocations.push(location)
+      if (location) {
+        const currentCount = self.locationCounts.get(location) || 0
+        self.locationCounts.set(location, currentCount + 1)
       }
 
       // Update streak
@@ -158,8 +167,8 @@ export const StatsStoreModel = types
               progress = Math.min(100, (self.dogCount / 50) * 100)
               break
             case "explorer":
-              shouldUnlock = self.uniqueLocations.length >= 10
-              progress = Math.min(100, (self.uniqueLocations.length / 10) * 100)
+              shouldUnlock = self.locationCounts.size >= 10
+              progress = Math.min(100, (self.locationCounts.size / 10) * 100)
               break
             case "photographer":
               shouldUnlock = self.totalEncounters >= 100
@@ -264,7 +273,7 @@ export const StatsStoreModel = types
       self.currentStreak = 0
       self.longestStreak = 0
       self.lastEncounterDate = undefined
-      self.uniqueLocations.clear()
+      self.locationCounts.clear()
       this.initializeAchievements()
     },
   }))

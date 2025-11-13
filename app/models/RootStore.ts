@@ -1,4 +1,4 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
+import { Instance, SnapshotIn, SnapshotOut, types, getRoot } from "mobx-state-tree"
 import { UserStoreModel } from "./UserStore"
 import { UiStoreModel } from "./UiStore"
 import { EncounterModel } from "./EncounterStore"
@@ -52,6 +52,14 @@ const EncountersStoreModel = types
      */
     addEncounter(encounter: SnapshotIn<typeof EncounterModel>) {
       self.encounters.put(encounter)
+
+      // Record in stats store
+      const rootStore = getRoot<IRootStore>(self)
+      const location = encounter.location?.type === "manual" ? encounter.location.label : undefined
+      rootStore.statsStore.recordEncounter(
+        encounter.petType as "cat" | "dog" | "other" | "unknown",
+        location,
+      )
 
       // Update recent location tags
       if (encounter.location?.label && encounter.location.type === "manual") {
