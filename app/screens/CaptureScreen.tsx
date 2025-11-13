@@ -198,14 +198,14 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
         {/* Top controls */}
         <View style={$topControls}>
           <TouchableOpacity
-            style={$controlButton}
+            style={[$controlButton, { backgroundColor: colors.overlay50 }]}
             onPress={() => setFlashMode(cycleFlashMode(flashMode))}
           >
             <Text style={$controlIcon} text={getFlashModeIcon(flashMode)} />
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={$controlButton}
+            style={[$controlButton, { backgroundColor: colors.overlay50 }]}
             onPress={() => setCameraType(toggleCameraType(cameraType))}
           >
             <Text style={$controlIcon} text="🔄" />
@@ -214,11 +214,17 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
 
         {/* Bottom controls */}
         <View style={$bottomControls}>
-          <TouchableOpacity style={$libraryButton} onPress={handlePickFromLibrary}>
+          <TouchableOpacity
+            style={[$libraryButton, { backgroundColor: colors.overlay50 }]}
+            onPress={handlePickFromLibrary}
+          >
             <Text style={$controlIcon} text="🖼️" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={$captureButton} onPress={handleCapture}>
+          <TouchableOpacity
+            style={[$captureButton, { backgroundColor: colors.overlay20 }]}
+            onPress={handleCapture}
+          >
             <View style={[$captureButtonInner, { borderColor: colors.palette.neutral100 }]} />
           </TouchableOpacity>
 
@@ -271,7 +277,6 @@ const $controlButton: ViewStyle = {
   width: 50,
   height: 50,
   borderRadius: 25,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
   justifyContent: "center",
   alignItems: "center",
 }
@@ -284,7 +289,6 @@ const $captureButton: ViewStyle = {
   width: 80,
   height: 80,
   borderRadius: 40,
-  backgroundColor: "rgba(255, 255, 255, 0.3)",
   justifyContent: "center",
   alignItems: "center",
 }
@@ -301,7 +305,6 @@ const $libraryButton: ViewStyle = {
   width: 50,
   height: 50,
   borderRadius: 25,
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
   justifyContent: "center",
   alignItems: "center",
 }

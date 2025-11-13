@@ -46,11 +46,11 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         numColumns={2}
         contentContainerStyle={$gridContent}
         renderItem={({ item }) => (
-          <View style={$gridItem}>
+          <View style={[$gridItem, { backgroundColor: colors.palette.neutral100 }]}>
             <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="cover" />
             <View style={$encounterInfo}>
               <Text style={$encounterType} text={item.petType} />
-              <Text style={$encounterDate} text={item.formattedDate} />
+              <Text style={[$encounterDate, { color: colors.textDim }]} text={item.formattedDate} />
             </View>
           </View>
         )}
@@ -85,8 +85,14 @@ const $gridItem: ViewStyle = {
   margin: 8,
   borderRadius: 12,
   overflow: "hidden",
-  backgroundColor: "#f5f5f5",
   maxWidth: "45%",
+  // Shadow for iOS
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  // Elevation for Android
+  elevation: 3,
 }
 
 const $thumbnail: ImageStyle = {
@@ -106,6 +112,5 @@ const $encounterType: TextStyle = {
 
 const $encounterDate: TextStyle = {
   fontSize: 12,
-  color: "#666",
   marginTop: 2,
 }

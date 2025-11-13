@@ -1,38 +1,49 @@
 const palette = {
+  // Inverted soft neutrals with warm undertone
   neutral900: "#FFFFFF",
-  neutral800: "#F4F2F1",
-  neutral700: "#D7CEC9",
-  neutral600: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral400: "#564E4A",
-  neutral300: "#3C3836",
-  neutral200: "#191015",
+  neutral800: "#F9F7F7",
+  neutral700: "#E8E4E6",
+  neutral600: "#C8C3C5",
+  neutral500: "#9B9497",
+  neutral400: "#6B6466",
+  neutral300: "#453F42",
+  neutral200: "#2A2528",
   neutral100: "#000000",
 
-  primary600: "#F4E0D9",
-  primary500: "#E8C1B4",
-  primary400: "#DDA28E",
-  primary300: "#D28468",
-  primary200: "#C76542",
-  primary100: "#A54F31",
+  // Adjusted coral for dark mode (slightly less saturated)
+  primary600: "#FFE8E5",
+  primary500: "#FFCEC7",
+  primary400: "#FFB3A7",
+  primary300: "#FF9A8A",
+  primary200: "#FF8A80",
+  primary100: "#E6756C",
 
-  secondary500: "#DCDDE9",
-  secondary400: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary200: "#626894",
-  secondary100: "#41476E",
+  // Adjusted lavender for dark mode
+  secondary600: "#F3E5F5",
+  secondary500: "#E1BEE7",
+  secondary400: "#CE93D8",
+  secondary300: "#BA68C8",
+  secondary200: "#9575CD",
+  secondary100: "#7E57C2",
 
-  accent500: "#FFEED4",
-  accent400: "#FFE1B2",
-  accent300: "#FDD495",
-  accent200: "#FBC878",
-  accent100: "#FFBB50",
+  // Adjusted yellow for dark mode (less bright)
+  accent600: "#FFF9E6",
+  accent500: "#FFF4CC",
+  accent400: "#FFECB3",
+  accent300: "#FFE082",
+  accent200: "#FFD54F",
+  accent100: "#FFC400",
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  // Success for dark mode
+  success100: "#E8F5E9",
+  success500: "#81C784",
 
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
+  // Error for dark mode
+  error100: "#FFEBEE",
+  error500: "#EF5350",
+
+  overlay20: "rgba(255, 255, 255, 0.2)",
+  overlay50: "rgba(255, 255, 255, 0.5)",
 } as const
 
 export const colors = {
@@ -45,6 +56,8 @@ export const colors = {
   tint: palette.primary500,
   tintInactive: palette.neutral300,
   separator: palette.neutral300,
-  error: palette.angry500,
-  errorBackground: palette.angry100,
+  error: palette.error500,
+  errorBackground: palette.error100,
+  overlay20: palette.overlay20,
+  overlay50: palette.overlay50,
 } as const

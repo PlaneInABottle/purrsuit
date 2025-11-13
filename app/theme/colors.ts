@@ -1,38 +1,49 @@
 const palette = {
+  // Soft neutrals with warm undertone
   neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
+  neutral200: "#F9F7F7", // Softer warm white
+  neutral300: "#E8E4E6", // Light warm gray
+  neutral400: "#C8C3C5", // Medium warm gray
+  neutral500: "#9B9497", // Balanced gray
+  neutral600: "#6B6466", // Deep warm gray
+  neutral700: "#453F42", // Rich dark gray
+  neutral800: "#2A2528", // Almost black
   neutral900: "#000000",
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  // Soft coral/peach primary (warm, approachable)
+  primary100: "#FFE8E5", // Lightest peachy pink
+  primary200: "#FFCEC7", // Light coral
+  primary300: "#FFB3A7", // Soft coral
+  primary400: "#FF9A8A", // Medium coral
+  primary500: "#FF8A80", // Main coral (primary action)
+  primary600: "#E6756C", // Deeper coral
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  // Gentle lavender/purple secondary (calming, premium)
+  secondary100: "#F3E5F5", // Lightest lavender
+  secondary200: "#E1BEE7", // Light purple
+  secondary300: "#CE93D8", // Soft purple
+  secondary400: "#BA68C8", // Medium purple
+  secondary500: "#9575CD", // Main lavender
+  secondary600: "#7E57C2", // Deep purple
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  // Sunny yellow accent (cheerful, energetic)
+  accent100: "#FFF9E6", // Lightest yellow
+  accent200: "#FFF4CC", // Light sunny
+  accent300: "#FFECB3", // Soft yellow
+  accent400: "#FFE082", // Warm yellow
+  accent500: "#FFD54F", // Main sunny yellow
+  accent600: "#FFC400", // Vibrant yellow
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  // Success/stats - mint green
+  success100: "#E8F5E9",
+  success500: "#81C784",
 
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
+  // Error/warning - keep softer
+  error100: "#FFEBEE",
+  error500: "#EF5350",
+
+  overlay20: "rgba(42, 37, 40, 0.2)", // Updated to match new neutral800
+  overlay50: "rgba(42, 37, 40, 0.5)",
 } as const
 
 export const colors = {
@@ -77,9 +88,14 @@ export const colors = {
   /**
    * Error messages.
    */
-  error: palette.angry500,
+  error: palette.error500,
   /**
    * Error Background.
    */
-  errorBackground: palette.angry100,
+  errorBackground: palette.error100,
+  /**
+   * Overlay colors for camera UI and modals.
+   */
+  overlay20: palette.overlay20,
+  overlay50: palette.overlay50,
 } as const

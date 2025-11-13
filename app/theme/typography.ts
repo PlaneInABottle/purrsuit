@@ -3,6 +3,15 @@
 
 import { Platform } from "react-native"
 import {
+  Nunito_200ExtraLight as nunitoExtraLight,
+  Nunito_300Light as nunitoLight,
+  Nunito_400Regular as nunitoRegular,
+  Nunito_500Medium as nunitoMedium,
+  Nunito_600SemiBold as nunitoSemiBold,
+  Nunito_700Bold as nunitoBold,
+  Nunito_800ExtraBold as nunitoExtraBold,
+} from "@expo-google-fonts/nunito"
+import {
   SpaceGrotesk_300Light as spaceGroteskLight,
   SpaceGrotesk_400Regular as spaceGroteskRegular,
   SpaceGrotesk_500Medium as spaceGroteskMedium,
@@ -11,6 +20,13 @@ import {
 } from "@expo-google-fonts/space-grotesk"
 
 export const customFontsToLoad = {
+  nunitoExtraLight,
+  nunitoLight,
+  nunitoRegular,
+  nunitoMedium,
+  nunitoSemiBold,
+  nunitoBold,
+  nunitoExtraBold,
   spaceGroteskLight,
   spaceGroteskRegular,
   spaceGroteskMedium,
@@ -19,8 +35,18 @@ export const customFontsToLoad = {
 }
 
 const fonts = {
+  nunito: {
+    // Cross-platform Google font - rounded, friendly
+    extraLight: "nunitoExtraLight",
+    light: "nunitoLight",
+    normal: "nunitoRegular",
+    medium: "nunitoMedium",
+    semiBold: "nunitoSemiBold",
+    bold: "nunitoBold",
+    extraBold: "nunitoExtraBold",
+  },
   spaceGrotesk: {
-    // Cross-platform Google font.
+    // Cross-platform Google font - for numbers/stats
     light: "spaceGroteskLight",
     normal: "spaceGroteskRegular",
     medium: "spaceGroteskMedium",
@@ -57,13 +83,13 @@ export const typography = {
    */
   fonts,
   /**
-   * The primary font. Used in most places.
+   * The primary font. Used in most places - friendly and rounded.
    */
-  primary: fonts.spaceGrotesk,
+  primary: fonts.nunito,
   /**
-   * An alternate font used for perhaps titles and stuff.
+   * An alternate font used for numbers, stats, and data display.
    */
-  secondary: Platform.select({ ios: fonts.helveticaNeue, android: fonts.sansSerif }),
+  secondary: fonts.spaceGrotesk,
   /**
    * Lets get fancy with a monospace font!
    */
