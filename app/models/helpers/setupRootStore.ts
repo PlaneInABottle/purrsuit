@@ -47,12 +47,9 @@ export async function setupRootStore(rootStore?: IRootStore) {
     })
 
   // Track changes and persist to storage automatically
-  // Don't persist on every change in production - can be optimized with debouncing
-  if (!__DEV__) {
-    onSnapshot(finalStore, (snapshot) => {
-      storage.set(ROOT_STATE_STORAGE_KEY, JSON.stringify(snapshot))
-    })
-  }
+  onSnapshot(finalStore, (snapshot) => {
+    storage.set(ROOT_STATE_STORAGE_KEY, JSON.stringify(snapshot))
+  })
 
   // Setup Reactotron MST tracking in development
   if (__DEV__ && trackMSTNode) {
