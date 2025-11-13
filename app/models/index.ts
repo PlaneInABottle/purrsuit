@@ -13,6 +13,9 @@ export * from "./RootStore"
 // Sub-stores
 export * from "./UserStore"
 export * from "./UiStore"
+export * from "./EncounterStore"
+export * from "./StatsStore"
+export * from "./StickerStore"
 
 // Helpers
 export * from "./helpers/useStores"
