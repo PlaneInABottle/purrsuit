@@ -28,6 +28,7 @@ export type AppStackParamList = {
   Login: undefined
   MainTabs: NavigatorScreenParams<MainTabParamList>
   EncounterDetail: { encounterId: string }
+  EncounterEdit: { photoUri: string; encounterId: string }
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST

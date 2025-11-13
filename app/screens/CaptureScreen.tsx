@@ -23,9 +23,7 @@ import {
   cycleFlashMode,
   getFlashModeIcon,
 } from "@/services/camera"
-import { savePhoto } from "@/utils/fileSystem"
 import { generateUUID } from "@/utils/uuid"
-import { useStores } from "@/models"
 
 type CaptureStep = "camera" | "preview"
 
@@ -33,7 +31,6 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   const {
     theme: { colors },
   } = useAppTheme()
-  const { encountersStore } = useStores()
 
   // Camera state
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
@@ -41,7 +38,6 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   const [flashMode, setFlashMode] = useState<FlashMode>("off")
   const [captureStep, setCaptureStep] = useState<CaptureStep>("camera")
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null)
-  const [isSaving, setIsSaving] = useState(false)
 
   const cameraRef = useRef<CameraView>(null)
 
@@ -96,49 +92,21 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
     setCaptureStep("camera")
   }
 
-  async function handleConfirm() {
+  function handleConfirm() {
     if (!capturedPhoto) return
 
-    setIsSaving(true)
-    try {
-      // Generate unique ID for this encounter
-      const encounterId = generateUUID()
+    // Generate unique ID for this encounter
+    const encounterId = generateUUID()
 
-      // Save photo to file system
-      const { photoUri, thumbnailUri } = await savePhoto(capturedPhoto, encounterId)
+    // Navigate to edit screen with photo
+    _props.navigation.navigate("EncounterEdit", {
+      photoUri: capturedPhoto,
+      encounterId,
+    })
 
-      // Determine time of day
-      const hour = new Date().getHours()
-      let timeOfDay: "morning" | "afternoon" | "evening" | "night"
-      if (hour >= 5 && hour < 12) timeOfDay = "morning"
-      else if (hour >= 12 && hour < 17) timeOfDay = "afternoon"
-      else if (hour >= 17 && hour < 21) timeOfDay = "evening"
-      else timeOfDay = "night"
-
-      // Create encounter in store
-      encountersStore.addEncounter({
-        id: encounterId,
-        timestamp: Date.now(),
-        photos: {
-          original: photoUri,
-          thumbnail: thumbnailUri,
-        },
-        petType: "unknown",
-        timeOfDay,
-        location: { type: "none" },
-      })
-
-      // Reset state
-      setCapturedPhoto(null)
-      setCaptureStep("camera")
-
-      Alert.alert("Success", "Encounter saved!")
-    } catch (error) {
-      console.error("Failed to save encounter:", error)
-      Alert.alert("Error", "Failed to save encounter")
-    } finally {
-      setIsSaving(false)
-    }
+    // Reset capture state
+    setCapturedPhoto(null)
+    setCaptureStep("camera")
   }
 
   // Permission states
@@ -179,13 +147,8 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
         </View>
 
         <View style={$previewControls}>
-          <Button text="Retake" preset="default" onPress={handleRetake} disabled={isSaving} />
-          <Button
-            text={isSaving ? "Saving..." : "Confirm"}
-            preset="filled"
-            onPress={handleConfirm}
-            disabled={isSaving}
-          />
+          <Button text="Retake" preset="default" onPress={handleRetake} />
+          <Button text="Next" preset="primary" onPress={handleConfirm} />
         </View>
       </Screen>
     )

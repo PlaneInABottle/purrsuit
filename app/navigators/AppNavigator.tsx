@@ -11,6 +11,7 @@ import Config from "@/config"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { EncounterDetailScreen } from "@/screens/EncounterDetailScreen"
+import { EncounterEditScreen } from "@/screens/EncounterEditScreen"
 import { useAppTheme } from "@/theme/context"
 import { MainTabNavigator } from "./MainTabNavigator"
 
@@ -45,6 +46,11 @@ const AppStack = () => {
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
 
       {/* Modal Screens */}
+      <Stack.Screen
+        name="EncounterEdit"
+        component={EncounterEditScreen}
+        options={{ presentation: "modal" }}
+      />
       <Stack.Screen
         name="EncounterDetail"
         component={EncounterDetailScreen}
