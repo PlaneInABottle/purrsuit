@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, TextStyle, ViewStyle } from "react-native"
+import { Text, TextStyle } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
@@ -24,9 +24,18 @@ export const MainTabNavigator = () => {
         tabBarActiveTintColor: colors.tint,
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
-          ...$tabBar,
+          backgroundColor: colors.palette.neutral100,
+          borderTopColor: colors.separator,
+          borderTopWidth: 1,
+          paddingTop: 8,
           height: 60 + insets.bottom,
           paddingBottom: insets.bottom,
+          // Subtle shadow for depth
+          shadowColor: colors.palette.neutral800,
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 8,
         },
         tabBarLabelStyle: $tabBarLabel,
       }}
@@ -63,13 +72,6 @@ export const MainTabNavigator = () => {
 const TabIcon = ({ icon, color }: { icon: string; color: string }) => (
   <Text style={{ fontSize: 24, color }}>{icon}</Text>
 )
-
-const $tabBar: ViewStyle = {
-  backgroundColor: "white",
-  borderTopColor: "#e1e1e1",
-  borderTopWidth: 1,
-  paddingTop: 8,
-}
 
 const $tabBarLabel: TextStyle = {
   fontSize: 12,
