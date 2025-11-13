@@ -10,7 +10,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Config from "@/config"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
+import { EncounterDetailScreen } from "@/screens/EncounterDetailScreen"
 import { useAppTheme } from "@/theme/context"
+import { MainTabNavigator } from "./MainTabNavigator"
 
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
@@ -39,7 +41,19 @@ const AppStack = () => {
         },
       }}
     >
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      {/* Main App Flow - Bottom Tabs */}
+      <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+
+      {/* Modal Screens */}
+      <Stack.Screen
+        name="EncounterDetail"
+        component={EncounterDetailScreen}
+        options={{ presentation: "modal" }}
+      />
+
+      {/* Welcome/Onboarding - uncomment when needed */}
+      {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
+
       {/** 🔥 Your screens go here */}
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
