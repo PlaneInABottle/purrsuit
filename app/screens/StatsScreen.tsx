@@ -89,28 +89,70 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
         <Text preset="heading" text="Your Progress" />
       </View>
 
-      {/* Top Stats Cards */}
-      <View style={$statsGrid}>
-        <StatCard
-          value={statsStore.totalEncounters}
-          label="Encounters"
-          color={colors.palette.primary500}
-          icon="📸"
-        />
-        <StatCard
-          value={
-            statsStore.hasActiveStreak ? `${statsStore.currentStreak}🔥` : statsStore.currentStreak
-          }
-          label="Day Streak"
-          color={colors.palette.secondary500}
-          icon="🎯"
-        />
-        <StatCard
-          value={`${statsStore.achievementCount}/8`}
-          label="Badges"
-          color={colors.palette.accent500}
-          icon="⭐"
-        />
+      {/* Hero Section - Top Stats Layout */}
+      <View style={$heroSection}>
+        {/* Left: Profile Circle with Encounters Inside */}
+        <View style={$profileCircle}>
+          <View
+            style={[
+              $circleContent,
+              {
+                borderColor: colors.palette.primary500,
+                backgroundColor: colors.palette.primary100,
+              },
+            ]}
+          >
+            <Text
+              preset="bold"
+              text={String(statsStore.totalEncounters)}
+              style={[$circleNumber, { color: colors.palette.primary500 }]}
+            />
+            <Text text="🐾" style={{ fontSize: 20, marginTop: 2, marginBottom: 2 }} />
+            <Text text="encounters" style={[$circleLabel, { color: colors.textDim }]} />
+          </View>
+        </View>
+
+        {/* Right: Streak and Achievements Cards */}
+        <View style={$rightSection}>
+          {/* Streak Card - Blue */}
+          <View
+            style={[
+              $statCard,
+              {
+                backgroundColor: "#7DB3E8",
+                marginBottom: spacing.sm,
+              },
+            ]}
+          >
+            <View style={$cardRow}>
+              <Text text="🔥" style={{ fontSize: 24, marginRight: 10 }} />
+              <Text
+                preset="bold"
+                text={`${statsStore.currentStreak} Day Streak`}
+                style={[$cardValueInline, { color: "#FFFFFF" }]}
+              />
+            </View>
+          </View>
+
+          {/* Achievements Card - Red */}
+          <View
+            style={[
+              $statCard,
+              {
+                backgroundColor: "#E88888",
+              },
+            ]}
+          >
+            <View style={$cardRow}>
+              <Text text="⭐" style={{ fontSize: 24, marginRight: 10 }} />
+              <Text
+                preset="bold"
+                text={`${statsStore.achievementCount}/8 Achievements`}
+                style={[$cardValueInline, { color: "#FFFFFF" }]}
+              />
+            </View>
+          </View>
+        </View>
       </View>
 
       {/* Pet Type Distribution - Only show if there are encounters */}
@@ -223,6 +265,71 @@ const $container: ViewStyle = {
 const $header: ViewStyle = {
   paddingHorizontal: 16,
   paddingVertical: 16,
+}
+
+const $heroSection: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 16,
+  paddingVertical: 24,
+  gap: 12,
+}
+
+const $profileCircle: ViewStyle = {
+  flex: 0,
+  width: "32%",
+  alignItems: "center",
+  justifyContent: "center",
+}
+
+const $circleContent: ViewStyle = {
+  width: 140,
+  height: 140,
+  borderRadius: 70,
+  borderWidth: 2,
+  alignItems: "center",
+  justifyContent: "center",
+  paddingHorizontal: 10,
+  paddingVertical: 8,
+}
+
+const $circleNumber: TextStyle = {
+  fontSize: 44,
+  fontWeight: "700",
+  lineHeight: 48,
+}
+
+const $circleLabel: TextStyle = {
+  fontSize: 11,
+  marginTop: 0,
+  lineHeight: 14,
+  fontWeight: "500",
+}
+
+const $rightSection: ViewStyle = {
+  flex: 1.2,
+  justifyContent: "center",
+  gap: 8,
+}
+
+const $statCard: ViewStyle = {
+  borderRadius: 12,
+  padding: 16,
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
+}
+
+const $cardRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-start",
+  width: "100%",
+}
+
+const $cardValueInline: TextStyle = {
+  fontSize: 16,
+  fontWeight: "700",
 }
 
 const $statsGrid: ViewStyle = {
