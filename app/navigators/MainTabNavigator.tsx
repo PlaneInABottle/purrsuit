@@ -1,7 +1,8 @@
 import React from "react"
-import { Text, TextStyle } from "react-native"
+import { TextStyle } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { Home, Camera, BarChart3, Settings } from "lucide-react-native"
 
 import { HomeScreen } from "@/screens/HomeScreen"
 import { CaptureScreen } from "@/screens/CaptureScreen"
@@ -46,7 +47,7 @@ export const MainTabNavigator = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: "Home",
-          tabBarIcon: ({ color }) => <TabIcon icon="🏠" color={color} />,
+          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />
       <Tab.Screen
@@ -54,7 +55,7 @@ export const MainTabNavigator = () => {
         component={CaptureScreen}
         options={{
           tabBarLabel: "Capture",
-          tabBarIcon: ({ color }) => <TabIcon icon="📸" color={color} />,
+          tabBarIcon: ({ color }) => <Camera size={24} color={color} />,
         }}
       />
       <Tab.Screen
@@ -62,7 +63,7 @@ export const MainTabNavigator = () => {
         component={StatsScreen}
         options={{
           tabBarLabel: "Stats",
-          tabBarIcon: ({ color }) => <TabIcon icon="📊" color={color} />,
+          tabBarIcon: ({ color }) => <BarChart3 size={24} color={color} />,
         }}
       />
       <Tab.Screen
@@ -70,17 +71,12 @@ export const MainTabNavigator = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: "Profile",
-          tabBarIcon: ({ color }) => <TabIcon icon="⚙️" color={color} />,
+          tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
         }}
       />
     </Tab.Navigator>
   )
 }
-
-// Simple emoji icon component
-const TabIcon = ({ icon, color }: { icon: string; color: string }) => (
-  <Text style={{ fontSize: 24, color }}>{icon}</Text>
-)
 
 const $tabBarLabel: TextStyle = {
   fontSize: 12,
