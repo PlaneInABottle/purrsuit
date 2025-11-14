@@ -267,19 +267,142 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
 
       {/* Achievements Section */}
       <View style={$section}>
-        <Text preset="subheading" text="Achievements" style={{ marginBottom: spacing.md }} />
-        <View style={$achievementsGrid}>
-          {statsStore.achievements.map((achievement) => (
-            <AchievementCard
-              key={achievement.id}
-              icon={achievement.icon}
-              name={achievement.name}
-              description={achievement.description}
-              isUnlocked={achievement.isUnlocked}
-              progress={achievement.progress}
-            />
-          ))}
+        <View style={$achievementsHeader}>
+          <Text preset="subheading" text="Your Achievements" />
+          <Text
+            text={`${statsStore.achievements.filter((a) => a.isUnlocked).length}/${statsStore.achievements.length}`}
+            style={$achievementCount}
+          />
         </View>
+
+        {/* Featured Section - Top 2 Locked Achievements by Progress */}
+        {(() => {
+          const topLockedByProgress = statsStore.achievements
+            .filter((a) => !a.isUnlocked)
+            .sort((a, b) => (b.progress || 0) - (a.progress || 0))
+            .slice(0, 2)
+
+          return topLockedByProgress.length > 0 ? (
+            <View style={$framedSection}>
+              <Text preset="bold" text="Almost There! 🎯" style={{ marginBottom: spacing.xs }} />
+              <View style={$featuredSection}>
+                {topLockedByProgress.map((achievement) => {
+                  const progressPercent = achievement.progress || 0
+                  let motivationalMessage = ""
+                  if (progressPercent >= 80) {
+                    motivationalMessage = "Almost there! You're so close! 🎉"
+                  } else if (progressPercent >= 50) {
+                    motivationalMessage = "Over halfway! Keep going! 💪"
+                  } else if (progressPercent > 0) {
+                    motivationalMessage = "Great start! Keep it up! 🚀"
+                  }
+
+                  return (
+                    <View key={achievement.id} style={$featuredCard}>
+                      <View style={$featuredHeader}>
+                        <Text style={$featuredIcon}>{achievement.icon}</Text>
+                        <View style={$featuredInfo}>
+                          <Text preset="bold" text={achievement.name} style={$featuredName} />
+                          <Text text={achievement.description} style={$featuredDescription} />
+                        </View>
+                      </View>
+                      <View style={$progressBarContainer}>
+                        <View
+                          style={[
+                            $progressBar,
+                            {
+                              width: `${progressPercent}%`,
+                              backgroundColor: colors.palette.primary500,
+                            },
+                          ]}
+                        />
+                      </View>
+                      <View style={$progressInfo}>
+                        <Text
+                          text={`${progressPercent}% Progress`}
+                          style={$progressPercent}
+                        />
+                        <Text
+                          text={motivationalMessage}
+                          style={$motivationalMessage}
+                        />
+                      </View>
+                    </View>
+                  )
+                })}
+              </View>
+            </View>
+          ) : null
+        })()}
+
+        {/* Recently Unlocked Section */}
+        {(() => {
+          const recentlyUnlocked = statsStore.achievements
+            .filter((a) => a.isUnlocked && a.unlockedAt && Date.now() - a.unlockedAt < 7 * 86400000)
+            .sort((a, b) => (b.unlockedAt || 0) - (a.unlockedAt || 0))
+
+          return recentlyUnlocked.length > 0 ? (
+            <View style={$framedSection}>
+              <Text preset="bold" text="Recently Unlocked ✨" style={{ marginBottom: spacing.xs }} />
+              <View style={$recentlyUnlockedGrid}>
+                {recentlyUnlocked.slice(0, 4).map((achievement) => (
+                  <View key={achievement.id} style={$recentCard}>
+                    <Text style={$recentIcon}>{achievement.icon}</Text>
+                    <Text text={achievement.name} style={$recentName} numberOfLines={2} />
+                    <Text
+                      text="✓"
+                      style={$recentCheckmark}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : null
+        })()}
+
+        {/* Other Achievements Grid */}
+        {(() => {
+          const topLockedByProgress = statsStore.achievements
+            .filter((a) => !a.isUnlocked)
+            .sort((a, b) => (b.progress || 0) - (a.progress || 0))
+            .slice(0, 2)
+
+          const recentlyUnlocked = statsStore.achievements
+            .filter((a) => a.isUnlocked && a.unlockedAt && Date.now() - a.unlockedAt < 7 * 86400000)
+
+          const otherAchievements = statsStore.achievements.filter(
+            (a) => !topLockedByProgress.includes(a) && !recentlyUnlocked.includes(a),
+          )
+
+          return otherAchievements.length > 0 ? (
+            <View style={$framedSection}>
+              <Text preset="bold" text={`All Achievements (${statsStore.achievements.filter((a) => a.isUnlocked).length}/${statsStore.achievements.length})`} style={{ marginBottom: spacing.xs }} />
+              <View style={$compactGrid}>
+                {otherAchievements.map((achievement) => (
+                  <View
+                    key={achievement.id}
+                    style={[
+                      $compactCard,
+                      {
+                        backgroundColor: achievement.isUnlocked
+                          ? colors.palette.primary100
+                          : colors.palette.neutral200,
+                      },
+                    ]}
+                  >
+                    <Text style={$compactIcon}>{achievement.icon}</Text>
+                    <Text text={achievement.name} style={$compactName} numberOfLines={2} />
+                    {achievement.isUnlocked ? (
+                      <Text text="✓" style={$compactCheckmark} />
+                    ) : (
+                      <Text text={`${achievement.progress || 0}%`} style={$compactProgress} />
+                    )}
+                  </View>
+                ))}
+              </View>
+            </View>
+          ) : null
+        })()}
       </View>
 
       {/* Top Locations - Only show if there are locations */}
@@ -530,4 +653,164 @@ const $locationBadge: ViewStyle = {
   borderRadius: 12,
   minWidth: 32,
   alignItems: "center",
+}
+
+// Achievements Section Styles
+const $achievementsHeader: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 10,
+}
+
+const $achievementCount: TextStyle = {
+  fontSize: 13,
+  fontWeight: "600",
+  opacity: 0.7,
+}
+
+// Framed section container with border
+const $framedSection: ViewStyle = {
+  borderWidth: 1,
+  borderColor: "rgba(0, 0, 0, 0.08)",
+  borderRadius: 12,
+  padding: 12,
+  marginBottom: 10,
+  backgroundColor: "rgba(255, 255, 255, 0.5)",
+}
+
+// Featured Section Styles
+const $featuredSection: ViewStyle = {
+  gap: 8,
+}
+
+const $featuredCard: ViewStyle = {
+  gap: 8,
+  paddingHorizontal: 10,
+  paddingVertical: 10,
+  borderRadius: 8,
+  backgroundColor: "rgba(255, 138, 128, 0.08)",
+}
+
+const $featuredHeader: ViewStyle = {
+  flexDirection: "row",
+  gap: 10,
+  alignItems: "center",
+}
+
+const $featuredIcon: TextStyle = {
+  fontSize: 28,
+  marginRight: 0,
+}
+
+const $featuredInfo: ViewStyle = {
+  flex: 1,
+  gap: 1,
+}
+
+const $featuredName: TextStyle = {
+  fontSize: 13,
+  fontWeight: "600",
+}
+
+const $featuredDescription: TextStyle = {
+  fontSize: 11,
+  opacity: 0.65,
+}
+
+const $progressInfo: ViewStyle = {
+  gap: 2,
+}
+
+const $progressPercent: TextStyle = {
+  fontSize: 11,
+  fontWeight: "600",
+}
+
+const $motivationalMessage: TextStyle = {
+  fontSize: 11,
+  fontStyle: "italic",
+  opacity: 0.7,
+}
+
+// Recently Unlocked Section Styles
+const $recentlyUnlockedGrid: ViewStyle = {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 8,
+  justifyContent: "space-between",
+}
+
+const $recentCard: ViewStyle = {
+  flex: 0,
+  width: "23%",
+  height: 85,
+  backgroundColor: "rgba(149, 117, 205, 0.1)",
+  borderRadius: 8,
+  padding: 6,
+  alignItems: "center",
+  justifyContent: "center",
+  position: "relative",
+}
+
+const $recentIcon: TextStyle = {
+  fontSize: 18,
+  marginBottom: 3,
+}
+
+const $recentName: TextStyle = {
+  fontSize: 9,
+  fontWeight: "600",
+  textAlign: "center",
+  height: 28,
+}
+
+const $recentCheckmark: TextStyle = {
+  position: "absolute",
+  top: 4,
+  right: 4,
+  fontSize: 12,
+  color: "#FF8A80",
+}
+
+// Other Achievements Section Styles
+const $compactGrid: ViewStyle = {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 8,
+  justifyContent: "space-between",
+}
+
+const $compactCard: ViewStyle = {
+  flex: 0,
+  width: "23%",
+  height: 85,
+  borderRadius: 8,
+  padding: 6,
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 3,
+}
+
+const $compactIcon: TextStyle = {
+  fontSize: 18,
+}
+
+const $compactName: TextStyle = {
+  fontSize: 8,
+  fontWeight: "600",
+  textAlign: "center",
+  height: 22,
+}
+
+const $compactCheckmark: TextStyle = {
+  fontSize: 10,
+  color: "#FF8A80",
+  fontWeight: "700",
+}
+
+const $compactProgress: TextStyle = {
+  fontSize: 7,
+  color: "#999999",
+  fontWeight: "600",
 }
