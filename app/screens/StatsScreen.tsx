@@ -1,7 +1,6 @@
 import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { PieChart } from "react-native-gifted-charts"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { StatCard } from "@/components/StatCard"
@@ -17,66 +16,6 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
   } = useAppTheme()
   const { statsStore } = useStores()
 
-  // Prepare pie chart data with cohesive pastel colors
-  const getPieChartData = () => {
-    const data = []
-
-    if (statsStore.catCount > 0) {
-      data.push({
-        value: statsStore.catCount,
-        color: colors.palette.primary500, // Coral #FF8A80
-        text: `${statsStore.catPercentage}%`,
-        label: "🐱 Cats",
-        textColor: "#FFFFFF",
-        textSize: 13,
-        fontWeight: "600",
-      })
-    }
-
-    if (statsStore.dogCount > 0) {
-      data.push({
-        value: statsStore.dogCount,
-        color: colors.palette.secondary500, // Lavender #9575CD
-        text: `${statsStore.dogPercentage}%`,
-        label: "🐶 Dogs",
-        textColor: "#FFFFFF",
-        textSize: 13,
-        fontWeight: "600",
-      })
-    }
-
-    if (statsStore.otherCount > 0) {
-      const otherPercentage = Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)
-      data.push({
-        value: statsStore.otherCount,
-        color: colors.palette.accent500, // Sunny yellow #FFD54F
-        text: `${otherPercentage}%`,
-        label: "🐾 Other",
-        textColor: "#5A4A00", // Dark gold for contrast
-        textSize: 13,
-        fontWeight: "600",
-      })
-    }
-
-    const unknownCount =
-      statsStore.totalEncounters - statsStore.catCount - statsStore.dogCount - statsStore.otherCount
-    if (unknownCount > 0) {
-      const unknownPercentage = Math.round((unknownCount / statsStore.totalEncounters) * 100)
-      data.push({
-        value: unknownCount,
-        color: colors.palette.neutral500, // Medium gray #9B9497
-        text: `${unknownPercentage}%`,
-        label: "❓ Unknown",
-        textColor: "#FFFFFF",
-        textSize: 13,
-        fontWeight: "600",
-      })
-    }
-
-    return data
-  }
-
-  const pieData = getPieChartData()
   const topLocations = statsStore.topLocations.slice(0, 5) // Top 5 locations
 
   return (
@@ -155,42 +94,161 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
         </View>
       </View>
 
-      {/* Pet Type Distribution - Only show if there are encounters */}
-      {statsStore.totalEncounters > 0 && pieData.length > 0 && (
+      {/* Pet Types Distribution - Only show if there are encounters */}
+      {statsStore.totalEncounters > 0 && (
         <View style={$section}>
           <Text preset="subheading" text="Pet Types" style={{ marginBottom: spacing.md }} />
-          <View style={$chartContainer}>
-            <PieChart
-              data={pieData}
-              donut
-              innerRadius={60}
-              radius={90}
-              centerLabelComponent={() => (
-                <View style={$centerLabel}>
-                  <Text
-                    preset="bold"
-                    style={[$centerValue, { color: colors.palette.neutral700 }]}
-                    text={String(statsStore.totalEncounters)}
-                  />
-                  <Text style={[$centerText, { color: colors.textDim }]} text="total" />
+
+          {/* Pet Type Cards with Progress Bars */}
+          <View style={$petTypeCardsContainer}>
+            {/* Cats Card */}
+            {statsStore.catCount > 0 && (
+              <View style={$petTypeCard}>
+                <View style={$petTypeHeader}>
+                  <Text style={$petTypeEmoji}>🐱</Text>
+                  <View style={$petTypeInfo}>
+                    <Text preset="bold" text="Cats" style={$petTypeLabel} />
+                    <Text text={`${statsStore.catPercentage}%`} style={$petTypePercentage} />
+                  </View>
+                  <Text style={$petTypeCount}>{statsStore.catCount}</Text>
                 </View>
-              )}
-              showText
-              focusOnPress
-              innerCircleColor={colors.background}
-              innerCircleBorderWidth={2}
-              innerCircleBorderColor={colors.palette.neutral300}
-            />
+                <View
+                  style={[
+                    $progressBarContainer,
+                    { backgroundColor: colors.palette.primary100 },
+                  ]}
+                >
+                  <View
+                    style={[
+                      $progressBar,
+                      {
+                        width: `${statsStore.catPercentage}%`,
+                        backgroundColor: colors.palette.primary500,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* Dogs Card */}
+            {statsStore.dogCount > 0 && (
+              <View style={$petTypeCard}>
+                <View style={$petTypeHeader}>
+                  <Text style={$petTypeEmoji}>🐶</Text>
+                  <View style={$petTypeInfo}>
+                    <Text preset="bold" text="Dogs" style={$petTypeLabel} />
+                    <Text text={`${statsStore.dogPercentage}%`} style={$petTypePercentage} />
+                  </View>
+                  <Text style={$petTypeCount}>{statsStore.dogCount}</Text>
+                </View>
+                <View
+                  style={[
+                    $progressBarContainer,
+                    { backgroundColor: colors.palette.secondary100 },
+                  ]}
+                >
+                  <View
+                    style={[
+                      $progressBar,
+                      {
+                        width: `${statsStore.dogPercentage}%`,
+                        backgroundColor: colors.palette.secondary500,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* Other Pets Card */}
+            {statsStore.otherCount > 0 && (
+              <View style={$petTypeCard}>
+                <View style={$petTypeHeader}>
+                  <Text style={$petTypeEmoji}>🐾</Text>
+                  <View style={$petTypeInfo}>
+                    <Text preset="bold" text="Other" style={$petTypeLabel} />
+                    <Text text={`${Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)}%`} style={$petTypePercentage} />
+                  </View>
+                  <Text style={$petTypeCount}>{statsStore.otherCount}</Text>
+                </View>
+                <View
+                  style={[
+                    $progressBarContainer,
+                    { backgroundColor: colors.palette.accent100 },
+                  ]}
+                >
+                  <View
+                    style={[
+                      $progressBar,
+                      {
+                        width: `${Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)}%`,
+                        backgroundColor: colors.palette.accent500,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            )}
+
+            {/* Unknown Card */}
+            {statsStore.totalEncounters - statsStore.catCount - statsStore.dogCount - statsStore.otherCount > 0 && (
+              <View style={$petTypeCard}>
+                <View style={$petTypeHeader}>
+                  <Text style={$petTypeEmoji}>❓</Text>
+                  <View style={$petTypeInfo}>
+                    <Text preset="bold" text="Unknown" style={$petTypeLabel} />
+                    <Text text={`${Math.round(((statsStore.totalEncounters - statsStore.catCount - statsStore.dogCount - statsStore.otherCount) / statsStore.totalEncounters) * 100)}%`} style={$petTypePercentage} />
+                  </View>
+                  <Text style={$petTypeCount}>{statsStore.totalEncounters - statsStore.catCount - statsStore.dogCount - statsStore.otherCount}</Text>
+                </View>
+                <View
+                  style={[
+                    $progressBarContainer,
+                    { backgroundColor: colors.palette.neutral300 },
+                  ]}
+                >
+                  <View
+                    style={[
+                      $progressBar,
+                      {
+                        width: `${Math.round(((statsStore.totalEncounters - statsStore.catCount - statsStore.dogCount - statsStore.otherCount) / statsStore.totalEncounters) * 100)}%`,
+                        backgroundColor: colors.palette.neutral500,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            )}
           </View>
 
-          {/* Legend */}
-          <View style={$legend}>
-            {pieData.map((item, index) => (
-              <View key={index} style={$legendItem}>
-                <View style={[$legendDot, { backgroundColor: item.color }]} />
-                <Text style={[$legendText, { color: colors.text }]} text={item.label} />
+          {/* Insights Cards */}
+          <View style={$insightsContainer}>
+            {/* Favorite Pet Insight */}
+            <View style={[$insightCard, { backgroundColor: colors.palette.primary100 }]}>
+              <Text style={$insightEmoji}>💡</Text>
+              <View style={$insightText}>
+                <Text preset="bold" text="Your favorite" style={$insightLabel} />
+                <Text
+                  text={`${statsStore.catCount > statsStore.dogCount ? statsStore.catCount > statsStore.otherCount ? "Cats" : "Other" : statsStore.dogCount > statsStore.otherCount ? "Dogs" : "Other"} (${Math.max(statsStore.catCount, statsStore.dogCount, statsStore.otherCount)} logged)`}
+                  style={$insightValue}
+                />
               </View>
-            ))}
+            </View>
+
+            {/* Top Location Insight */}
+            {statsStore.topLocations.length > 0 && (
+              <View style={[$insightCard, { backgroundColor: colors.palette.secondary100 }]}>
+                <Text style={$insightEmoji}>📍</Text>
+                <View style={$insightText}>
+                  <Text preset="bold" text="Most visited" style={$insightLabel} />
+                  <Text
+                    text={`${statsStore.topLocations[0].location} (${statsStore.topLocations[0].count})`}
+                    style={$insightValue}
+                  />
+                </View>
+              </View>
+            )}
           </View>
         </View>
       )}
@@ -345,48 +403,86 @@ const $section: ViewStyle = {
   paddingTop: 24,
 }
 
-const $chartContainer: ViewStyle = {
-  alignItems: "center",
-  paddingVertical: 20,
+const $petTypeCardsContainer: ViewStyle = {
+  gap: 12,
+  marginBottom: 20,
 }
 
-const $centerLabel: ViewStyle = {
-  alignItems: "center",
-  justifyContent: "center",
+const $petTypeCard: ViewStyle = {
+  gap: 10,
 }
 
-const $centerValue: TextStyle = {
-  fontSize: 32,
-  fontWeight: "700",
-}
-
-const $centerText: TextStyle = {
-  fontSize: 12,
-  marginTop: 2,
-}
-
-const $legend: ViewStyle = {
-  flexDirection: "row",
-  flexWrap: "wrap",
-  justifyContent: "center",
-  gap: 16,
-  marginTop: 16,
-}
-
-const $legendItem: ViewStyle = {
+const $petTypeHeader: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
-  gap: 6,
+  gap: 12,
 }
 
-const $legendDot: ViewStyle = {
-  width: 12,
-  height: 12,
-  borderRadius: 6,
+const $petTypeEmoji: TextStyle = {
+  fontSize: 24,
 }
 
-const $legendText: TextStyle = {
+const $petTypeInfo: ViewStyle = {
+  flex: 1,
+  gap: 2,
+}
+
+const $petTypeLabel: TextStyle = {
   fontSize: 14,
+  fontWeight: "600",
+}
+
+const $petTypePercentage: TextStyle = {
+  fontSize: 12,
+}
+
+const $petTypeCount: TextStyle = {
+  fontSize: 14,
+  fontWeight: "600",
+  minWidth: 30,
+}
+
+const $progressBarContainer: ViewStyle = {
+  height: 8,
+  borderRadius: 4,
+  overflow: "hidden",
+}
+
+const $progressBar: ViewStyle = {
+  height: "100%",
+  borderRadius: 4,
+}
+
+const $insightsContainer: ViewStyle = {
+  gap: 10,
+  marginTop: 12,
+}
+
+const $insightCard: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 12,
+  padding: 12,
+  borderRadius: 10,
+}
+
+const $insightEmoji: TextStyle = {
+  fontSize: 20,
+}
+
+const $insightText: ViewStyle = {
+  flex: 1,
+  gap: 2,
+}
+
+const $insightLabel: TextStyle = {
+  fontSize: 12,
+  fontWeight: "600",
+}
+
+const $insightValue: TextStyle = {
+  fontSize: 13,
+  fontWeight: "500",
 }
 
 const $emptyState: ViewStyle = {
