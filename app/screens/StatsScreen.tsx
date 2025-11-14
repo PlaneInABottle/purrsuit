@@ -6,6 +6,7 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { StatCard } from "@/components/StatCard"
 import { AchievementCard } from "@/components/AchievementCard"
+import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
@@ -80,6 +81,9 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
 
   return (
     <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      {/* Background Decorations */}
+      <BackgroundDecorations />
+
       {/* Header */}
       <View style={$header}>
         <Text preset="heading" text="Your Progress" />
