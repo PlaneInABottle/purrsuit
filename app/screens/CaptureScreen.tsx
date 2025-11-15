@@ -9,7 +9,7 @@ import {
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
-import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash } from "lucide-react-native"
+import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint } from "lucide-react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -204,6 +204,12 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             onPress={handleCapture}
           >
             <View style={[$captureButtonInner, { borderColor: colors.palette.neutral100 }]} />
+            <PawPrint
+              size={36}
+              color={colors.palette.primary500}
+              strokeWidth={2}
+              style={{ position: "absolute" }}
+            />
           </TouchableOpacity>
 
           <View style={$libraryButton} />
