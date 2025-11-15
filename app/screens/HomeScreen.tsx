@@ -3,30 +3,79 @@ import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle } from "react-n
 import { observer } from "mobx-react-lite"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
+import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 
 export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProps<"Home">) {
   const {
-    theme: { colors },
+    theme: { colors, spacing },
   } = useAppTheme()
   const { encountersStore } = useStores()
 
   const encounters = encountersStore.encountersArray
 
+  // Helper function to get pet type emoji
+  const getPetTypeEmoji = (petType: string): string => {
+    const type = petType.toLowerCase()
+    switch (type) {
+      case "cat":
+        return "🐱"
+      case "dog":
+        return "🐶"
+      case "other":
+        return "🐾"
+      default:
+        return "❓"
+    }
+  }
+
+  // Helper function to get pet type color
+  const getPetTypeColor = (petType: string): string => {
+    const type = petType.toLowerCase()
+    switch (type) {
+      case "cat":
+        return colors.palette.primary600
+      case "dog":
+        return colors.palette.secondary600
+      case "other":
+        return colors.palette.accent600
+      default:
+        return colors.palette.neutral600
+    }
+  }
+
   // Empty state
   if (encounters.length === 0) {
     return (
-      <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+        {/* Background Decorations */}
+        <BackgroundDecorations />
+
+        {/* Header */}
         <View style={$header}>
-          <Text preset="heading" text="My Collection" />
+          <View style={$headerTop}>
+            <Text preset="heading" text="🏠 My Collection" />
+          </View>
         </View>
-        <View style={[$content, { backgroundColor: colors.background }]}>
+
+        {/* Enhanced Empty State */}
+        <View style={$emptyStateContainer}>
+          <Text style={$emptyIcon} text="📷🐾" />
+          <Text preset="subheading" text="No encounters yet" style={{ marginTop: spacing.md, marginBottom: spacing.xs }} />
           <Text
-            style={{ color: colors.textDim }}
-            text="No encounters yet. Tap the camera to start!"
+            style={[$emptyDescription, { color: colors.textDim }]}
+            text="Tap the camera to start your pet collection journey!"
           />
+
+          {/* Suggestions Card */}
+          <View style={[$suggestionCard, { backgroundColor: colors.palette.primary100 }]}>
+            <Text style={{ fontSize: 14, fontWeight: "600", marginBottom: spacing.sm }} text="💡 Try capturing:" />
+            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Your neighbor's cat or dog" />
+            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Pets at the park" />
+            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Wildlife you encounter" />
+          </View>
         </View>
       </Screen>
     )
@@ -35,22 +84,50 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
   // Grid view with encounters
   return (
     <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      {/* Background Decorations */}
+      <BackgroundDecorations />
+
+      {/* Enhanced Header */}
       <View style={$header}>
-        <Text preset="heading" text="My Collection" />
-        <Text style={{ color: colors.textDim }} text={`${encounters.length} encounters`} />
+        <View style={$headerTop}>
+          <Text preset="heading" text="🏠 My Collection" />
+          <View style={[$countBadge, { backgroundColor: colors.palette.primary100 }]}>
+            <Text style={[$countText, { color: colors.palette.primary600 }]} text={`${encounters.length} pets`} />
+          </View>
+        </View>
       </View>
 
+      {/* Grid List */}
       <FlatList
         data={encounters}
         keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={$gridContent}
+        scrollEnabled={true}
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={10}
+        windowSize={10}
         renderItem={({ item }) => (
-          <View style={[$gridItem, { backgroundColor: colors.palette.neutral100 }]}>
-            <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="cover" />
-            <View style={$encounterInfo}>
-              <Text style={$encounterType} text={item.petType} />
-              <Text style={[$encounterDate, { color: colors.textDim }]} text={item.formattedDate} />
+          <View style={$gridItem}>
+            {/* Card Container with enhanced styling */}
+            <View style={[$cardContainer, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+              {/* Image Section */}
+              <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="cover" />
+
+              {/* Info Section - Framed Style */}
+              <View style={[$cardInfoSection, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+                {/* Pet Type Row */}
+                <View style={$petTypeRow}>
+                  <Text style={$petTypeEmoji} text={getPetTypeEmoji(item.petType)} />
+                  <Text
+                    style={[$petTypeText, { color: getPetTypeColor(item.petType) }]}
+                    text={item.petType}
+                  />
+                </View>
+
+                {/* Date Row */}
+                <Text style={[$dateRow, { color: colors.textDim }]} text={item.formattedDate} />
+              </View>
             </View>
           </View>
         )}
@@ -65,7 +142,25 @@ const $container: ViewStyle = {
 
 const $header: ViewStyle = {
   paddingHorizontal: 16,
-  paddingVertical: 16,
+  paddingTop: 20,
+  paddingBottom: 12,
+}
+
+const $headerTop: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+}
+
+const $countBadge: ViewStyle = {
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 16,
+}
+
+const $countText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "600",
 }
 
 const $content: ViewStyle = {
@@ -76,23 +171,27 @@ const $content: ViewStyle = {
 }
 
 const $gridContent: ViewStyle = {
-  paddingHorizontal: 8,
+  paddingHorizontal: 12,
+  paddingTop: 8,
   paddingBottom: 100, // Space for tab bar
 }
 
 const $gridItem: ViewStyle = {
   flex: 1,
-  margin: 8,
-  borderRadius: 12,
+  margin: 10,
+  maxWidth: "48%",
+}
+
+const $cardContainer: ViewStyle = {
+  borderRadius: 16,
   overflow: "hidden",
-  maxWidth: "45%",
   // Shadow for iOS
   shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.12,
+  shadowRadius: 6,
   // Elevation for Android
-  elevation: 3,
+  elevation: 4,
 }
 
 const $thumbnail: ImageStyle = {
@@ -100,17 +199,59 @@ const $thumbnail: ImageStyle = {
   aspectRatio: 1,
 }
 
-const $encounterInfo: ViewStyle = {
-  padding: 8,
+const $cardInfoSection: ViewStyle = {
+  padding: 12,
+  gap: 6,
 }
 
-const $encounterType: TextStyle = {
+const $petTypeRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
+}
+
+const $petTypeEmoji: TextStyle = {
+  fontSize: 18,
+}
+
+const $petTypeText: TextStyle = {
   fontSize: 14,
   fontWeight: "600",
   textTransform: "capitalize",
 }
 
-const $encounterDate: TextStyle = {
+const $dateRow: TextStyle = {
+  fontSize: 11,
+}
+
+// Empty State Styles
+const $emptyStateContainer: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  paddingHorizontal: 16,
+  paddingVertical: 32,
+}
+
+const $emptyIcon: TextStyle = {
+  fontSize: 64,
+  marginBottom: 16,
+}
+
+const $emptyDescription: TextStyle = {
+  fontSize: 14,
+  textAlign: "center",
+}
+
+const $suggestionCard: ViewStyle = {
+  borderRadius: 12,
+  padding: 16,
+  marginTop: 24,
+  width: "100%",
+  borderRadius: 12,
+}
+
+const $suggestionItem: TextStyle = {
   fontSize: 12,
-  marginTop: 2,
+  marginBottom: 6,
 }
