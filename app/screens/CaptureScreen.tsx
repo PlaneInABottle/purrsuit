@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   Image,
   ImageStyle,
-  TextStyle,
   Alert,
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
+import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash } from "lucide-react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -21,7 +21,7 @@ import {
   pickImageFromLibrary,
   toggleCameraType,
   cycleFlashMode,
-  getFlashModeIcon,
+  getFlashModeType,
 } from "@/services/camera"
 import { generateUUID } from "@/utils/uuid"
 
@@ -40,6 +40,23 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null)
 
   const cameraRef = useRef<CameraView>(null)
+
+  // Helper function to render flash mode icon
+  const renderFlashIcon = () => {
+    const flashType = getFlashModeType(flashMode)
+    const iconSize = 28
+    const color = colors.palette.neutral100
+
+    switch (flashType) {
+      case "on":
+        return <Zap size={iconSize} color={color} strokeWidth={2} fill={color} />
+      case "auto":
+        return <ZapOff size={iconSize} color={color} strokeWidth={2} />
+      case "off":
+      default:
+        return <CircleSlash size={iconSize} color={color} strokeWidth={2} />
+    }
+  }
 
   // Request permissions on mount
   React.useEffect(() => {
@@ -124,9 +141,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
     return (
       <Screen preset="fixed" contentContainerStyle={$container}>
         <View style={$centerContent}>
-          <Text preset="heading" style={$permissionIcon}>
-            📷
-          </Text>
+          <Camera size={64} color={colors.textDim} strokeWidth={1.5} style={{ marginBottom: 16 }} />
           <Text text="Camera access required" preset="subheading" />
           <Text
             text="Please grant camera permissions to capture photos"
@@ -164,14 +179,14 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             style={[$controlButton, { backgroundColor: colors.overlay50 }]}
             onPress={() => setFlashMode(cycleFlashMode(flashMode))}
           >
-            <Text style={$controlIcon} text={getFlashModeIcon(flashMode)} />
+            {renderFlashIcon()}
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[$controlButton, { backgroundColor: colors.overlay50 }]}
             onPress={() => setCameraType(toggleCameraType(cameraType))}
           >
-            <Text style={$controlIcon} text="🔄" />
+            <RefreshCw size={28} color={colors.palette.neutral100} strokeWidth={2} />
           </TouchableOpacity>
         </View>
 
@@ -181,7 +196,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             style={[$libraryButton, { backgroundColor: colors.overlay50 }]}
             onPress={handlePickFromLibrary}
           >
-            <Text style={$controlIcon} text="🖼️" />
+            <ImageIcon size={28} color={colors.palette.neutral100} strokeWidth={2} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -207,11 +222,6 @@ const $centerContent: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
   paddingHorizontal: 24,
-}
-
-const $permissionIcon: TextStyle = {
-  fontSize: 64,
-  marginBottom: 16,
 }
 
 const $camera: ViewStyle = {
@@ -242,10 +252,6 @@ const $controlButton: ViewStyle = {
   borderRadius: 25,
   justifyContent: "center",
   alignItems: "center",
-}
-
-const $controlIcon: TextStyle = {
-  fontSize: 28,
 }
 
 const $captureButton: ViewStyle = {

@@ -113,16 +113,16 @@ export function cycleFlashMode(current: FlashMode): FlashMode {
 }
 
 /**
- * Get flash mode icon
+ * Get flash mode type indicator
  */
-export function getFlashModeIcon(mode: FlashMode): string {
+export function getFlashModeType(mode: FlashMode): "on" | "auto" | "off" {
   switch (mode) {
     case "on":
-      return "⚡"
+      return "on"
     case "auto":
-      return "🔆"
+      return "auto"
     case "off":
     default:
-      return "⚫"
+      return "off"
   }
 }
