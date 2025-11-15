@@ -9,7 +9,7 @@ import {
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
-import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint } from "lucide-react-native"
+import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint, RotateCcw, ArrowRight } from "lucide-react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -162,8 +162,39 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
         </View>
 
         <View style={$previewControls}>
-          <Button text="Retake" preset="default" onPress={handleRetake} />
-          <Button text="Next" preset="primary" onPress={handleConfirm} />
+          <Button
+            text="Retake"
+            preset="default"
+            onPress={handleRetake}
+            style={[
+              $retakeButton,
+              {
+                backgroundColor: colors.palette.neutral100,
+                borderWidth: 2,
+                borderColor: colors.palette.neutral400,
+              },
+            ]}
+            LeftAccessory={(props) => (
+              <RotateCcw
+                size={20}
+                color={colors.text}
+                style={props.style}
+              />
+            )}
+          />
+          <Button
+            text="Next"
+            preset="primary"
+            onPress={handleConfirm}
+            style={$nextButton}
+            RightAccessory={(props) => (
+              <ArrowRight
+                size={20}
+                color={colors.palette.neutral100}
+                style={props.style}
+              />
+            )}
+          />
         </View>
       </Screen>
     )
@@ -296,7 +327,19 @@ const $previewImage: ImageStyle = {
 
 const $previewControls: ViewStyle = {
   flexDirection: "row",
-  justifyContent: "space-around",
-  padding: 24,
-  gap: 16,
+  justifyContent: "space-between",
+  paddingHorizontal: 16,
+  paddingVertical: 20,
+  gap: 12,
+  backgroundColor: "rgba(255, 255, 255, 0.95)",
+  borderTopWidth: 1,
+  borderTopColor: "rgba(0, 0, 0, 0.05)",
+}
+
+const $retakeButton: ViewStyle = {
+  flex: 0.35,
+}
+
+const $nextButton: ViewStyle = {
+  flex: 0.6,
 }
