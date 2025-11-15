@@ -12,6 +12,7 @@ import {
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
+import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useStores } from "@/models"
@@ -91,6 +92,48 @@ export const EncounterEditScreen = ({
     ])
   }
 
+  // Helper function to get pet type color
+  const getPetTypeColor = (type: PetType) => {
+    switch (type) {
+      case "cat":
+        return colors.palette.primary600
+      case "dog":
+        return colors.palette.secondary600
+      case "other":
+        return colors.palette.accent600
+      default:
+        return colors.text
+    }
+  }
+
+  // Helper function to get pet type background
+  const getPetTypeBackground = (type: PetType) => {
+    switch (type) {
+      case "cat":
+        return colors.palette.primary100
+      case "dog":
+        return colors.palette.secondary100
+      case "other":
+        return colors.palette.accent100
+      default:
+        return "rgba(255, 255, 255, 0.8)"
+    }
+  }
+
+  // Helper function to get pet type border color
+  const getPetTypeBorder = (type: PetType) => {
+    switch (type) {
+      case "cat":
+        return colors.palette.primary500
+      case "dog":
+        return colors.palette.secondary500
+      case "other":
+        return colors.palette.accent500
+      default:
+        return colors.palette.neutral400
+    }
+  }
+
   return (
     <Screen
       preset="scroll"
@@ -98,109 +141,194 @@ export const EncounterEditScreen = ({
       safeAreaEdges={["top"]}
       keyboardShouldPersistTaps="handled"
       KeyboardAvoidingViewProps={{
-        enabled: false, // Disable native KeyboardAvoidingView to prevent conflict
+        enabled: false,
       }}
     >
-      {/* Header */}
-      <View style={[$header, { borderBottomColor: colors.separator }]}>
+      {/* Background Decorations */}
+      <BackgroundDecorations />
+
+      {/* Enhanced Header */}
+      <View style={[$header, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
         <TouchableOpacity
           onPress={handleCancel}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          style={$cancelButton}
         >
-          <Text style={{ color: colors.textDim }} text="Cancel" />
+          <Text style={{ color: colors.palette.primary600, fontSize: 16 }} text="Cancel" />
         </TouchableOpacity>
-        <Text preset="subheading" text="Add Details" />
+        <View style={$headerCenter}>
+          <Text text="✨" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text preset="subheading" text="Add Details" />
+        </View>
         <View style={{ width: 60 }} />
       </View>
 
-      {/* Photo Preview */}
-      <View style={[$photoContainer, { backgroundColor: colors.palette.neutral200 }]}>
-        <Image source={{ uri: photoUri }} style={$photo} resizeMode="cover" />
-      </View>
-
-      {/* Pet Type Selector */}
-      <View style={{ marginTop: spacing.lg }}>
-        <Text preset="subheading" style={{ marginBottom: spacing.sm }} text="Pet Type" />
-        <View style={$petTypeGrid}>
-          {petTypeOptions.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              style={[
-                $petTypeButton,
-                {
-                  backgroundColor:
-                    petType === option.value
-                      ? colors.palette.primary100
-                      : colors.palette.neutral100,
-                  borderColor:
-                    petType === option.value ? colors.palette.primary500 : colors.separator,
-                },
-              ]}
-              onPress={() => setPetType(option.value)}
-            >
-              <Text style={$petTypeEmoji} text={option.emoji} />
-              <Text
-                style={[
-                  $petTypeLabel,
-                  { color: petType === option.value ? colors.palette.primary600 : colors.text },
-                ]}
-                text={option.label}
-              />
-            </TouchableOpacity>
-          ))}
+      {/* Celebratory Photo Preview Section */}
+      <View style={$photoSection}>
+        <Text preset="subheading" text="📸 Your Capture" style={{ marginBottom: spacing.md }} />
+        <View
+          style={[
+            $photoFrame,
+            {
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              borderColor: colors.palette.primary200,
+            },
+          ]}
+        >
+          <Image source={{ uri: photoUri }} style={$photo} resizeMode="cover" />
+          <View
+            style={[
+              $photoCornerAccent,
+              { backgroundColor: colors.palette.accent500 },
+            ]}
+          />
         </View>
       </View>
 
-      {/* Location Input */}
-      <View style={{ marginTop: spacing.lg }}>
-        <Text preset="subheading" style={{ marginBottom: spacing.sm }} text="Location" />
-        <TextInput
-          style={[
-            $input,
-            {
-              backgroundColor: colors.palette.neutral100,
-              borderColor: colors.separator,
-              color: colors.text,
-            },
-          ]}
-          value={location}
-          onChangeText={setLocation}
-          placeholder="Where did you meet? (optional)"
-          placeholderTextColor={colors.textDim}
-        />
+      {/* Pet Type Selector - Framed */}
+      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+        <View style={$sectionHeader}>
+          <Text text="🐾" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text preset="subheading" text="Pet Type" />
+        </View>
+
+        <View style={$petTypeGrid}>
+          {petTypeOptions.map((option) => {
+            const isSelected = petType === option.value
+            const bgColor = isSelected ? getPetTypeBackground(option.value) : "rgba(255, 255, 255, 0.8)"
+            const borderColor = isSelected ? getPetTypeBorder(option.value) : colors.separator
+            const textColor = isSelected ? getPetTypeColor(option.value) : colors.text
+
+            return (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  $petTypeButton,
+                  {
+                    backgroundColor: bgColor,
+                    borderColor: borderColor,
+                    borderWidth: isSelected ? 2.5 : 1.5,
+                  },
+                ]}
+                onPress={() => setPetType(option.value)}
+              >
+                <Text style={$petTypeEmoji} text={option.emoji} />
+                <Text
+                  style={[$petTypeLabel, { color: textColor }]}
+                  text={option.label}
+                />
+                {isSelected && (
+                  <View
+                    style={[
+                      $selectedIndicator,
+                      { backgroundColor: borderColor },
+                    ]}
+                  >
+                    <Text
+                      text="✓"
+                      style={{
+                        color: "#FFF",
+                        fontSize: 10,
+                        fontWeight: "700",
+                      }}
+                    />
+                  </View>
+                )}
+              </TouchableOpacity>
+            )
+          })}
+        </View>
       </View>
 
-      {/* Notes Input */}
-      <View style={{ marginTop: spacing.lg }}>
-        <Text preset="subheading" style={{ marginBottom: spacing.sm }} text="Notes" />
-        <TextInput
+      {/* Location Input - Framed */}
+      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+        <View style={$sectionHeader}>
+          <Text text="📍" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text preset="subheading" text="Location" />
+          <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
+            <Text
+              text="Optional"
+              style={[$optionalText, { color: colors.palette.accent600 }]}
+            />
+          </View>
+        </View>
+
+        <View
           style={[
-            $input,
-            $textArea,
+            $inputWrapper,
             {
-              backgroundColor: colors.palette.neutral100,
-              borderColor: colors.separator,
-              color: colors.text,
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              borderColor: location ? colors.palette.primary300 : colors.separator,
             },
           ]}
-          value={note}
-          onChangeText={setNote}
-          placeholder="Add notes about this encounter... (optional)"
-          placeholderTextColor={colors.textDim}
-          multiline
-          numberOfLines={4}
-          textAlignVertical="top"
-        />
+        >
+          <TextInput
+            style={[$inputField, { color: colors.text }]}
+            value={location}
+            onChangeText={setLocation}
+            placeholder="Where did you meet?"
+            placeholderTextColor={colors.textDim}
+          />
+        </View>
       </View>
 
-      {/* Save Button */}
-      <Button
-        preset="primary"
-        text={isSaving ? "Saving..." : "Save Encounter"}
-        onPress={handleSave}
-        disabled={isSaving}
-        style={{ marginTop: spacing.xl }}
-      />
+      {/* Notes Input - Framed */}
+      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+        <View style={$sectionHeader}>
+          <Text text="📝" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text preset="subheading" text="Notes" />
+          <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
+            <Text
+              text="Optional"
+              style={[$optionalText, { color: colors.palette.accent600 }]}
+            />
+          </View>
+        </View>
+
+        <View
+          style={[
+            $textAreaWrapper,
+            {
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              borderColor: note ? colors.palette.primary300 : colors.separator,
+            },
+          ]}
+        >
+          <TextInput
+            style={[$textAreaField, { color: colors.text }]}
+            value={note}
+            onChangeText={setNote}
+            placeholder="Add notes about this encounter..."
+            placeholderTextColor={colors.textDim}
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+          />
+        </View>
+      </View>
+
+      {/* Enhanced Save Button */}
+      <View style={$saveButtonContainer}>
+        <Button
+          preset="primary"
+          text={isSaving ? "Saving... ⏳" : "Save Encounter ✨"}
+          onPress={handleSave}
+          disabled={isSaving}
+          style={[
+            $saveButton,
+            {
+              backgroundColor: isSaving
+                ? colors.palette.neutral400
+                : colors.palette.primary500,
+              shadowColor: colors.palette.primary500,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 6,
+            },
+          ]}
+        />
+      </View>
     </Screen>
   )
 }
@@ -214,31 +342,89 @@ const $header: ViewStyle = {
   justifyContent: "space-between",
   alignItems: "center",
   paddingHorizontal: 16,
-  paddingVertical: 12,
-  borderBottomWidth: 1,
-  minHeight: 52,
+  paddingVertical: 16,
+  borderBottomWidth: 0,
+  minHeight: 60,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 2,
+}
+
+const $cancelButton: ViewStyle = {
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+}
+
+const $headerCenter: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
 }
 
 const $scrollContent: ViewStyle = {
   paddingHorizontal: 16,
-  paddingBottom: 120,
+  paddingBottom: 140,
+  paddingTop: 8,
 }
 
-const $photoContainer: ViewStyle = {
+const $photoSection: ViewStyle = {
   marginTop: 16,
-  borderRadius: 12,
+}
+
+const $photoFrame: ViewStyle = {
+  borderRadius: 16,
   overflow: "hidden",
   aspectRatio: 1,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 8,
-  elevation: 4,
+  borderWidth: 3,
+  shadowColor: "#FF8A80",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 6,
+  position: "relative",
+}
+
+const $photoCornerAccent: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  right: 0,
+  width: 50,
+  height: 50,
+  borderBottomLeftRadius: 50,
+  opacity: 0.3,
 }
 
 const $photo: ImageStyle = {
   width: "100%",
   height: "100%",
+}
+
+const $framedSection: ViewStyle = {
+  borderWidth: 1,
+  borderRadius: 12,
+  padding: 16,
+  marginTop: 16,
+  backgroundColor: "rgba(255, 255, 255, 0.5)",
+}
+
+const $sectionHeader: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 16,
+}
+
+const $optionalBadge: ViewStyle = {
+  marginLeft: "auto",
+  paddingHorizontal: 8,
+  paddingVertical: 2,
+  borderRadius: 8,
+}
+
+const $optionalText: TextStyle = {
+  fontSize: 10,
+  fontWeight: "600",
+  textTransform: "uppercase",
 }
 
 const $petTypeGrid: ViewStyle = {
@@ -250,17 +436,21 @@ const $petTypeGrid: ViewStyle = {
 
 const $petTypeButton: ViewStyle = {
   width: "47%",
-  padding: 16,
-  borderRadius: 12,
-  borderWidth: 2,
+  paddingTop: 16,
+  paddingHorizontal: 12,
+  paddingBottom: 16,
+  borderRadius: 14,
   alignItems: "center",
   justifyContent: "center",
-  minHeight: 90,
+  minHeight: 130,
+  position: "relative",
 }
 
 const $petTypeEmoji: TextStyle = {
   fontSize: 32,
-  marginBottom: 4,
+  marginBottom: 8,
+  lineHeight: 40,
+  includeFontPadding: false,
 }
 
 const $petTypeLabel: TextStyle = {
@@ -268,15 +458,52 @@ const $petTypeLabel: TextStyle = {
   fontWeight: "600",
 }
 
-const $input: TextStyle = {
-  borderWidth: 1,
-  borderRadius: 12,
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-  fontSize: 16,
+const $selectedIndicator: ViewStyle = {
+  position: "absolute",
+  top: 8,
+  right: 8,
+  width: 20,
+  height: 20,
+  borderRadius: 10,
+  alignItems: "center",
+  justifyContent: "center",
 }
 
-const $textArea: TextStyle = {
+const $inputWrapper: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  borderWidth: 1.5,
+  borderRadius: 12,
+  paddingHorizontal: 14,
+  paddingVertical: 12,
+}
+
+const $inputField: TextStyle = {
+  flex: 1,
+  fontSize: 16,
+  padding: 0,
+}
+
+const $textAreaWrapper: ViewStyle = {
+  borderWidth: 1.5,
+  borderRadius: 12,
+  paddingHorizontal: 14,
+  paddingVertical: 12,
   minHeight: 100,
-  paddingTop: 12,
+}
+
+const $textAreaField: TextStyle = {
+  fontSize: 16,
+  padding: 0,
+  minHeight: 80,
+}
+
+const $saveButtonContainer: ViewStyle = {
+  marginTop: 32,
+  paddingHorizontal: 8,
+}
+
+const $saveButton: ViewStyle = {
+  minHeight: 56,
+  borderRadius: 16,
 }
