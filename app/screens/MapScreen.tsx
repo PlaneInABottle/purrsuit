@@ -47,7 +47,7 @@ export const MapScreen = ({
   const [initialRegionSet, setInitialRegionSet] = useState(false)
 
   // Get encounters with GPS coordinates
-  const gpsEncounters = encountersStore.encounters
+  const gpsEncounters = encountersStore.encountersArray
     .filter(
       (encounter) =>
         encounter.location.type === "gps" && encounter.location.coordinates,
