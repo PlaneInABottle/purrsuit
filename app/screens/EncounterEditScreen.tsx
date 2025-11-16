@@ -17,6 +17,15 @@ import { useAppTheme } from "@/theme/context"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useStores } from "@/models"
 import { savePhoto } from "@/utils/fileSystem"
+import {
+  requestLocationPermissions,
+  hasLocationPermissions,
+  getCurrentLocation,
+  reverseGeocodeAsync,
+  formatCoordinates,
+  formatAddress,
+} from "@/services/location"
+import type { LocationCoordinates } from "@/services/location"
 
 type PetType = "cat" | "dog" | "other" | "unknown"
 
@@ -35,6 +44,9 @@ export const EncounterEditScreen = ({
   const [location, setLocation] = useState("")
   const [note, setNote] = useState("")
   const [isSaving, setIsSaving] = useState(false)
+  const [locationCoords, setLocationCoords] = useState<LocationCoordinates | null>(null)
+  const [locationAddress, setLocationAddress] = useState<string | null>(null)
+  const [isGettingLocation, setIsGettingLocation] = useState(false)
 
   const petTypeOptions: Array<{ value: PetType; label: string; emoji: string }> = [
     { value: "cat", label: "Cat", emoji: "🐱" },
@@ -42,6 +54,51 @@ export const EncounterEditScreen = ({
     { value: "other", label: "Other", emoji: "🐾" },
     { value: "unknown", label: "Unknown", emoji: "❓" },
   ]
+
+  async function handleGetCurrentLocation() {
+    setIsGettingLocation(true)
+    try {
+      // Check if we have permissions
+      const hasPermission = await hasLocationPermissions()
+      if (!hasPermission) {
+        // Request permissions
+        const result = await requestLocationPermissions()
+        if (!result.granted) {
+          Alert.alert("Permission Denied", "Location permission is required to use this feature")
+          setIsGettingLocation(false)
+          return
+        }
+      }
+
+      // Get current location
+      const coords = await getCurrentLocation()
+      if (!coords) {
+        Alert.alert("Error", "Failed to get location. Please try again.")
+        setIsGettingLocation(false)
+        return
+      }
+
+      setLocationCoords(coords)
+
+      // Try to get address via reverse geocoding
+      const address = await reverseGeocodeAsync(coords.latitude, coords.longitude)
+      if (address) {
+        setLocationAddress(formatAddress(address))
+      } else {
+        setLocationAddress(null)
+      }
+    } catch (error) {
+      console.error("Failed to get location:", error)
+      Alert.alert("Error", "Failed to get location")
+    } finally {
+      setIsGettingLocation(false)
+    }
+  }
+
+  function handleClearLocation() {
+    setLocationCoords(null)
+    setLocationAddress(null)
+  }
 
   async function handleSave() {
     setIsSaving(true)
@@ -57,6 +114,24 @@ export const EncounterEditScreen = ({
       else if (hour >= 17 && hour < 21) timeOfDay = "evening"
       else timeOfDay = "night"
 
+      // Determine location type
+      let locationData: { type: "none" | "manual" | "gps"; label?: string; coordinates?: { latitude: number; longitude: number } } = { type: "none" }
+
+      if (locationCoords) {
+        // Use GPS location if available
+        locationData = {
+          type: "gps",
+          coordinates: {
+            latitude: locationCoords.latitude,
+            longitude: locationCoords.longitude,
+          },
+          label: locationAddress || formatCoordinates(locationCoords.latitude, locationCoords.longitude),
+        }
+      } else if (location.trim()) {
+        // Fall back to manual location
+        locationData = { type: "manual", label: location.trim() }
+      }
+
       // Create encounter
       encountersStore.addEncounter({
         id: encounterId,
@@ -67,7 +142,7 @@ export const EncounterEditScreen = ({
         },
         petType,
         timeOfDay,
-        location: location.trim() ? { type: "manual", label: location.trim() } : { type: "none" },
+        location: locationData,
         note: note.trim() || undefined,
       })
 
@@ -253,6 +328,54 @@ export const EncounterEditScreen = ({
           </View>
         </View>
 
+        {/* GPS Location Display */}
+        {locationCoords && (
+          <View
+            style={[
+              $gpsLocationDisplay,
+              {
+                backgroundColor: colors.palette.primary100,
+                borderColor: colors.palette.primary300,
+              },
+            ]}
+          >
+            <View style={$gpsLocationContent}>
+              <Text text="📡 GPS Location Captured" style={{ fontSize: 14, fontWeight: "600", marginBottom: 4 }} />
+              {locationAddress ? (
+                <Text text={locationAddress} style={{ fontSize: 13, color: colors.text, marginBottom: 4 }} />
+              ) : null}
+              <Text
+                text={`${formatCoordinates(locationCoords.latitude, locationCoords.longitude)}`}
+                style={{ fontSize: 12, color: colors.textDim }}
+              />
+            </View>
+            <TouchableOpacity onPress={handleClearLocation} style={$clearButton}>
+              <Text text="✕" style={{ fontSize: 18, color: colors.palette.primary600 }} />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* GPS Button */}
+        <TouchableOpacity
+          onPress={handleGetCurrentLocation}
+          disabled={isGettingLocation}
+          style={[
+            $gpsButton,
+            {
+              backgroundColor: locationCoords ? colors.palette.primary100 : colors.palette.secondary100,
+              borderColor: locationCoords ? colors.palette.primary300 : colors.palette.secondary300,
+            },
+          ]}
+        >
+          <Text text="📡" style={{ fontSize: 18, marginRight: 8 }} />
+          <Text
+            text={isGettingLocation ? "Getting location..." : locationCoords ? "Update GPS" : "Use Current Location"}
+            style={{ color: colors.text, fontWeight: "500" }}
+          />
+        </TouchableOpacity>
+
+        {/* Manual Location Input */}
+        <Text text="Or type a location name" style={{ fontSize: 12, color: colors.textDim, marginTop: 12, marginBottom: 8 }} />
         <View
           style={[
             $inputWrapper,
@@ -268,6 +391,7 @@ export const EncounterEditScreen = ({
             onChangeText={setLocation}
             placeholder="Where did you meet?"
             placeholderTextColor={colors.textDim}
+            editable={!locationCoords} // Disable manual input if GPS is set
           />
         </View>
       </View>
@@ -506,4 +630,34 @@ const $saveButtonContainer: ViewStyle = {
 const $saveButton: ViewStyle = {
   minHeight: 56,
   borderRadius: 16,
+}
+
+const $gpsLocationDisplay: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderWidth: 1.5,
+  borderRadius: 12,
+  padding: 12,
+  marginBottom: 12,
+}
+
+const $gpsLocationContent: ViewStyle = {
+  flex: 1,
+}
+
+const $clearButton: ViewStyle = {
+  paddingLeft: 12,
+  paddingVertical: 4,
+}
+
+const $gpsButton: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  borderWidth: 1.5,
+  borderRadius: 12,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginBottom: 12,
 }
