@@ -29,10 +29,13 @@
 - ✅ Manual location naming ("Coffee shop", "Park", "Home street")
 - ✅ Date/time logging
 - ✅ Grid/list views
+- ✅ Map view (with pet locations)
 - ✅ Basic stats (counts, streaks)
 - ✅ Achievement badges
 - ✅ Calendar view
 - ✅ Search & filter
+- ✅ Location picker map (during capture)
+- ✅ GPS auto-locate option
 - ✅ Data stored locally (MMKV + file system)
 - ✅ Export to photos/JSON
 
@@ -265,6 +268,10 @@ Screen 4: Ready!
    [Swipe carousel of stickers]
 
    📍 Location (based on setting)
+   - Option 1: No location
+   - Option 2: Manual text tag
+   - Option 3: Pick on map 🗺️
+   - Option 4: Use GPS auto-locate 📡
 
    💬 Note (optional)
    [Add a note...]
@@ -297,12 +304,14 @@ Screen 4: Ready!
 - ✅ Manual location tags
 - ✅ Notes input
 
-**Week 5-6: Collection Views**
+**Week 5-6: Collection Views & Map**
 
 - ✅ Grid view (FlashList)
 - ✅ Detail view
 - ✅ Filter & search
 - ✅ Timeline view
+- ✅ Map view (with pet markers)
+- ✅ Location picker map (during capture)
 - ✅ Delete & edit
 
 **Week 7-8: Stats & Polish**
@@ -347,8 +356,10 @@ Screen 4: Ready!
   "expo-camera": "~16.0.0",
   "expo-image-picker": "~17.0.0",
   "expo-file-system": "~19.0.0",
+  "expo-location": "~18.0.0",
   "@shopify/flash-list": "^1.7.0",
   "react-native-svg": "^15.0.0",
+  "react-native-maps": "^1.18.0",
   "uuid": "^10.0.0",
   "react-native-view-shot": "^4.0.0"
 }
@@ -361,7 +372,6 @@ Screen 4: Ready!
   "@react-native-firebase/app": "^21.0.0",
   "@react-native-firebase/auth": "^21.0.0",
   "@react-native-firebase/storage": "^21.0.0",
-  "react-native-maps": "^1.18.0",
   "react-native-purchases": "^8.0.0"
 }
 ```
