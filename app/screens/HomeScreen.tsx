@@ -114,6 +114,18 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
               {/* Image Section */}
               <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="cover" />
 
+              {/* GPS Location Badge */}
+              {item.location.type === "gps" && (
+                <View
+                  style={[
+                    $gpsBadge,
+                    { backgroundColor: colors.palette.primary500 },
+                  ]}
+                >
+                  <Text text="📍" style={{ fontSize: 10 }} />
+                </View>
+              )}
+
               {/* Info Section - Framed Style */}
               <View style={[$cardInfoSection, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
                 {/* Pet Type Row */}
@@ -222,6 +234,23 @@ const $petTypeText: TextStyle = {
 
 const $dateRow: TextStyle = {
   fontSize: 11,
+}
+
+const $gpsBadge: ViewStyle = {
+  position: "absolute",
+  top: 8,
+  right: 8,
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 10,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.15,
+  shadowRadius: 4,
+  elevation: 4,
 }
 
 // Empty State Styles
