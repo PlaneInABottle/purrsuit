@@ -200,9 +200,21 @@ export const MapScreen = ({
                 }}
                 title={`${getPetTypeEmoji(encounter.petType)} ${encounter.petType}`}
                 description={new Date(encounter.timestamp).toLocaleDateString()}
-                pinColor={getPetTypeColor(encounter.petType)}
                 onPress={() => handleMarkerPress(encounter.id)}
-              />
+              >
+                {/* Custom small circular marker with pet type emoji */}
+                <View
+                  style={[
+                    $petMarker,
+                    {
+                      backgroundColor: getPetTypeColor(encounter.petType),
+                      borderColor: getPetTypeColor(encounter.petType),
+                    },
+                  ]}
+                >
+                  <Text style={$markerEmoji} text={getPetTypeEmoji(encounter.petType)} />
+                </View>
+              </Marker>
             )
           })}
         </MapView>
@@ -305,4 +317,25 @@ const $fitAllButton: ViewStyle = {
   shadowOpacity: 0.3,
   shadowRadius: 8,
   elevation: 6,
+}
+
+const $petMarker: ViewStyle = {
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+  borderWidth: 1.5,
+  alignItems: "center",
+  justifyContent: "center",
+  // iOS shadow
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 3,
+  // Android elevation
+  elevation: 4,
+}
+
+const $markerEmoji: TextStyle = {
+  fontSize: 16,
+  fontWeight: "600",
 }
