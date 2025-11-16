@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
-import { View, ViewStyle, TouchableOpacity, Alert } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet } from "react-native"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { useStores } from "@/models"
 import { useAppTheme } from "@/theme/context"
@@ -57,6 +57,13 @@ export const MapScreen = ({
       return encounter.petType === selectedPetType
     })
 
+  // Debug logging
+  React.useEffect(() => {
+    console.log("🗺️ MapScreen Debug:")
+    console.log("  Total encounters:", encountersStore.encountersArray.length)
+    console.log("  GPS encounters:", gpsEncounters.length)
+  }, [gpsEncounters.length, encountersStore.encountersArray.length])
+
   // Set initial region to first GPS encounter or default
   useEffect(() => {
     if (!initialRegionSet && gpsEncounters.length > 0) {
@@ -103,7 +110,11 @@ export const MapScreen = ({
   }
 
   return (
-    <Screen style={$container} preset="fixed" safeAreaEdges={["top", "bottom"]}>
+    <Screen
+      preset="fixed"
+      safeAreaEdges={["top"]}
+      contentContainerStyle={$screenContent}
+    >
       <View style={$header}>
         <Text preset="heading" text="🗺️ Encounter Map" />
       </View>
@@ -141,42 +152,45 @@ export const MapScreen = ({
       </View>
 
       {/* Map View */}
-      {gpsEncounters.length > 0 ? (
-        <View style={$mapContainer}>
-          <MapView
-            ref={mapRef}
-            style={$map}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            showsUserLocation
-            showsMyLocationButton
-          >
-            {gpsEncounters.map((encounter) => {
-              const coords = encounter.location.coordinates
-              if (!coords) return null
+      <View style={$mapContainer}>
+        <MapView
+          ref={mapRef}
+          style={StyleSheet.absoluteFillObject}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          showsUserLocation
+          showsMyLocationButton
+          onMapReady={() => console.log("✅ MapView is READY")}
+          onError={(e) => console.error("❌ MapView ERROR:", e)}
+          onLayout={(e) => console.log("📏 MapView layout:", e.nativeEvent.layout)}
+        >
+          {gpsEncounters.map((encounter) => {
+            const coords = encounter.location.coordinates
+            if (!coords) return null
 
-              return (
-                <Marker
-                  key={encounter.id}
-                  coordinate={{
-                    latitude: coords.latitude,
-                    longitude: coords.longitude,
-                  }}
-                  title={`${getPetTypeEmoji(encounter.petType)} ${encounter.petType}`}
-                  description={new Date(encounter.timestamp).toLocaleDateString()}
-                  pinColor={getPetTypeColor(encounter.petType)}
-                  onPress={() => handleMarkerPress(encounter.id)}
-                />
-              )
-            })}
-          </MapView>
+            return (
+              <Marker
+                key={encounter.id}
+                coordinate={{
+                  latitude: coords.latitude,
+                  longitude: coords.longitude,
+                }}
+                title={`${getPetTypeEmoji(encounter.petType)} ${encounter.petType}`}
+                description={new Date(encounter.timestamp).toLocaleDateString()}
+                pinColor={getPetTypeColor(encounter.petType)}
+                onPress={() => handleMarkerPress(encounter.id)}
+              />
+            )
+          })}
+        </MapView>
 
-          {/* Fit All Button */}
+        {/* Fit All Button */}
+        {gpsEncounters.length > 0 && (
           <TouchableOpacity
             onPress={fitAllMarkers}
             style={[
@@ -186,24 +200,15 @@ export const MapScreen = ({
           >
             <Text text="📍 Fit All" style={{ color: "#FFF", fontWeight: "600", fontSize: 12 }} />
           </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={$emptyContainer}>
-          <Text text="📍" style={{ fontSize: 48, marginBottom: 16 }} />
-          <Text preset="subheading" text="No GPS Locations Yet" style={{ marginBottom: 8 }} />
-          <Text
-            text="Encounters with GPS coordinates will appear here"
-            style={{ color: colors.textDim, textAlign: "center" }}
-          />
-        </View>
-      )}
+        )}
+      </View>
     </Screen>
   )
 }
 
-const $container: ViewStyle = {
+const $screenContent: ViewStyle = {
   flex: 1,
-  backgroundColor: "#FFF",
+  flexDirection: "column",
 }
 
 const $header: ViewStyle = {
@@ -211,7 +216,7 @@ const $header: ViewStyle = {
   paddingVertical: 12,
   borderBottomWidth: 1,
   borderBottomColor: "rgba(0, 0, 0, 0.08)",
-  backgroundColor: "rgba(255, 255, 255, 0.95)",
+  flexShrink: 0,
 }
 
 const $filterContainer: ViewStyle = {
@@ -219,9 +224,9 @@ const $filterContainer: ViewStyle = {
   paddingHorizontal: 16,
   paddingVertical: 12,
   gap: 8,
-  backgroundColor: "rgba(255, 255, 255, 0.9)",
   borderBottomWidth: 1,
   borderBottomColor: "rgba(0, 0, 0, 0.05)",
+  flexShrink: 0,
 }
 
 const $filterButton: ViewStyle = {
@@ -239,10 +244,6 @@ const $mapContainer: ViewStyle = {
   position: "relative",
 }
 
-const $map: ViewStyle = {
-  flex: 1,
-}
-
 const $fitAllButton: ViewStyle = {
   position: "absolute",
   bottom: 20,
@@ -254,11 +255,4 @@ const $fitAllButton: ViewStyle = {
   shadowOpacity: 0.3,
   shadowRadius: 8,
   elevation: 6,
-}
-
-const $emptyContainer: ViewStyle = {
-  flex: 1,
-  alignItems: "center",
-  justifyContent: "center",
-  paddingHorizontal: 32,
 }

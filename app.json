@@ -22,12 +22,20 @@
       "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
     },
     "allowBackup": false,
-    "edgeToEdgeEnabled": true
+    "edgeToEdgeEnabled": true,
+    "config": {
+      "googleMaps": {
+        "apiKey": "REDACTED_API_KEY"
+      }
+    }
   },
   "ios": {
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
-    "bundleIdentifier": "com.purrsuit.app"
+    "bundleIdentifier": "com.purrsuit.app",
+    "config": {
+      "googleMapsApiKey": "REDACTED_API_KEY"
+    }
   },
   "web": {
     "favicon": "./assets/images/app-icon-web-favicon.png",
@@ -52,6 +60,13 @@
           "parentTheme": "Light",
           "enforceNavigationBarContrast": false
         }
+      }
+    ],
+    [
+      "react-native-maps",
+      {
+        "iosGoogleMapsApiKey": "REDACTED_API_KEY",
+        "androidGoogleMapsApiKey": "REDACTED_API_KEY"
       }
     ],
     "expo-build-properties"
