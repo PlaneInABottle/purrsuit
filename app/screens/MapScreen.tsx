@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
-import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle } from "react-native"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { useStores } from "@/models"
 import { useAppTheme } from "@/theme/context"
@@ -115,40 +115,58 @@ export const MapScreen = ({
       safeAreaEdges={["top"]}
       contentContainerStyle={$screenContent}
     >
-      <View style={$header}>
-        <Text preset="heading" text="🗺️ Encounter Map" />
+      {/* Header Section */}
+      <View style={$headerSection}>
+        <View style={$headerContent}>
+          <Text preset="heading" text="🗺️ Encounter Map" />
+          <View style={[$countBadge, { backgroundColor: colors.palette.primary100 }]}>
+            <Text
+              style={[$countBadgeText, { color: colors.palette.primary600 }]}
+              text={gpsEncounters.length.toString()}
+            />
+          </View>
+        </View>
+        {gpsEncounters.length === 0 && (
+          <Text
+            style={[$headerSubtitle, { color: colors.textDim }]}
+            text="No encounters yet"
+          />
+        )}
       </View>
 
       {/* Pet Type Filter */}
       <View style={$filterContainer}>
-        {(["all", "cat", "dog", "other"] as const).map((type) => {
-          const isSelected = selectedPetType === type
-          const bgColor = isSelected
-            ? type === "all"
-              ? colors.palette.primary500
-              : getPetTypeColor(type as PetType)
-            : "rgba(255, 255, 255, 0.7)"
-          const textColor = isSelected ? "#FFF" : colors.text
+        <Text style={[$filterLabel, { color: colors.textDim }]} text="Filter by pet type:" />
+        <View style={$filterButtonsRow}>
+          {(["all", "cat", "dog", "other"] as const).map((type) => {
+            const isSelected = selectedPetType === type
+            const bgColor = isSelected
+              ? type === "all"
+                ? colors.palette.primary500
+                : getPetTypeColor(type as PetType)
+              : colors.palette.neutral100
+            const textColor = isSelected ? "#FFF" : colors.text
 
-          return (
-            <TouchableOpacity
-              key={type}
-              onPress={() => setSelectedPetType(type)}
-              style={[
-                $filterButton,
-                {
-                  backgroundColor: bgColor,
-                  borderColor: isSelected ? "transparent" : colors.separator,
-                },
-              ]}
-            >
-              <Text
-                text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
-                style={{ color: textColor, fontWeight: isSelected ? "600" : "500" }}
-              />
-            </TouchableOpacity>
-          )
-        })}
+            return (
+              <TouchableOpacity
+                key={type}
+                onPress={() => setSelectedPetType(type)}
+                style={[
+                  $filterButton,
+                  {
+                    backgroundColor: bgColor,
+                    borderColor: isSelected ? "transparent" : colors.separator,
+                  },
+                ]}
+              >
+                <Text
+                  text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
+                  style={{ color: textColor, fontWeight: isSelected ? "600" : "500" }}
+                />
+              </TouchableOpacity>
+            )
+          })}
+        </View>
       </View>
 
       {/* Map View */}
@@ -211,27 +229,59 @@ const $screenContent: ViewStyle = {
   flexDirection: "column",
 }
 
-const $header: ViewStyle = {
+const $headerSection: ViewStyle = {
   paddingHorizontal: 16,
-  paddingVertical: 12,
-  borderBottomWidth: 1,
-  borderBottomColor: "rgba(0, 0, 0, 0.08)",
+  paddingVertical: 16,
   flexShrink: 0,
 }
 
-const $filterContainer: ViewStyle = {
+const $headerContent: ViewStyle = {
   flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 8,
+}
+
+const $countBadge: ViewStyle = {
+  minWidth: 40,
+  height: 32,
+  borderRadius: 12,
+  alignItems: "center",
+  justifyContent: "center",
+}
+
+const $countBadgeText: TextStyle = {
+  fontSize: 16,
+  fontWeight: "700",
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 13,
+  marginTop: 4,
+}
+
+const $filterContainer: ViewStyle = {
   paddingHorizontal: 16,
   paddingVertical: 12,
-  gap: 8,
   borderBottomWidth: 1,
   borderBottomColor: "rgba(0, 0, 0, 0.05)",
   flexShrink: 0,
 }
 
+const $filterLabel: TextStyle = {
+  fontSize: 12,
+  fontWeight: "500",
+  marginBottom: 10,
+}
+
+const $filterButtonsRow: ViewStyle = {
+  flexDirection: "row",
+  gap: 8,
+}
+
 const $filterButton: ViewStyle = {
   paddingHorizontal: 12,
-  paddingVertical: 6,
+  paddingVertical: 8,
   borderRadius: 16,
   borderWidth: 1,
   alignItems: "center",
