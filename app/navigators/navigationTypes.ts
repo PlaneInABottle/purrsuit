@@ -12,6 +12,7 @@ export type MainTabParamList = {
   Home: undefined
   Capture: undefined
   Stats: undefined
+  Map: undefined
   Profile: undefined
 }
 
