@@ -61,33 +61,46 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
 
   return (
     <Screen preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={$container}>
-      <View style={$header}>
+      {/* Header with Back Button */}
+      <View style={[$header, { paddingBottom: 0 }]}>
         <Button text="← Back" onPress={() => navigation.goBack()} preset="default" />
       </View>
 
-      {/* Photo Display */}
-      <Image
-        source={{ uri: encounter.photos.original }}
-        style={$photo}
-        resizeMode="cover"
-      />
+      {/* Hero Section with Photo and Overlays */}
+      <View style={$heroSection}>
+        {/* Photo with rounded corners and shadow */}
+        <Image
+          source={{ uri: encounter.photos.original }}
+          style={$photo}
+          resizeMode="cover"
+        />
+
+        {/* Pet Type Badge - Top Right */}
+        <View
+          style={[
+            $petTypeBadge,
+            { backgroundColor: getPetTypeColor(encounter.petType) },
+          ]}
+        >
+          <Text style={$petTypeBadgeEmoji} text={getPetTypeEmoji(encounter.petType)} />
+          <Text style={$petTypeBadgeText} text={encounter.petType.toUpperCase()} />
+        </View>
+
+        {/* Date Badge - Bottom Left */}
+        <View style={[$dateBadge, { backgroundColor: "rgba(0, 0, 0, 0.6)" }]}>
+          <Text text="📅" style={{ fontSize: 12, marginRight: 6 }} />
+          <Text style={$badgeText} text={encounter.formattedDate} />
+        </View>
+
+        {/* Time Badge - Bottom Right */}
+        <View style={[$timeBadge, { backgroundColor: "rgba(0, 0, 0, 0.6)" }]}>
+          <Text text="🕐" style={{ fontSize: 12, marginRight: 6 }} />
+          <Text style={$badgeText} text={encounter.formattedTime} />
+        </View>
+      </View>
 
       {/* Encounter Info */}
       <View style={$details}>
-        {/* Pet Type Row */}
-        <View style={$petTypeRow}>
-          <Text style={$petTypeEmoji} text={getPetTypeEmoji(encounter.petType)} />
-          <Text
-            style={[$petTypeText, { color: getPetTypeColor(encounter.petType) }]}
-            text={encounter.petType}
-          />
-        </View>
-
-        {/* Date and Time */}
-        <View style={$dateTimeRow}>
-          <Text style={[$infoLabel, { color: colors.textDim }]} text={encounter.formattedDate} />
-          <Text style={[$infoLabel, { color: colors.textDim }]} text={encounter.formattedTime} />
-        </View>
 
         {/* Location */}
         {encounter.hasLocation && (
@@ -206,42 +219,87 @@ const $header: ViewStyle = {
   paddingVertical: 12,
 }
 
+const $heroSection: ViewStyle = {
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  position: "relative",
+}
+
 const $photo: ImageStyle = {
   width: "100%",
-  height: 400,
-  marginBottom: 16,
+  height: 420,
+  borderRadius: 20,
+  overflow: "hidden",
+  // iOS shadow
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.25,
+  shadowRadius: 12,
+  // Android elevation
+  elevation: 8,
+}
+
+const $petTypeBadge: ViewStyle = {
+  position: "absolute",
+  top: 28,
+  right: 28,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+  paddingHorizontal: 14,
+  paddingVertical: 8,
+  borderRadius: 20,
+  // iOS shadow
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.2,
+  shadowRadius: 8,
+  // Android elevation
+  elevation: 6,
+}
+
+const $petTypeBadgeEmoji: TextStyle = {
+  fontSize: 18,
+}
+
+const $petTypeBadgeText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "700",
+  color: "#FFF",
+  letterSpacing: 0.5,
+}
+
+const $dateBadge: ViewStyle = {
+  position: "absolute",
+  bottom: 28,
+  left: 28,
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  borderRadius: 12,
+}
+
+const $timeBadge: ViewStyle = {
+  position: "absolute",
+  bottom: 28,
+  right: 28,
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  borderRadius: 12,
+}
+
+const $badgeText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "600",
+  color: "#FFF",
 }
 
 const $details: ViewStyle = {
   paddingHorizontal: 16,
-  paddingTop: 8,
-}
-
-const $petTypeRow: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  gap: 8,
-  marginBottom: 12,
-}
-
-const $petTypeEmoji: TextStyle = {
-  fontSize: 28,
-}
-
-const $petTypeText: TextStyle = {
-  fontSize: 18,
-  fontWeight: "600",
-  textTransform: "capitalize",
-}
-
-const $dateTimeRow: ViewStyle = {
-  flexDirection: "row",
-  gap: 16,
-  marginBottom: 16,
-}
-
-const $infoLabel: TextStyle = {
-  fontSize: 12,
+  paddingTop: 24,
 }
 
 const $section: ViewStyle = {
