@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle } from "react-native"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps"
 import { useStores } from "@/models"
 import { useAppTheme } from "@/theme/context"
 import { Text } from "@/components/Text"
@@ -35,9 +35,7 @@ const getPetTypeEmoji = (type: PetType): string => {
   }
 }
 
-export const MapScreen = ({
-  navigation,
-}: AppStackScreenProps<"Home">) => {
+export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
   const {
     theme: { colors },
   } = useAppTheme()
@@ -48,10 +46,7 @@ export const MapScreen = ({
 
   // Get encounters with GPS coordinates
   const gpsEncounters = encountersStore.encountersArray
-    .filter(
-      (encounter) =>
-        encounter.location.type === "gps" && encounter.location.coordinates,
-    )
+    .filter((encounter) => encounter.location.type === "gps" && encounter.location.coordinates)
     .filter((encounter) => {
       if (selectedPetType === "all") return true
       return encounter.petType === selectedPetType
@@ -105,16 +100,12 @@ export const MapScreen = ({
     }
   }
 
-  const handleMarkerPress = (encounterId: string) => {
+  const handleViewDetails = (encounterId: string) => {
     navigation.navigate("EncounterDetail", { encounterId })
   }
 
   return (
-    <Screen
-      preset="fixed"
-      safeAreaEdges={["top"]}
-      contentContainerStyle={$screenContent}
-    >
+    <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$screenContent}>
       {/* Header Section */}
       <View style={$headerSection}>
         <View style={$headerContent}>
@@ -127,10 +118,7 @@ export const MapScreen = ({
           </View>
         </View>
         {gpsEncounters.length === 0 && (
-          <Text
-            style={[$headerSubtitle, { color: colors.textDim }]}
-            text="No encounters yet"
-          />
+          <Text style={[$headerSubtitle, { color: colors.textDim }]} text="No encounters yet" />
         )}
       </View>
 
@@ -198,9 +186,6 @@ export const MapScreen = ({
                   latitude: coords.latitude,
                   longitude: coords.longitude,
                 }}
-                title={`${getPetTypeEmoji(encounter.petType)} ${encounter.petType}`}
-                description={new Date(encounter.timestamp).toLocaleDateString()}
-                onPress={() => handleMarkerPress(encounter.id)}
               >
                 {/* Custom small circular marker with pet type emoji */}
                 <View
@@ -214,6 +199,60 @@ export const MapScreen = ({
                 >
                   <Text style={$markerEmoji} text={getPetTypeEmoji(encounter.petType)} />
                 </View>
+
+                {/* Custom Callout */}
+                <Callout tooltip onPress={() => handleViewDetails(encounter.id)}>
+                  <View style={[$calloutContainer, { backgroundColor: colors.background }]}>
+                    {/* Header with pet type emoji and color */}
+                    <View
+                      style={[
+                        $calloutHeader,
+                        { backgroundColor: getPetTypeColor(encounter.petType) },
+                      ]}
+                    >
+                      <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(encounter.petType)} />
+                      <Text
+                        style={$calloutHeaderText}
+                        text={
+                          encounter.petType.charAt(0).toUpperCase() + encounter.petType.slice(1)
+                        }
+                      />
+                    </View>
+
+                    {/* Content */}
+                    <View style={$calloutContent}>
+                      <View style={$calloutRow}>
+                        <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date:" />
+                        <Text
+                          style={[$calloutValue, { color: colors.text }]}
+                          text={new Date(encounter.timestamp).toLocaleDateString()}
+                        />
+                      </View>
+
+                      <View style={$calloutRow}>
+                        <Text style={[$calloutLabel, { color: colors.textDim }]} text="⏰ Time:" />
+                        <Text
+                          style={[$calloutValue, { color: colors.text }]}
+                          text={new Date(encounter.timestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        />
+                      </View>
+                    </View>
+
+                    {/* Button */}
+                    <View
+                      style={[
+                        $calloutButton,
+                        { backgroundColor: getPetTypeColor(encounter.petType) },
+                      ]}
+                    >
+                      <Text style={$calloutButtonText} text="View Full Details" />
+                      <Text style={$calloutButtonArrow} text="→" />
+                    </View>
+                  </View>
+                </Callout>
               </Marker>
             )
           })}
@@ -225,7 +264,10 @@ export const MapScreen = ({
             onPress={fitAllMarkers}
             style={[
               $fitAllButton,
-              { backgroundColor: colors.palette.primary500, shadowColor: colors.palette.primary500 },
+              {
+                backgroundColor: colors.palette.primary500,
+                shadowColor: colors.palette.primary500,
+              },
             ]}
           >
             <Text text="📍 Fit All" style={{ color: "#FFF", fontWeight: "600", fontSize: 12 }} />
@@ -338,4 +380,91 @@ const $petMarker: ViewStyle = {
 const $markerEmoji: TextStyle = {
   fontSize: 16,
   fontWeight: "600",
+}
+
+const $calloutContainer: ViewStyle = {
+  width: 200,
+  borderRadius: 12,
+  overflow: "hidden",
+  // iOS shadow
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.2,
+  shadowRadius: 8,
+  // Android elevation
+  elevation: 6,
+}
+
+const $calloutHeader: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 8,
+  paddingHorizontal: 12,
+  gap: 6,
+}
+
+const $calloutHeaderEmoji: TextStyle = {
+  fontSize: 20,
+}
+
+const $calloutHeaderText: TextStyle = {
+  fontSize: 15,
+  fontWeight: "700",
+  color: "#FFF",
+}
+
+const $calloutContent: ViewStyle = {
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  gap: 6,
+}
+
+const $calloutRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
+}
+
+const $calloutLabel: TextStyle = {
+  fontSize: 11,
+  fontWeight: "500",
+  minWidth: 70,
+}
+
+const $calloutValue: TextStyle = {
+  fontSize: 13,
+  fontWeight: "600",
+  flex: 1,
+}
+
+const $calloutButton: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 8,
+  paddingHorizontal: 12,
+  marginHorizontal: 10,
+  marginBottom: 10,
+  borderRadius: 8,
+  gap: 6,
+  // iOS shadow
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.2,
+  shadowRadius: 3,
+  // Android elevation
+  elevation: 2,
+}
+
+const $calloutButtonText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "700",
+  color: "#FFF",
+}
+
+const $calloutButtonArrow: TextStyle = {
+  fontSize: 14,
+  fontWeight: "700",
+  color: "#FFF",
 }
