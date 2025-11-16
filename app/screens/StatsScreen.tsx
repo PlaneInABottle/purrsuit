@@ -253,6 +253,77 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
         </View>
       )}
 
+      {/* Location Statistics Section */}
+      {topLocations.length > 0 && (
+        <View style={$section}>
+          <Text preset="subheading" text="📍 Top Locations" style={{ marginBottom: spacing.md }} />
+
+          {topLocations.map((location, index) => (
+            <View
+              key={index}
+              style={[
+                $locationCard,
+                { backgroundColor: "rgba(255, 255, 255, 0.95)", borderColor: "rgba(0, 0, 0, 0.08)" },
+              ]}
+            >
+              <View style={$locationRow}>
+                <View style={$locationRank}>
+                  <Text
+                    text={`${index + 1}`}
+                    style={[
+                      $locationRankText,
+                      { color: index === 0 ? "#FFD700" : index === 1 ? "#C0C0C0" : "#CD7F32" },
+                    ]}
+                  />
+                </View>
+                <View style={$locationInfo}>
+                  <Text
+                    text={location.location}
+                    preset="bold"
+                    style={{ fontSize: 14, marginBottom: 2 }}
+                  />
+                  <Text
+                    text={`${location.count} encounter${location.count > 1 ? "s" : ""}`}
+                    style={[{ color: colors.textDim, fontSize: 12 }]}
+                  />
+                </View>
+                <View
+                  style={[
+                    $locationBadge,
+                    { backgroundColor: colors.palette.primary100 },
+                  ]}
+                >
+                  <Text
+                    text={`${Math.round((location.count / statsStore.totalEncounters) * 100)}%`}
+                    style={[
+                      { color: colors.palette.primary600, fontWeight: "600", fontSize: 12 },
+                    ]}
+                  />
+                </View>
+              </View>
+
+              {/* Progress Bar */}
+              <View
+                style={[
+                  $locationProgressContainer,
+                  { backgroundColor: colors.palette.primary100 },
+                ]}
+              >
+                <View
+                  style={[
+                    $locationProgressBar,
+                    {
+                      width: `${(location.count / topLocations[0].count) * 100}%`,
+                      backgroundColor: colors.palette.primary500,
+                    },
+                  ]}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
       {/* Empty State for No Encounters */}
       {statsStore.totalEncounters === 0 && (
         <View style={[$emptyState, { backgroundColor: colors.palette.neutral100 }]}>
@@ -813,4 +884,39 @@ const $compactProgress: TextStyle = {
   fontSize: 7,
   color: "#999999",
   fontWeight: "600",
+}
+
+// Location Statistics Card Styles
+const $locationCard: ViewStyle = {
+  borderWidth: 1,
+  borderRadius: 12,
+  padding: 12,
+  marginBottom: 12,
+}
+
+const $locationRank: ViewStyle = {
+  width: 40,
+  height: 40,
+  borderRadius: 20,
+  alignItems: "center",
+  justifyContent: "center",
+  marginRight: 12,
+  backgroundColor: "rgba(0, 0, 0, 0.05)",
+}
+
+const $locationRankText: TextStyle = {
+  fontSize: 18,
+  fontWeight: "700",
+}
+
+const $locationProgressContainer: ViewStyle = {
+  height: 6,
+  borderRadius: 3,
+  overflow: "hidden",
+  marginTop: 8,
+}
+
+const $locationProgressBar: ViewStyle = {
+  height: "100%",
+  borderRadius: 3,
 }
