@@ -1,33 +1,190 @@
 import React from "react"
-import { View, ViewStyle } from "react-native"
+import { View, ViewStyle, Image, ImageStyle, TextStyle } from "react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { useAppTheme } from "@/theme/context"
+import { useStores } from "@/models"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 
 export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetail">) => {
   const {
     theme: { colors },
   } = useAppTheme()
-  const { navigation } = props
+  const { navigation, route } = props
+  const { encountersStore } = useStores()
+  const { encounterId } = route.params
+
+  // Find the encounter by ID
+  const encounter = encountersStore.encountersArray.find((e) => e.id === encounterId)
+
+  if (!encounter) {
+    return (
+      <Screen preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={$container}>
+        <View style={$header}>
+          <Button text="← Back" onPress={() => navigation.goBack()} preset="default" />
+        </View>
+        <View style={$centerContent}>
+          <Text text="Encounter not found" style={{ color: colors.textDim }} />
+        </View>
+      </Screen>
+    )
+  }
+
+  const getPetTypeEmoji = (petType: string): string => {
+    const type = petType.toLowerCase()
+    switch (type) {
+      case "cat":
+        return "🐱"
+      case "dog":
+        return "🐶"
+      case "other":
+        return "🐾"
+      default:
+        return "❓"
+    }
+  }
+
+  const getPetTypeColor = (petType: string): string => {
+    const type = petType.toLowerCase()
+    switch (type) {
+      case "cat":
+        return colors.palette.primary600
+      case "dog":
+        return colors.palette.secondary600
+      case "other":
+        return colors.palette.accent600
+      default:
+        return colors.palette.neutral600
+    }
+  }
 
   return (
-    <Screen preset="scroll" contentContainerStyle={$container}>
+    <Screen preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={$container}>
       <View style={$header}>
         <Button text="← Back" onPress={() => navigation.goBack()} preset="default" />
       </View>
 
-      <View style={[$photoPlaceholder, { backgroundColor: colors.palette.neutral200 }]}>
-        <Text text="Encounter Photo" style={{ color: colors.textDim }} />
-      </View>
+      {/* Photo Display */}
+      <Image
+        source={{ uri: encounter.photos.original }}
+        style={$photo}
+        resizeMode="cover"
+      />
 
+      {/* Encounter Info */}
       <View style={$details}>
-        <Text preset="heading" text="Encounter Details" />
-        <Text
-          text="Full encounter view with photo, stickers, notes, and location"
-          style={{ color: colors.textDim, marginTop: 8 }}
-        />
+        {/* Pet Type Row */}
+        <View style={$petTypeRow}>
+          <Text style={$petTypeEmoji} text={getPetTypeEmoji(encounter.petType)} />
+          <Text
+            style={[$petTypeText, { color: getPetTypeColor(encounter.petType) }]}
+            text={encounter.petType}
+          />
+        </View>
+
+        {/* Date and Time */}
+        <View style={$dateTimeRow}>
+          <Text style={[$infoLabel, { color: colors.textDim }]} text={encounter.formattedDate} />
+          <Text style={[$infoLabel, { color: colors.textDim }]} text={encounter.formattedTime} />
+        </View>
+
+        {/* Location */}
+        {encounter.hasLocation && (
+          <View style={$section}>
+            <Text
+              preset="bold"
+              text="📍 Location"
+              style={{ marginBottom: 8, fontSize: 14 }}
+            />
+            <Text
+              text={encounter.locationDisplay}
+              style={[$sectionContent, { color: colors.textDim }]}
+            />
+          </View>
+        )}
+
+        {/* Mood Tags */}
+        {encounter.mood.length > 0 && (
+          <View style={$section}>
+            <Text preset="bold" text="😊 Mood" style={{ marginBottom: 8, fontSize: 14 }} />
+            <View style={$tagsContainer}>
+              {encounter.mood.map((m) => (
+                <View
+                  key={m}
+                  style={[$tag, { backgroundColor: colors.palette.primary100 }]}
+                >
+                  <Text style={[$tagText, { color: getPetTypeColor(encounter.petType) }]} text={m} />
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Custom Tags */}
+        {encounter.tags.length > 0 && (
+          <View style={$section}>
+            <Text preset="bold" text="🏷️ Tags" style={{ marginBottom: 8, fontSize: 14 }} />
+            <View style={$tagsContainer}>
+              {encounter.tags.map((tag) => (
+                <View
+                  key={tag}
+                  style={[$tag, { backgroundColor: colors.palette.accent100 }]}
+                >
+                  <Text
+                    style={[$tagText, { color: getPetTypeColor(encounter.petType) }]}
+                    text={tag}
+                  />
+                </View>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Notes */}
+        {encounter.hasNote && (
+          <View style={$section}>
+            <Text preset="bold" text="📝 Notes" style={{ marginBottom: 8, fontSize: 14 }} />
+            <Text text={encounter.note} style={[$sectionContent, { color: colors.text }]} />
+          </View>
+        )}
+
+        {/* Weather */}
+        {encounter.weather && (
+          <View style={$section}>
+            <Text
+              preset="bold"
+              text="🌤️ Weather"
+              style={{ marginBottom: 8, fontSize: 14 }}
+            />
+            <Text text={encounter.weather} style={[$sectionContent, { color: colors.textDim }]} />
+          </View>
+        )}
+
+        {/* Time of Day */}
+        <View style={$section}>
+          <Text
+            preset="bold"
+            text="⏰ Time of Day"
+            style={{ marginBottom: 8, fontSize: 14 }}
+          />
+          <Text text={encounter.timeOfDay} style={[$sectionContent, { color: colors.textDim }]} />
+        </View>
+
+        {/* Stickers Count */}
+        {encounter.hasStickers && (
+          <View style={$section}>
+            <Text
+              preset="bold"
+              text="✨ Stickers"
+              style={{ marginBottom: 8, fontSize: 14 }}
+            />
+            <Text
+              text={`${encounter.stickers.length} sticker${encounter.stickers.length !== 1 ? "s" : ""}`}
+              style={[$sectionContent, { color: colors.textDim }]}
+            />
+          </View>
+        )}
       </View>
     </Screen>
   )
@@ -37,20 +194,81 @@ const $container: ViewStyle = {
   paddingBottom: 24,
 }
 
+const $centerContent: ViewStyle = {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  paddingHorizontal: 16,
+}
+
 const $header: ViewStyle = {
   paddingHorizontal: 16,
   paddingVertical: 12,
 }
 
-const $photoPlaceholder: ViewStyle = {
+const $photo: ImageStyle = {
+  width: "100%",
   height: 400,
-  justifyContent: "center",
-  alignItems: "center",
-  marginHorizontal: 16,
-  borderRadius: 12,
+  marginBottom: 16,
 }
 
 const $details: ViewStyle = {
   paddingHorizontal: 16,
-  paddingTop: 24,
+  paddingTop: 8,
+}
+
+const $petTypeRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
+  marginBottom: 12,
+}
+
+const $petTypeEmoji: TextStyle = {
+  fontSize: 28,
+}
+
+const $petTypeText: TextStyle = {
+  fontSize: 18,
+  fontWeight: "600",
+  textTransform: "capitalize",
+}
+
+const $dateTimeRow: ViewStyle = {
+  flexDirection: "row",
+  gap: 16,
+  marginBottom: 16,
+}
+
+const $infoLabel: TextStyle = {
+  fontSize: 12,
+}
+
+const $section: ViewStyle = {
+  marginTop: 16,
+  paddingTop: 12,
+  borderTopWidth: 1,
+  borderTopColor: "rgba(0, 0, 0, 0.05)",
+}
+
+const $sectionContent: TextStyle = {
+  fontSize: 14,
+  lineHeight: 20,
+}
+
+const $tagsContainer: ViewStyle = {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 8,
+}
+
+const $tag: ViewStyle = {
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 12,
+}
+
+const $tagText: TextStyle = {
+  fontSize: 12,
+  fontWeight: "500",
 }
