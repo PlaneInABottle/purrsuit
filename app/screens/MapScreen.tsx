@@ -186,6 +186,8 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   latitude: coords.latitude,
                   longitude: coords.longitude,
                 }}
+                anchor={{ x: 0.5, y: 1 }}
+                calloutAnchor={{ x: 0.5, y: -0.5 }}
               >
                 {/* Custom small circular marker with pet type emoji */}
                 <View
