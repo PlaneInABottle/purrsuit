@@ -3,6 +3,7 @@ import { View, ViewStyle, Image as RNImage, Dimensions, Alert, TouchableOpacity,
 import { Svg, Path, Defs, ClipPath, Image as SvgImage, Circle, Rect, Pattern } from "react-native-svg"
 import { PanGestureHandler, GestureHandlerRootView, State } from "react-native-gesture-handler"
 import ViewShot, { captureRef } from "react-native-view-shot"
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -58,11 +59,46 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
     if (!isClosed || !captureViewRef.current) return
 
     try {
+      // 1. Capture the full view
+      // We enforce dimensions to match the logical point system of the drawing
       const uri = await captureRef(captureViewRef, {
         format: "png",
         quality: 1,
         result: "tmpfile",
+        width: imageLayout.width,
+        height: imageLayout.height,
       })
+
+      // 2. Calculate bounding box
+      const xs = points.map((p) => p.x)
+      const ys = points.map((p) => p.y)
+      const minX = Math.min(...xs)
+      const maxX = Math.max(...xs)
+      const minY = Math.min(...ys)
+      const maxY = Math.max(...ys)
+
+      // 3. Add padding
+      const padding = 20
+      const cropX = Math.max(0, minX - padding)
+      const cropY = Math.max(0, minY - padding)
+      const cropWidth = Math.min(imageLayout.width - cropX, maxX - minX + padding * 2)
+      const cropHeight = Math.min(imageLayout.height - cropY, maxY - minY + padding * 2)
+
+      // 4. Crop
+      const result = await manipulateAsync(
+        uri,
+        [
+          {
+            crop: {
+              originX: cropX,
+              originY: cropY,
+              width: cropWidth,
+              height: cropHeight,
+            },
+          },
+        ],
+        { format: SaveFormat.PNG },
+      )
       
       // Pass back the new URI
       // We need to navigate back to CaptureScreen with the new URI, 
@@ -73,7 +109,7 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
       // Let's navigate to Capture with params.
       navigation.navigate("MainTabs", {
         screen: "Capture",
-        params: { editedPhotoUri: uri },
+        params: { editedPhotoUri: result.uri },
       } as any) // Type casting as MainTabParamList doesn't explicitly have params for Capture yet
       
     } catch (error) {
