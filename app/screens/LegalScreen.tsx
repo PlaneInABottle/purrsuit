@@ -50,7 +50,7 @@ export const LegalScreen = ({ navigation, route }: AppStackScreenProps<"Legal">)
             />
             <Text
               style={$paragraph}
-              text="We do not automatically upload your personal data to any cloud server without your explicit consent or action (such as enabling cloud backup features)."
+              text="We do not upload your personal data to any cloud server. All photos, encounter details, and notes remain exclusively on your device."
             />
 
             <Text preset="subheading" text="3. Location Data" style={$sectionTitle} />
@@ -59,13 +59,19 @@ export const LegalScreen = ({ navigation, route }: AppStackScreenProps<"Legal">)
               text="You may choose to associate location data with your pet encounters. This location data is stored locally on your device. We do not track your location in the background or share your location history with third parties."
             />
 
-            <Text preset="subheading" text="4. Third-Party Services" style={$sectionTitle} />
+            <Text preset="subheading" text="4. Data Backup" style={$sectionTitle} />
+            <Text
+              style={$paragraph}
+              text="Since Purrsuit does not provide cloud backup services, you are solely responsible for backing up your device to prevent data loss."
+            />
+
+            <Text preset="subheading" text="5. Third-Party Services" style={$sectionTitle} />
             <Text
               style={$paragraph}
               text="We may use third-party services for specific features, such as maps (Google Maps). These services may collect data as governed by their own privacy policies."
             />
 
-            <Text preset="subheading" text="5. Your Rights" style={$sectionTitle} />
+            <Text preset="subheading" text="6. Your Rights" style={$sectionTitle} />
             <Text
               style={$paragraph}
               text="Since your data is stored locally, you have full control over it. You can delete your data at any time by uninstalling the application or using the in-app delete functions."
@@ -94,7 +100,7 @@ export const LegalScreen = ({ navigation, route }: AppStackScreenProps<"Legal">)
             <Text preset="subheading" text="4. Disclaimer" style={$sectionTitle} />
             <Text
               style={$paragraph}
-              text="The app is provided 'as is' without warranties of any kind. We are not responsible for any data loss or damages resulting from the use of the app."
+              text="The app is provided 'as is' without warranties of any kind. We are not responsible for any data loss or damages resulting from the use of the app. Please ensure you back up your device regularly."
             />
 
             <Text preset="subheading" text="5. Changes to Terms" style={$sectionTitle} />
