@@ -2,11 +2,10 @@ import React from "react"
 import { TextStyle } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { Home, Camera, BarChart3, MapPin, Settings } from "lucide-react-native"
+import { Home, Camera, MapPin, Settings } from "lucide-react-native"
 
 import { HomeScreen } from "@/screens/HomeScreen"
 import { CaptureScreen } from "@/screens/CaptureScreen"
-import { StatsScreen } from "@/screens/StatsScreen"
 import { MapScreen } from "@/screens/MapScreen"
 import { ProfileScreen } from "@/screens/ProfileScreen"
 import { useAppTheme } from "@/theme/context"
@@ -57,14 +56,6 @@ export const MainTabNavigator = () => {
         options={{
           tabBarLabel: "Capture",
           tabBarIcon: ({ color }) => <Camera size={24} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Stats"
-        component={StatsScreen}
-        options={{
-          tabBarLabel: "Stats",
-          tabBarIcon: ({ color }) => <BarChart3 size={24} color={color} />,
         }}
       />
       <Tab.Screen

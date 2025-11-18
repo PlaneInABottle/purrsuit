@@ -11,7 +11,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 export type MainTabParamList = {
   Home: undefined
   Capture: { editedPhotoUri?: string } | undefined
-  Stats: undefined
   Map: undefined
   Profile: undefined
 }
