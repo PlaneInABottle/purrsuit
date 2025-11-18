@@ -209,19 +209,15 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
           </View>
         )}
 
-        {/* Weather & Time of Day */}
-        <View style={$metaRow}>
-          {encounter.weather && (
+        {/* Weather */}
+        {encounter.weather && (
+          <View style={$metaRow}>
             <View style={[$metaItem, { backgroundColor: colors.palette.neutral100 }]}>
               <CloudSun size={16} color={colors.textDim} />
               <Text style={$metaText} text={encounter.weather} />
             </View>
-          )}
-          <View style={[$metaItem, { backgroundColor: colors.palette.neutral100 }]}>
-            <Text style={{ fontSize: 14 }} text={encounter.timeOfDay === "night" ? "🌙" : "☀️"} />
-            <Text style={$metaText} text={encounter.timeOfDay.charAt(0).toUpperCase() + encounter.timeOfDay.slice(1)} />
           </View>
-        </View>
+        )}
       </View>
     </Screen>
   )
