@@ -1,5 +1,5 @@
 import React from "react"
-import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle, StyleSheet } from "react-native"
+import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle, StyleSheet, TouchableOpacity } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { Screen } from "@/components/Screen"
@@ -106,6 +106,10 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         windowSize={10}
         renderItem={({ item }) => (
           <View style={$gridItem}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => _props.navigation.navigate("EncounterDetail", { encounterId: item.id })}
+            >
             {/* Card Container with enhanced styling */}
             <View style={[$cardContainer, { backgroundColor: "#F8F9FA" }]}>
               {/* Notebook Background Pattern */}
@@ -151,6 +155,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
                 <Text style={[$dateRow, { color: colors.textDim }]} text={item.formattedDate} />
               </View>
             </View>
+            </TouchableOpacity>
           </View>
         )}
       />
