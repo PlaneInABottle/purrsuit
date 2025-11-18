@@ -1,5 +1,6 @@
 import React from "react"
-import { View, ViewStyle, TextStyle, ScrollView } from "react-native"
+import { View, ViewStyle, TextStyle, ScrollView, TouchableOpacity } from "react-native"
+import { ChevronRight, FileText, Shield } from "lucide-react-native"
 import { observer } from "mobx-react-lite"
 
 import { BackgroundDecorations } from "@/components/BackgroundDecorations"
@@ -9,13 +10,12 @@ import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 
-export const ProfileScreen = observer(function ProfileScreen(
-  _props: MainTabScreenProps<"Profile">,
-) {
+export const ProfileScreen = observer(function ProfileScreen(props: MainTabScreenProps<"Profile">) {
   const {
     theme: { colors, spacing },
   } = useAppTheme()
   const { statsStore } = useStores()
+  const { navigation } = props
 
   const topLocations = statsStore.topLocations.slice(0, 5)
 
@@ -189,6 +189,36 @@ export const ProfileScreen = observer(function ProfileScreen(
             ))}
           </ScrollView>
         </View>
+
+        {/* Legal Section */}
+        <View style={$section}>
+          <Text preset="subheading" text="Legal" style={{ marginBottom: spacing.sm }} />
+          <View style={$legalContainer}>
+            <TouchableOpacity
+              style={$legalRow}
+              onPress={() => navigation.navigate("Legal", { type: "privacy" })}
+            >
+              <View style={$legalRowLeft}>
+                <Shield size={20} color={colors.palette.primary500} />
+                <Text text="Privacy Policy" style={$legalText} />
+              </View>
+              <ChevronRight size={20} color={colors.textDim} />
+            </TouchableOpacity>
+
+            <View style={$separator} />
+
+            <TouchableOpacity
+              style={$legalRow}
+              onPress={() => navigation.navigate("Legal", { type: "terms" })}
+            >
+              <View style={$legalRowLeft}>
+                <FileText size={20} color={colors.palette.secondary500} />
+                <Text text="Terms of Service" style={$legalText} />
+              </View>
+              <ChevronRight size={20} color={colors.textDim} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </ScrollView>
     </Screen>
   )
@@ -301,6 +331,36 @@ const $achievementCard: ViewStyle = {
   borderRadius: 12,
   alignItems: "center",
   justifyContent: "center",
+}
+
+const $legalContainer: ViewStyle = {
+  backgroundColor: "#F8F9FA",
+  borderRadius: 12,
+  overflow: "hidden",
+}
+
+const $legalRow: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: 16,
+}
+
+const $legalRowLeft: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 12,
+}
+
+const $legalText: TextStyle = {
+  fontSize: 16,
+  fontWeight: "500",
+}
+
+const $separator: ViewStyle = {
+  height: 1,
+  backgroundColor: "rgba(0,0,0,0.05)",
+  marginLeft: 48,
 }
 
 const $emojiIcon: TextStyle = {

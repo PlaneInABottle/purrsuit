@@ -11,6 +11,7 @@ import Config from "@/config"
 import { EncounterDetailScreen } from "@/screens/EncounterDetailScreen"
 import { EncounterEditScreen } from "@/screens/EncounterEditScreen"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
+import { LegalScreen } from "@/screens/LegalScreen"
 import { PhotoEditScreen } from "@/screens/PhotoEditScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
@@ -62,6 +63,7 @@ const AppStack = () => {
         component={PhotoEditScreen}
         options={{ presentation: "fullScreenModal" }}
       />
+      <Stack.Screen name="Legal" component={LegalScreen} />
 
       {/* Welcome/Onboarding - uncomment when needed */}
       {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
