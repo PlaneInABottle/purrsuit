@@ -7,21 +7,10 @@ import {
   TextStyle,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
 } from "react-native"
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  MapPin,
-  CloudSun,
-  Tag,
-  Smile,
-  FileText,
-} from "lucide-react-native"
+import { ArrowLeft, Calendar, Clock, MapPin, CloudSun, Tag, FileText } from "lucide-react-native"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 
-import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useStores } from "@/models"
@@ -30,7 +19,7 @@ import { useAppTheme } from "@/theme/context"
 
 export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetail">) => {
   const {
-    theme: { colors, spacing },
+    theme: { colors },
   } = useAppTheme()
   const { navigation, route } = props
   const { encountersStore } = useStores()
@@ -48,7 +37,7 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
           </TouchableOpacity>
         </View>
         <View style={$centerContent}>
-          <Text text="Encounter not found" style={{ color: colors.textDim }} />
+          <Text text="Encounter not found" style={[$notFoundText, { color: colors.textDim }]} />
         </View>
       </Screen>
     )
@@ -114,20 +103,17 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
           <ArrowLeft size={24} color={colors.palette.primary600} />
         </TouchableOpacity>
         <View style={$headerCenter}>
-          <Text
-            text={getPetTypeEmoji(encounter.petType)}
-            style={{ fontSize: 20, marginRight: 8 }}
-          />
+          <Text text={getPetTypeEmoji(encounter.petType)} style={$headerEmoji} />
           <Text preset="subheading" text="Encounter Details" />
         </View>
-        <View style={{ width: 40 }} />
+        <View style={$headerSpacer} />
       </View>
 
       {/* Hero Section with Photo */}
       <View style={$heroSection}>
         <View style={$photoContainer}>
           {/* Notebook Background Pattern */}
-          <View style={[StyleSheet.absoluteFill, { borderRadius: 24, overflow: "hidden" }]}>
+          <View style={[StyleSheet.absoluteFill, $patternContainer]}>
             <Svg width="100%" height="100%">
               <Defs>
                 <Pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -155,10 +141,7 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
           <View
             style={[$petTypeBadge, { backgroundColor: getPetTypeBackground(encounter.petType) }]}
           >
-            <Text
-              style={{ fontSize: 24, marginRight: 8 }}
-              text={getPetTypeEmoji(encounter.petType)}
-            />
+            <Text style={$petTypeEmoji} text={getPetTypeEmoji(encounter.petType)} />
             <Text
               style={[$petTypeText, { color: getPetTypeColor(encounter.petType) }]}
               text={encounter.petType.charAt(0).toUpperCase() + encounter.petType.slice(1)}
@@ -456,4 +439,27 @@ const $metaText: TextStyle = {
   fontSize: 13,
   fontWeight: "500",
   color: "#666",
+}
+
+const $notFoundText: TextStyle = {
+  fontSize: 16,
+}
+
+const $headerEmoji: TextStyle = {
+  fontSize: 20,
+  marginRight: 8,
+}
+
+const $headerSpacer: ViewStyle = {
+  width: 40,
+}
+
+const $patternContainer: ViewStyle = {
+  borderRadius: 24,
+  overflow: "hidden",
+}
+
+const $petTypeEmoji: TextStyle = {
+  fontSize: 24,
+  marginRight: 8,
 }

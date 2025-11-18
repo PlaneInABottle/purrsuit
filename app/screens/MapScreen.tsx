@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView,
 } from "react-native"
-import { LocateFixed, Map as MapIcon, Filter } from "lucide-react-native"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 import { Screen } from "@/components/Screen"
@@ -239,7 +238,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
       preset="fixed"
       safeAreaEdges={[]}
       contentContainerStyle={$screenContent}
-      style={{ backgroundColor: "white" }}
+      style={$screenStyle}
       backgroundColor="white"
     >
       {/* Map View */}
@@ -340,21 +339,25 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 >
                   <Text
                     text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
-                    style={{
-                      color: textColor,
-                      fontWeight: isSelected ? "700" : "500",
-                      fontSize: 14,
-                      marginRight: type === "all" ? 0 : 4,
-                    }}
+                    style={[
+                      $filterButtonText,
+                      {
+                        color: textColor,
+                        fontWeight: isSelected ? "700" : "500",
+                        marginRight: type === "all" ? 0 : 4,
+                      },
+                    ]}
                   />
                   {type !== "all" && (
                     <Text
                       text={type.charAt(0).toUpperCase() + type.slice(1)}
-                      style={{
-                        color: textColor,
-                        fontWeight: isSelected ? "700" : "500",
-                        fontSize: 13,
-                      }}
+                      style={[
+                        $filterButtonLabel,
+                        {
+                          color: textColor,
+                          fontWeight: isSelected ? "700" : "500",
+                        },
+                      ]}
                     />
                   )}
                 </TouchableOpacity>
@@ -370,7 +373,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
               onPress={fitAllMarkers}
               style={[$fitAllButton, { backgroundColor: colors.palette.primary500 }]}
             >
-              <Text text="📍 Fit All" style={{ color: "#FFF", fontWeight: "600", fontSize: 12 }} />
+              <Text text="📍 Fit All" style={$fitAllButtonText} />
             </TouchableOpacity>
           )}
         </View>
@@ -378,7 +381,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
         {/* Bottom Card for Selected Encounter */}
         {selectedEncounter && (
           <View style={$bottomCardContainer}>
-            <View style={[$calloutContainer, { width: "100%", backgroundColor: "white" }]}>
+            <View style={[$calloutContainer, $calloutContainerStyle]}>
               {/* Header with pet type emoji and color */}
               <View
                 style={[
@@ -386,7 +389,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
                 ]}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <View style={$calloutHeaderContent}>
                   <Text
                     style={$calloutHeaderEmoji}
                     text={getPetTypeEmoji(selectedEncounter.petType)}
@@ -404,15 +407,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   onPress={() => setSelectedEncounterId(null)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Text
-                    text="✕"
-                    style={{
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: 14,
-                      includeFontPadding: false,
-                    }}
-                  />
+                  <Text text="✕" style={$closeButtonText} />
                 </TouchableOpacity>
               </View>
 
@@ -484,6 +479,10 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
   )
 }
 
+const $screenStyle: ViewStyle = {
+  backgroundColor: "white",
+}
+
 const $screenContent: ViewStyle = {
   flex: 1,
   flexDirection: "column",
@@ -547,6 +546,14 @@ const $filterButton: ViewStyle = {
   elevation: 2,
 }
 
+const $filterButtonText: TextStyle = {
+  fontSize: 14,
+}
+
+const $filterButtonLabel: TextStyle = {
+  fontSize: 13,
+}
+
 const $mapContainer: ViewStyle = {
   flex: 1,
   position: "relative",
@@ -568,6 +575,12 @@ const $fitAllButton: ViewStyle = {
   shadowOpacity: 0.3,
   shadowRadius: 8,
   elevation: 6,
+}
+
+const $fitAllButtonText: TextStyle = {
+  color: "#FFF",
+  fontWeight: "600",
+  fontSize: 12,
 }
 
 const $petMarker: ViewStyle = {
@@ -602,12 +615,23 @@ const $calloutContainer: ViewStyle = {
   elevation: 10,
 }
 
+const $calloutContainerStyle: ViewStyle = {
+  width: "100%",
+  backgroundColor: "white",
+}
+
 const $calloutHeader: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
   paddingVertical: 12,
   paddingHorizontal: 16,
+}
+
+const $calloutHeaderContent: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 8,
 }
 
 const $calloutHeaderEmoji: TextStyle = {
@@ -671,6 +695,13 @@ const $bottomCardContainer: ViewStyle = {
   bottom: 30,
   left: 16,
   right: 16,
+}
+
+const $closeButtonText: TextStyle = {
+  color: "white",
+  fontWeight: "bold",
+  fontSize: 14,
+  includeFontPadding: false,
 }
 
 const $closeButton: ViewStyle = {

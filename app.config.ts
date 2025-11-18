@@ -19,8 +19,21 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
 
   return {
     ...config,
+    android: {
+      ...config.android,
+      config: {
+        ...config.android?.config,
+        googleMaps: {
+          apiKey: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      },
+    },
     ios: {
       ...config.ios,
+      config: {
+        ...config.ios?.config,
+        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+      },
       // This privacyManifests is to get you started.
       // See Expo's guide on apple privacy manifests here:
       // https://docs.expo.dev/guides/apple-privacy/
@@ -36,6 +49,15 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
         ],
       },
     },
-    plugins: [...existingPlugins],
+    plugins: [
+      [
+        "react-native-maps",
+        {
+          iosGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+          androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      ],
+      ...existingPlugins,
+    ],
   }
 }

@@ -3,13 +3,12 @@ import {
   View,
   ViewStyle,
   Image as RNImage,
-  Dimensions,
   Alert,
   TouchableOpacity,
   StyleSheet,
 } from "react-native"
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
-import { ArrowLeft, Check, RotateCcw, Scissors } from "lucide-react-native"
+import { ArrowLeft, Check, RotateCcw } from "lucide-react-native"
 import { PanGestureHandler, GestureHandlerRootView, State } from "react-native-gesture-handler"
 import {
   Svg,
@@ -21,24 +20,20 @@ import {
   Rect,
   Pattern,
 } from "react-native-svg"
-import ViewShot, { captureRef } from "react-native-view-shot"
+import { captureRef } from "react-native-view-shot"
 
-import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
-
 export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"PhotoEdit">) => {
   const { photoUri } = route.params
   const {
-    theme: { colors, spacing },
+    theme: { colors },
   } = useAppTheme()
 
   const [points, setPoints] = useState<{ x: number; y: number }[]>([])
-  const [isDrawing, setIsDrawing] = useState(false)
   const [isClosed, setIsClosed] = useState(false)
   const captureViewRef = useRef<View>(null)
   const [imageLayout, setImageLayout] = useState({ width: 0, height: 0 })
@@ -51,7 +46,6 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
 
   const handleStateChange = (event: any) => {
     if (event.nativeEvent.state === State.BEGAN) {
-      setIsDrawing(true)
       if (isClosed) {
         // Reset if starting new drawing after closing (optional, or require reset button)
         // setPoints([])
@@ -61,7 +55,6 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
       event.nativeEvent.state === State.END ||
       event.nativeEvent.state === State.CANCELLED
     ) {
-      setIsDrawing(false)
       if (points.length > 10) {
         setIsClosed(true)
       } else {
@@ -174,25 +167,21 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
           <Rect width="100%" height="100%" fill="url(#dots)" />
         </Svg>
 
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={$flex1}>
           <PanGestureHandler
             onGestureEvent={handleGestureEvent}
             onHandlerStateChange={handleStateChange}
             enabled={!isClosed}
           >
-            <View style={{ flex: 1 }}>
+            <View style={$flex1}>
               {/* 
                 We use captureRef to capture the result.
                 If isClosed, we show the MASKED image.
                 If not closed, we show the original image + drawing path.
               */}
-              <View
-                ref={captureViewRef}
-                collapsable={false}
-                style={{ flex: 1, backgroundColor: "transparent" }}
-              >
+              <View ref={captureViewRef} collapsable={false} style={$captureView}>
                 {isClosed ? (
-                  <Svg style={{ flex: 1 }}>
+                  <Svg style={$flex1}>
                     <Defs>
                       <ClipPath id="clip">
                         <Path d={getPathData()} />
@@ -220,17 +209,8 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                   </Svg>
                 ) : (
                   <>
-                    <RNImage
-                      source={{ uri: photoUri }}
-                      style={{ width: "100%", height: "100%" }}
-                      resizeMode="cover"
-                    />
-                    <Svg
-                      style={[
-                        StyleSheet.absoluteFill,
-                        { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
-                      ]}
-                    >
+                    <RNImage source={{ uri: photoUri }} style={$fullSize} resizeMode="cover" />
+                    <Svg style={[StyleSheet.absoluteFill, $absoluteFill]}>
                       <Path
                         d={getPathData()}
                         stroke={colors.palette.primary500}
@@ -367,4 +347,26 @@ const $primaryButtonText: TextStyle = {
   color: "white",
   fontSize: 16,
   fontWeight: "700",
+}
+
+const $flex1: ViewStyle = {
+  flex: 1,
+}
+
+const $captureView: ViewStyle = {
+  flex: 1,
+  backgroundColor: "transparent",
+}
+
+const $fullSize: ViewStyle = {
+  width: "100%",
+  height: "100%",
+}
+
+const $absoluteFill: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
 }

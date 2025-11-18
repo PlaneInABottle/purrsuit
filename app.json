@@ -24,9 +24,6 @@
     "allowBackup": false,
     "edgeToEdgeEnabled": true,
     "config": {
-      "googleMaps": {
-        "apiKey": "REDACTED_API_KEY"
-      }
     }
   },
   "ios": {
@@ -34,7 +31,6 @@
     "supportsTablet": true,
     "bundleIdentifier": "com.purrsuit.app",
     "config": {
-      "googleMapsApiKey": "REDACTED_API_KEY"
     }
   },
   "web": {
@@ -65,8 +61,6 @@
     [
       "react-native-maps",
       {
-        "iosGoogleMapsApiKey": "REDACTED_API_KEY",
-        "androidGoogleMapsApiKey": "REDACTED_API_KEY"
       }
     ],
     "expo-build-properties"

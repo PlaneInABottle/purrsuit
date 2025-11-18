@@ -79,11 +79,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         {/* Enhanced Empty State */}
         <View style={$emptyStateContainer}>
           <Text style={$emptyIcon} text="📷🐾" />
-          <Text
-            preset="subheading"
-            text="No encounters yet"
-            style={{ marginTop: spacing.md, marginBottom: spacing.xs }}
-          />
+          <Text preset="subheading" text="No encounters yet" style={$emptyStateTitle} />
           <Text
             style={[$emptyDescription, { color: colors.textDim }]}
             text="Tap the camera to start your pet collection journey!"
@@ -91,10 +87,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
 
           {/* Suggestions Card */}
           <View style={[$suggestionCard, { backgroundColor: colors.palette.primary100 }]}>
-            <Text
-              style={{ fontSize: 14, fontWeight: "600", marginBottom: spacing.sm }}
-              text="💡 Try capturing:"
-            />
+            <Text style={$suggestionTitle} text="💡 Try capturing:" />
             <Text
               style={[$suggestionItem, { color: colors.textDim }]}
               text="• Your neighbor's cat or dog"
@@ -146,7 +139,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
               }
             >
               {/* Card Container with enhanced styling */}
-              <View style={[$cardContainer, { backgroundColor: "#F8F9FA" }]}>
+              <View style={[$cardContainer, $cardBackground]}>
                 {/* Notebook Background Pattern */}
                 <View style={StyleSheet.absoluteFill}>
                   <Svg width="100%" height="100%">
@@ -177,12 +170,12 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
                 {/* GPS Location Badge */}
                 {item.location.type === "gps" && (
                   <View style={[$gpsBadge, { backgroundColor: colors.palette.primary500 }]}>
-                    <Text text="📍" style={{ fontSize: 10 }} />
+                    <Text text="📍" style={$gpsIcon} />
                   </View>
                 )}
 
                 {/* Info Section - Framed Style */}
-                <View style={[$cardInfoSection, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+                <View style={[$cardInfoSection, $cardInfoBackground]}>
                   {/* Pet Type Row */}
                   <View style={$petTypeRow}>
                     <Text style={$petTypeEmoji} text={getPetTypeEmoji(item.petType)} />
@@ -222,24 +215,6 @@ const $headerTitle: TextStyle = {
 const $headerSubtitle: TextStyle = {
   fontSize: 14,
   opacity: 0.6,
-}
-
-const $countBadge: ViewStyle = {
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-  borderRadius: 16,
-}
-
-const $countText: TextStyle = {
-  fontSize: 12,
-  fontWeight: "600",
-}
-
-const $content: ViewStyle = {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  paddingHorizontal: 16,
 }
 
 const $gridContent: ViewStyle = {
@@ -339,10 +314,32 @@ const $suggestionCard: ViewStyle = {
   padding: 16,
   marginTop: 24,
   width: "100%",
-  borderRadius: 12,
 }
 
 const $suggestionItem: TextStyle = {
   fontSize: 12,
   marginBottom: 6,
+}
+
+const $emptyStateTitle: TextStyle = {
+  marginTop: 16, // spacing.md
+  marginBottom: 4, // spacing.xs
+}
+
+const $suggestionTitle: TextStyle = {
+  fontSize: 14,
+  fontWeight: "600",
+  marginBottom: 8, // spacing.sm
+}
+
+const $cardBackground: ViewStyle = {
+  backgroundColor: "#F8F9FA",
+}
+
+const $gpsIcon: TextStyle = {
+  fontSize: 10,
+}
+
+const $cardInfoBackground: ViewStyle = {
+  backgroundColor: "rgba(255, 255, 255, 0.95)",
 }

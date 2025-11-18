@@ -59,29 +59,26 @@ export const ProfileScreen = observer(function ProfileScreen(
 
           <View style={$miniStatsContainer}>
             <View style={[$miniStatCard, { backgroundColor: "#7DB3E8" }]}>
-              <Text text="🔥" style={{ fontSize: 20 }} />
+              <Text text="🔥" style={$emojiIcon} />
               <View>
                 <Text
                   preset="bold"
                   text={String(statsStore.currentStreak)}
-                  style={{ color: "white", fontSize: 16 }}
+                  style={$miniStatValue}
                 />
-                <Text text="Day Streak" style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }} />
+                <Text text="Day Streak" style={$miniStatLabel} />
               </View>
             </View>
 
             <View style={[$miniStatCard, { backgroundColor: "#E88888" }]}>
-              <Text text="⭐" style={{ fontSize: 20 }} />
+              <Text text="⭐" style={$emojiIcon} />
               <View>
                 <Text
                   preset="bold"
                   text={`${statsStore.achievementCount}/8`}
-                  style={{ color: "white", fontSize: 16 }}
+                  style={$miniStatValue}
                 />
-                <Text
-                  text="Achievements"
-                  style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }}
-                />
+                <Text text="Achievements" style={$miniStatLabel} />
               </View>
             </View>
           </View>
@@ -98,35 +95,35 @@ export const ProfileScreen = observer(function ProfileScreen(
             <View style={$statsGrid}>
               {statsStore.catCount > 0 && (
                 <View style={[$statBox, { backgroundColor: colors.palette.primary100 }]}>
-                  <Text text="🐱" style={{ fontSize: 24 }} />
+                  <Text text="🐱" style={$statBoxEmoji} />
                   <Text
                     preset="bold"
                     text={`${statsStore.catPercentage}%`}
                     style={{ color: colors.palette.primary600 }}
                   />
-                  <Text text="Cats" style={{ fontSize: 10, color: colors.textDim }} />
+                  <Text text="Cats" style={[$statBoxLabel, { color: colors.textDim }]} />
                 </View>
               )}
               {statsStore.dogCount > 0 && (
                 <View style={[$statBox, { backgroundColor: colors.palette.secondary100 }]}>
-                  <Text text="🐶" style={{ fontSize: 24 }} />
+                  <Text text="🐶" style={$statBoxEmoji} />
                   <Text
                     preset="bold"
                     text={`${statsStore.dogPercentage}%`}
                     style={{ color: colors.palette.secondary600 }}
                   />
-                  <Text text="Dogs" style={{ fontSize: 10, color: colors.textDim }} />
+                  <Text text="Dogs" style={[$statBoxLabel, { color: colors.textDim }]} />
                 </View>
               )}
               {statsStore.otherCount > 0 && (
                 <View style={[$statBox, { backgroundColor: colors.palette.accent100 }]}>
-                  <Text text="🐾" style={{ fontSize: 24 }} />
+                  <Text text="🐾" style={$statBoxEmoji} />
                   <Text
                     preset="bold"
                     text={`${Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)}%`}
                     style={{ color: colors.palette.accent600 }}
                   />
-                  <Text text="Other" style={{ fontSize: 10, color: colors.textDim }} />
+                  <Text text="Other" style={[$statBoxLabel, { color: colors.textDim }]} />
                 </View>
               )}
             </View>
@@ -139,14 +136,14 @@ export const ProfileScreen = observer(function ProfileScreen(
             <Text preset="subheading" text="Achievements" />
             <Text
               text={`${statsStore.achievementCount} Unlocked`}
-              style={{ color: colors.textDim, fontSize: 12 }}
+              style={[$achievementCountText, { color: colors.textDim }]}
             />
           </View>
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12, paddingRight: 20 }}
+            contentContainerStyle={$achievementsScrollContent}
           >
             {statsStore.achievements.map((achievement) => (
               <View
@@ -161,35 +158,30 @@ export const ProfileScreen = observer(function ProfileScreen(
                   },
                 ]}
               >
-                <Text text={achievement.icon} style={{ fontSize: 24, marginBottom: 4 }} />
+                <Text text={achievement.icon} style={$achievementIcon} />
                 <Text
                   preset="bold"
                   text={achievement.name}
-                  style={{ fontSize: 12 }}
+                  style={$achievementName}
                   numberOfLines={1}
                 />
                 {achievement.isUnlocked ? (
                   <Text
                     text="Unlocked!"
-                    style={{ fontSize: 10, color: colors.palette.primary600, fontWeight: "600" }}
+                    style={[$achievementUnlockedText, { color: colors.palette.primary600 }]}
                   />
                 ) : (
                   <View
-                    style={{
-                      width: "100%",
-                      height: 4,
-                      backgroundColor: colors.palette.neutral300,
-                      borderRadius: 2,
-                      marginTop: 4,
-                    }}
+                    style={[$progressBarBackground, { backgroundColor: colors.palette.neutral300 }]}
                   >
                     <View
-                      style={{
-                        width: `${achievement.progress || 0}%`,
-                        height: "100%",
-                        backgroundColor: colors.palette.primary500,
-                        borderRadius: 2,
-                      }}
+                      style={[
+                        $progressBarFill,
+                        {
+                          width: `${achievement.progress || 0}%`,
+                          backgroundColor: colors.palette.primary500,
+                        },
+                      ]}
                     />
                   </View>
                 )}
@@ -309,4 +301,61 @@ const $achievementCard: ViewStyle = {
   borderRadius: 12,
   alignItems: "center",
   justifyContent: "center",
+}
+
+const $emojiIcon: TextStyle = {
+  fontSize: 20,
+}
+
+const $miniStatValue: TextStyle = {
+  color: "white",
+  fontSize: 16,
+}
+
+const $miniStatLabel: TextStyle = {
+  color: "rgba(255,255,255,0.9)",
+  fontSize: 10,
+}
+
+const $statBoxEmoji: TextStyle = {
+  fontSize: 24,
+}
+
+const $statBoxLabel: TextStyle = {
+  fontSize: 10,
+}
+
+const $achievementCountText: TextStyle = {
+  fontSize: 12,
+}
+
+const $achievementsScrollContent: ViewStyle = {
+  gap: 12,
+  paddingRight: 20,
+}
+
+const $achievementIcon: TextStyle = {
+  fontSize: 24,
+  marginBottom: 4,
+}
+
+const $achievementName: TextStyle = {
+  fontSize: 12,
+}
+
+const $achievementUnlockedText: TextStyle = {
+  fontSize: 10,
+  fontWeight: "600",
+}
+
+const $progressBarBackground: ViewStyle = {
+  width: "100%",
+  height: 4,
+  borderRadius: 2,
+  marginTop: 4,
+}
+
+const $progressBarFill: ViewStyle = {
+  height: "100%",
+  borderRadius: 2,
 }

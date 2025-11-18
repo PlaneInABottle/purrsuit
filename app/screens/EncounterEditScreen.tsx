@@ -36,7 +36,7 @@ export const EncounterEditScreen = ({
   navigation,
 }: AppStackScreenProps<"EncounterEdit">) => {
   const {
-    theme: { colors, spacing },
+    theme: { colors },
   } = useAppTheme()
   const { encountersStore } = useStores()
   const { photoUri, encounterId } = route.params
@@ -234,23 +234,23 @@ export const EncounterEditScreen = ({
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           style={$cancelButton}
         >
-          <Text style={{ color: colors.palette.primary600, fontSize: 16 }} text="Cancel" />
+          <Text style={$cancelButtonText} text="Cancel" />
         </TouchableOpacity>
         <View style={$headerCenter}>
-          <Text text="✨" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text text="✨" style={$headerIcon} />
           <Text preset="subheading" text="Add Details" />
         </View>
-        <View style={{ width: 60 }} />
+        <View style={$headerSpacer} />
       </View>
 
       {/* Celebratory Photo Preview Section */}
       <View style={$photoSection}>
-        <Text preset="subheading" text="📸 Your Capture" style={{ marginBottom: spacing.md }} />
+        <Text preset="subheading" text="📸 Your Capture" style={$photoSectionTitle} />
         <View
           style={[
             $photoFrame,
+            $photoFrameStyle,
             {
-              backgroundColor: "#F8F9FA",
               borderColor: colors.palette.primary200,
             },
           ]}
@@ -271,9 +271,9 @@ export const EncounterEditScreen = ({
       </View>
 
       {/* Pet Type Selector - Framed */}
-      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+      <View style={[$framedSection, $framedSectionStyle]}>
         <View style={$sectionHeader}>
-          <Text text="🐾" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text text="🐾" style={$headerIcon} />
           <Text preset="subheading" text="Pet Type" />
         </View>
 
@@ -303,14 +303,7 @@ export const EncounterEditScreen = ({
                 <Text style={[$petTypeLabel, { color: textColor }]} text={option.label} />
                 {isSelected && (
                   <View style={[$selectedIndicator, { backgroundColor: borderColor }]}>
-                    <Text
-                      text="✓"
-                      style={{
-                        color: "#FFF",
-                        fontSize: 10,
-                        fontWeight: "700",
-                      }}
-                    />
+                    <Text text="✓" style={$checkMark} />
                   </View>
                 )}
               </TouchableOpacity>
@@ -320,9 +313,9 @@ export const EncounterEditScreen = ({
       </View>
 
       {/* Location Input - Framed */}
-      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+      <View style={[$framedSection, $framedSectionStyle]}>
         <View style={$sectionHeader}>
-          <Text text="📍" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text text="📍" style={$headerIcon} />
           <Text preset="subheading" text="Location" />
           <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
             <Text text="Optional" style={[$optionalText, { color: colors.palette.accent600 }]} />
@@ -341,23 +334,17 @@ export const EncounterEditScreen = ({
             ]}
           >
             <View style={$gpsLocationContent}>
-              <Text
-                text="📡 GPS Location Captured"
-                style={{ fontSize: 14, fontWeight: "600", marginBottom: 4 }}
-              />
+              <Text text="📡 GPS Location Captured" style={$gpsTitle} />
               {locationAddress ? (
-                <Text
-                  text={locationAddress}
-                  style={{ fontSize: 13, color: colors.text, marginBottom: 4 }}
-                />
+                <Text text={locationAddress} style={[$gpsAddress, { color: colors.text }]} />
               ) : null}
               <Text
                 text={`${formatCoordinates(locationCoords.latitude, locationCoords.longitude)}`}
-                style={{ fontSize: 12, color: colors.textDim }}
+                style={[$gpsCoords, { color: colors.textDim }]}
               />
             </View>
             <TouchableOpacity onPress={handleClearLocation} style={$clearButton}>
-              <Text text="✕" style={{ fontSize: 18, color: colors.palette.primary600 }} />
+              <Text text="✕" style={[$clearIcon, { color: colors.palette.primary600 }]} />
             </TouchableOpacity>
           </View>
         )}
@@ -376,7 +363,7 @@ export const EncounterEditScreen = ({
             },
           ]}
         >
-          <Text text="📡" style={{ fontSize: 18, marginRight: 8 }} />
+          <Text text="📡" style={$gpsButtonIcon} />
           <Text
             text={
               isGettingLocation
@@ -385,14 +372,14 @@ export const EncounterEditScreen = ({
                   ? "Update GPS"
                   : "Use Current Location"
             }
-            style={{ color: colors.text, fontWeight: "500" }}
+            style={[$gpsButtonText, { color: colors.text }]}
           />
         </TouchableOpacity>
 
         {/* Manual Location Input */}
         <Text
           text="Or type a location name"
-          style={{ fontSize: 12, color: colors.textDim, marginTop: 12, marginBottom: 8 }}
+          style={[$manualLocationLabel, { color: colors.textDim }]}
         />
         <View
           style={[
@@ -415,9 +402,9 @@ export const EncounterEditScreen = ({
       </View>
 
       {/* Notes Input - Framed */}
-      <View style={[$framedSection, { borderColor: "rgba(0, 0, 0, 0.08)" }]}>
+      <View style={[$framedSection, $framedSectionStyle]}>
         <View style={$sectionHeader}>
-          <Text text="📝" style={{ fontSize: 20, marginRight: 8 }} />
+          <Text text="📝" style={$headerIcon} />
           <Text preset="subheading" text="Notes" />
           <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
             <Text text="Optional" style={[$optionalText, { color: colors.palette.accent600 }]} />
@@ -671,4 +658,70 @@ const $gpsButton: ViewStyle = {
   paddingVertical: 12,
   paddingHorizontal: 16,
   marginBottom: 12,
+}
+
+const $cancelButtonText: TextStyle = {
+  color: "#2196F3", // primary600
+  fontSize: 16,
+}
+
+const $headerIcon: TextStyle = {
+  fontSize: 20,
+  marginRight: 8,
+}
+
+const $headerSpacer: ViewStyle = {
+  width: 60,
+}
+
+const $photoSectionTitle: TextStyle = {
+  marginBottom: 16, // spacing.md
+}
+
+const $photoFrameStyle: ViewStyle = {
+  backgroundColor: "#F8F9FA",
+}
+
+const $framedSectionStyle: ViewStyle = {
+  borderColor: "rgba(0, 0, 0, 0.08)",
+}
+
+const $checkMark: TextStyle = {
+  color: "#FFF",
+  fontSize: 10,
+  fontWeight: "700",
+}
+
+const $gpsTitle: TextStyle = {
+  fontSize: 14,
+  fontWeight: "600",
+  marginBottom: 4,
+}
+
+const $gpsAddress: TextStyle = {
+  fontSize: 13,
+  marginBottom: 4,
+}
+
+const $gpsCoords: TextStyle = {
+  fontSize: 12,
+}
+
+const $clearIcon: TextStyle = {
+  fontSize: 18,
+}
+
+const $gpsButtonIcon: TextStyle = {
+  fontSize: 18,
+  marginRight: 8,
+}
+
+const $gpsButtonText: TextStyle = {
+  fontWeight: "500",
+}
+
+const $manualLocationLabel: TextStyle = {
+  fontSize: 12,
+  marginTop: 12,
+  marginBottom: 8,
 }
