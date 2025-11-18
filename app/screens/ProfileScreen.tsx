@@ -3,7 +3,6 @@ import { View, ViewStyle, TextStyle, ScrollView } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { Switch } from "@/components/Toggle/Switch"
 import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import { useStores } from "@/models"
@@ -14,21 +13,13 @@ export const ProfileScreen = observer(function ProfileScreen(
 ) {
   const {
     theme: { colors, spacing },
-    themeContext,
-    setThemeContextOverride,
   } = useAppTheme()
   const { statsStore } = useStores()
-
-  const isDarkMode = themeContext === "dark"
-
-  const handleThemeToggle = (value: boolean) => {
-    setThemeContextOverride(value ? "dark" : "light")
-  }
 
   const topLocations = statsStore.topLocations.slice(0, 5)
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$screenContent} safeAreaEdges={["top"]}>
+    <Screen preset="fixed" contentContainerStyle={$screenContent} safeAreaEdges={["top"]} backgroundColor="white">
       {/* Background Decorations */}
       <BackgroundDecorations />
 
@@ -128,20 +119,6 @@ export const ProfileScreen = observer(function ProfileScreen(
               </View>
             ))}
           </ScrollView>
-        </View>
-
-        {/* Settings Section */}
-        <View style={$section}>
-          <Text preset="subheading" text="Settings" style={{ marginBottom: spacing.sm }} />
-          <View style={[$settingCard, { backgroundColor: colors.palette.neutral100 }]}>
-            <View style={$settingRow}>
-              <View style={$settingInfo}>
-                <Text style={[$settingLabel, { color: colors.text }]} text="Dark Mode" />
-                <Text style={[$settingHelper, { color: colors.textDim }]} text="Use dark theme for better night viewing" />
-              </View>
-              <Switch value={isDarkMode} onValueChange={handleThemeToggle} />
-            </View>
-          </View>
         </View>
       </ScrollView>
     </Screen>
@@ -255,32 +232,4 @@ const $achievementCard: ViewStyle = {
   borderRadius: 12,
   alignItems: "center",
   justifyContent: "center",
-}
-
-const $settingCard: ViewStyle = {
-  borderRadius: 12,
-  overflow: "hidden",
-}
-
-const $settingRow: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  paddingHorizontal: 16,
-  paddingVertical: 16,
-}
-
-const $settingInfo: ViewStyle = {
-  flex: 1,
-  marginRight: 16,
-}
-
-const $settingLabel: TextStyle = {
-  fontSize: 16,
-  fontWeight: "600",
-}
-
-const $settingHelper: TextStyle = {
-  fontSize: 12,
-  marginTop: 2,
 }
