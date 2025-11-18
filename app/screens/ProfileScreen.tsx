@@ -24,10 +24,10 @@ export const ProfileScreen = observer(function ProfileScreen(
 
   return (
     <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
-      {/* Header */}
-      <View style={$header}>
-        <Text preset="heading" text="Settings" />
-        <Text style={{ color: colors.textDim, marginTop: 4 }} text="Customize your experience" />
+      {/* Header Section with Gradient */}
+      <View style={$headerContainer}>
+        <Text preset="heading" text="Settings" style={$headerTitle} />
+        <Text text="Customize your experience" style={$headerSubtitle} />
       </View>
 
       {/* Appearance Section */}
@@ -67,9 +67,20 @@ const $container: ViewStyle = {
   paddingBottom: 100, // Space for tab bar
 }
 
-const $header: ViewStyle = {
-  paddingHorizontal: 16,
-  paddingVertical: 16,
+const $headerContainer: ViewStyle = {
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 10,
+}
+
+const $headerTitle: TextStyle = {
+  fontSize: 28,
+  marginBottom: 4,
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 14,
+  opacity: 0.6,
 }
 
 const $section: ViewStyle = {

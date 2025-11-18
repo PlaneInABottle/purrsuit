@@ -119,20 +119,10 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
 
   return (
     <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$screenContent}>
-      {/* Header Section */}
-      <View style={$headerSection}>
-        <View style={$headerContent}>
-          <Text preset="heading" text="🗺️ Encounter Map" />
-          <View style={[$countBadge, { backgroundColor: colors.palette.primary100 }]}>
-            <Text
-              style={[$countBadgeText, { color: colors.palette.primary600 }]}
-              text={gpsEncounters.length.toString()}
-            />
-          </View>
-        </View>
-        {gpsEncounters.length === 0 && (
-          <Text style={[$headerSubtitle, { color: colors.textDim }]} text="No encounters yet" />
-        )}
+      {/* Header Section with Gradient */}
+      <View style={$headerContainer}>
+        <Text preset="heading" text="Encounter Map" style={$headerTitle} />
+        <Text text="Explore your findings" style={$headerSubtitle} />
       </View>
 
       {/* Pet Type Filter */}
@@ -323,35 +313,21 @@ const $screenContent: ViewStyle = {
   flexDirection: "column",
 }
 
-const $headerSection: ViewStyle = {
-  paddingHorizontal: 16,
-  paddingVertical: 16,
+const $headerContainer: ViewStyle = {
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 10,
   flexShrink: 0,
 }
 
-const $headerContent: ViewStyle = {
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  marginBottom: 8,
-}
-
-const $countBadge: ViewStyle = {
-  minWidth: 40,
-  height: 32,
-  borderRadius: 12,
-  alignItems: "center",
-  justifyContent: "center",
-}
-
-const $countBadgeText: TextStyle = {
-  fontSize: 16,
-  fontWeight: "700",
+const $headerTitle: TextStyle = {
+  fontSize: 28,
+  marginBottom: 4,
 }
 
 const $headerSubtitle: TextStyle = {
-  fontSize: 13,
-  marginTop: 4,
+  fontSize: 14,
+  opacity: 0.6,
 }
 
 const $filterContainer: ViewStyle = {

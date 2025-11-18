@@ -477,7 +477,7 @@ const $header: ViewStyle = {
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "center",
-  paddingHorizontal: 16,
+  paddingHorizontal: 20,
   paddingVertical: 16,
   borderBottomWidth: 0,
   minHeight: 60,

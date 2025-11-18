@@ -23,9 +23,10 @@ export const StatsScreen = observer(function StatsScreen(_props: MainTabScreenPr
       {/* Background Decorations */}
       <BackgroundDecorations />
 
-      {/* Header */}
-      <View style={$header}>
-        <Text preset="heading" text="Your Progress" />
+      {/* Header Section with Gradient */}
+      <View style={$headerContainer}>
+        <Text preset="heading" text="Your Progress" style={$headerTitle} />
+        <Text text="Track your purr-suit journey" style={$headerSubtitle} />
       </View>
 
       {/* Hero Section - Top Stats Layout */}
@@ -514,9 +515,20 @@ const $container: ViewStyle = {
   paddingBottom: 100, // Extra space for tab bar
 }
 
-const $header: ViewStyle = {
-  paddingHorizontal: 16,
-  paddingVertical: 16,
+const $headerContainer: ViewStyle = {
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 10,
+}
+
+const $headerTitle: TextStyle = {
+  fontSize: 28,
+  marginBottom: 4,
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 14,
+  opacity: 0.6,
 }
 
 const $heroSection: ViewStyle = {

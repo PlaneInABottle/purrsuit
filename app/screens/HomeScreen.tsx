@@ -88,14 +88,10 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
       {/* Background Decorations */}
       <BackgroundDecorations />
 
-      {/* Enhanced Header */}
-      <View style={$header}>
-        <View style={$headerTop}>
-          <Text preset="heading" text="🏠 My Collection" />
-          <View style={[$countBadge, { backgroundColor: colors.palette.primary100 }]}>
-            <Text style={[$countText, { color: colors.palette.primary600 }]} text={`${encounters.length} pets`} />
-          </View>
-        </View>
+      {/* Header Section with Gradient */}
+      <View style={$headerContainer}>
+        <Text preset="heading" text="My Collection" style={$headerTitle} />
+        <Text text="Your captured moments" style={$headerSubtitle} />
       </View>
 
       {/* Grid List */}
@@ -166,16 +162,20 @@ const $container: ViewStyle = {
   flex: 1,
 }
 
-const $header: ViewStyle = {
-  paddingHorizontal: 16,
+const $headerContainer: ViewStyle = {
+  paddingHorizontal: 20,
   paddingTop: 20,
-  paddingBottom: 12,
+  paddingBottom: 10,
 }
 
-const $headerTop: ViewStyle = {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
+const $headerTitle: TextStyle = {
+  fontSize: 28,
+  marginBottom: 4,
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 14,
+  opacity: 0.6,
 }
 
 const $countBadge: ViewStyle = {

@@ -230,7 +230,7 @@ const $centerContent: ViewStyle = {
 }
 
 const $header: ViewStyle = {
-  paddingHorizontal: 16,
+  paddingHorizontal: 20,
   paddingVertical: 12,
 }
 
