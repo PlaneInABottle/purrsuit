@@ -28,127 +28,131 @@ export const ProfileScreen = observer(function ProfileScreen(
   const topLocations = statsStore.topLocations.slice(0, 5)
 
   return (
-    <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+    <Screen preset="fixed" contentContainerStyle={$screenContent} safeAreaEdges={["top"]}>
       {/* Background Decorations */}
       <BackgroundDecorations />
 
-      {/* Header Section */}
-      <View style={$headerContainer}>
-        <Text preset="heading" text="Profile" style={$headerTitle} />
-        <Text text="Your journey & settings" style={$headerSubtitle} />
-      </View>
-
-      {/* Hero Stats Section */}
-      <View style={$heroSection}>
-        <View style={$mainStatCircle}>
-          <View style={[$circleContent, { borderColor: colors.palette.primary500, backgroundColor: colors.palette.primary100 }]}>
-            <Text preset="bold" text={String(statsStore.totalEncounters)} style={[$circleNumber, { color: colors.palette.primary500 }]} />
-            <Text text="Encounters" style={[$circleLabel, { color: colors.textDim }]} />
-          </View>
+      <ScrollView contentContainerStyle={$container} showsVerticalScrollIndicator={false}>
+        {/* Header Section */}
+        <View style={$headerContainer}>
+          <Text preset="heading" text="Profile" style={$headerTitle} />
+          <Text text="Your journey & settings" style={$headerSubtitle} />
         </View>
 
-        <View style={$miniStatsContainer}>
-          <View style={[$miniStatCard, { backgroundColor: "#7DB3E8" }]}>
-            <Text text="🔥" style={{ fontSize: 20 }} />
-            <View>
-              <Text preset="bold" text={String(statsStore.currentStreak)} style={{ color: "white", fontSize: 16 }} />
-              <Text text="Day Streak" style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }} />
+        {/* Hero Stats Section */}
+        <View style={$heroSection}>
+          <View style={$mainStatCircle}>
+            <View style={[$circleContent, { borderColor: colors.palette.primary500, backgroundColor: colors.palette.primary100 }]}>
+              <Text preset="bold" text={String(statsStore.totalEncounters)} style={[$circleNumber, { color: colors.palette.primary500 }]} />
+              <Text text="Encounters" style={[$circleLabel, { color: colors.textDim }]} />
             </View>
           </View>
 
-          <View style={[$miniStatCard, { backgroundColor: "#E88888" }]}>
-            <Text text="⭐" style={{ fontSize: 20 }} />
-            <View>
-              <Text preset="bold" text={`${statsStore.achievementCount}/8`} style={{ color: "white", fontSize: 16 }} />
-              <Text text="Achievements" style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }} />
+          <View style={$miniStatsContainer}>
+            <View style={[$miniStatCard, { backgroundColor: "#7DB3E8" }]}>
+              <Text text="🔥" style={{ fontSize: 20 }} />
+              <View>
+                <Text preset="bold" text={String(statsStore.currentStreak)} style={{ color: "white", fontSize: 16 }} />
+                <Text text="Day Streak" style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }} />
+              </View>
+            </View>
+
+            <View style={[$miniStatCard, { backgroundColor: "#E88888" }]}>
+              <Text text="⭐" style={{ fontSize: 20 }} />
+              <View>
+                <Text preset="bold" text={`${statsStore.achievementCount}/8`} style={{ color: "white", fontSize: 16 }} />
+                <Text text="Achievements" style={{ color: "rgba(255,255,255,0.9)", fontSize: 10 }} />
+              </View>
             </View>
           </View>
         </View>
-      </View>
 
-      {/* Pet Types Distribution */}
-      {statsStore.totalEncounters > 0 && (
-        <View style={$section}>
-          <Text preset="subheading" text="Collection Stats" style={{ marginBottom: spacing.sm }} />
-          <View style={$statsGrid}>
-            {statsStore.catCount > 0 && (
-              <View style={[$statBox, { backgroundColor: colors.palette.primary100 }]}>
-                <Text text="🐱" style={{ fontSize: 24 }} />
-                <Text preset="bold" text={`${statsStore.catPercentage}%`} style={{ color: colors.palette.primary600 }} />
-                <Text text="Cats" style={{ fontSize: 10, color: colors.textDim }} />
-              </View>
-            )}
-            {statsStore.dogCount > 0 && (
-              <View style={[$statBox, { backgroundColor: colors.palette.secondary100 }]}>
-                <Text text="🐶" style={{ fontSize: 24 }} />
-                <Text preset="bold" text={`${statsStore.dogPercentage}%`} style={{ color: colors.palette.secondary600 }} />
-                <Text text="Dogs" style={{ fontSize: 10, color: colors.textDim }} />
-              </View>
-            )}
-            {statsStore.otherCount > 0 && (
-              <View style={[$statBox, { backgroundColor: colors.palette.accent100 }]}>
-                <Text text="🐾" style={{ fontSize: 24 }} />
-                <Text preset="bold" text={`${Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)}%`} style={{ color: colors.palette.accent600 }} />
-                <Text text="Other" style={{ fontSize: 10, color: colors.textDim }} />
-              </View>
-            )}
-          </View>
-        </View>
-      )}
-
-      {/* Achievements Preview */}
-      <View style={$section}>
-        <View style={$sectionHeaderRow}>
-          <Text preset="subheading" text="Achievements" />
-          <Text text={`${statsStore.achievementCount} Unlocked`} style={{ color: colors.textDim, fontSize: 12 }} />
-        </View>
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 20 }}>
-          {statsStore.achievements.map((achievement) => (
-            <View 
-              key={achievement.id} 
-              style={[
-                $achievementCard, 
-                { 
-                  backgroundColor: achievement.isUnlocked ? colors.palette.primary100 : colors.palette.neutral100,
-                  opacity: achievement.isUnlocked ? 1 : 0.7
-                }
-              ]}
-            >
-              <Text text={achievement.icon} style={{ fontSize: 24, marginBottom: 4 }} />
-              <Text preset="bold" text={achievement.name} style={{ fontSize: 12 }} numberOfLines={1} />
-              {achievement.isUnlocked ? (
-                <Text text="Unlocked!" style={{ fontSize: 10, color: colors.palette.primary600, fontWeight: "600" }} />
-              ) : (
-                <View style={{ width: "100%", height: 4, backgroundColor: colors.palette.neutral300, borderRadius: 2, marginTop: 4 }}>
-                  <View style={{ width: `${achievement.progress || 0}%`, height: "100%", backgroundColor: colors.palette.primary500, borderRadius: 2 }} />
+        {/* Pet Types Distribution */}
+        {statsStore.totalEncounters > 0 && (
+          <View style={$section}>
+            <Text preset="subheading" text="Collection Stats" style={{ marginBottom: spacing.sm }} />
+            <View style={$statsGrid}>
+              {statsStore.catCount > 0 && (
+                <View style={[$statBox, { backgroundColor: colors.palette.primary100 }]}>
+                  <Text text="🐱" style={{ fontSize: 24 }} />
+                  <Text preset="bold" text={`${statsStore.catPercentage}%`} style={{ color: colors.palette.primary600 }} />
+                  <Text text="Cats" style={{ fontSize: 10, color: colors.textDim }} />
+                </View>
+              )}
+              {statsStore.dogCount > 0 && (
+                <View style={[$statBox, { backgroundColor: colors.palette.secondary100 }]}>
+                  <Text text="🐶" style={{ fontSize: 24 }} />
+                  <Text preset="bold" text={`${statsStore.dogPercentage}%`} style={{ color: colors.palette.secondary600 }} />
+                  <Text text="Dogs" style={{ fontSize: 10, color: colors.textDim }} />
+                </View>
+              )}
+              {statsStore.otherCount > 0 && (
+                <View style={[$statBox, { backgroundColor: colors.palette.accent100 }]}>
+                  <Text text="🐾" style={{ fontSize: 24 }} />
+                  <Text preset="bold" text={`${Math.round((statsStore.otherCount / statsStore.totalEncounters) * 100)}%`} style={{ color: colors.palette.accent600 }} />
+                  <Text text="Other" style={{ fontSize: 10, color: colors.textDim }} />
                 </View>
               )}
             </View>
-          ))}
-        </ScrollView>
-      </View>
+          </View>
+        )}
 
-      {/* Settings Section */}
-      <View style={$section}>
-        <Text preset="subheading" text="Settings" style={{ marginBottom: spacing.sm }} />
-        <View style={[$settingCard, { backgroundColor: colors.palette.neutral100 }]}>
-          <View style={$settingRow}>
-            <View style={$settingInfo}>
-              <Text style={[$settingLabel, { color: colors.text }]} text="Dark Mode" />
-              <Text style={[$settingHelper, { color: colors.textDim }]} text="Use dark theme for better night viewing" />
+        {/* Achievements Preview */}
+        <View style={$section}>
+          <View style={$sectionHeaderRow}>
+            <Text preset="subheading" text="Achievements" />
+            <Text text={`${statsStore.achievementCount} Unlocked`} style={{ color: colors.textDim, fontSize: 12 }} />
+          </View>
+          
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 20 }}>
+            {statsStore.achievements.map((achievement) => (
+              <View 
+                key={achievement.id} 
+                style={[
+                  $achievementCard, 
+                  { 
+                    backgroundColor: achievement.isUnlocked ? colors.palette.primary100 : colors.palette.neutral100,
+                    opacity: achievement.isUnlocked ? 1 : 0.7
+                  }
+                ]}
+              >
+                <Text text={achievement.icon} style={{ fontSize: 24, marginBottom: 4 }} />
+                <Text preset="bold" text={achievement.name} style={{ fontSize: 12 }} numberOfLines={1} />
+                {achievement.isUnlocked ? (
+                  <Text text="Unlocked!" style={{ fontSize: 10, color: colors.palette.primary600, fontWeight: "600" }} />
+                ) : (
+                  <View style={{ width: "100%", height: 4, backgroundColor: colors.palette.neutral300, borderRadius: 2, marginTop: 4 }}>
+                    <View style={{ width: `${achievement.progress || 0}%`, height: "100%", backgroundColor: colors.palette.primary500, borderRadius: 2 }} />
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Settings Section */}
+        <View style={$section}>
+          <Text preset="subheading" text="Settings" style={{ marginBottom: spacing.sm }} />
+          <View style={[$settingCard, { backgroundColor: colors.palette.neutral100 }]}>
+            <View style={$settingRow}>
+              <View style={$settingInfo}>
+                <Text style={[$settingLabel, { color: colors.text }]} text="Dark Mode" />
+                <Text style={[$settingHelper, { color: colors.textDim }]} text="Use dark theme for better night viewing" />
+              </View>
+              <Switch value={isDarkMode} onValueChange={handleThemeToggle} />
             </View>
-            <Switch value={isDarkMode} onValueChange={handleThemeToggle} />
           </View>
         </View>
-      </View>
-
+      </ScrollView>
     </Screen>
   )
 })
 
-const $container: ViewStyle = {
+const $screenContent: ViewStyle = {
   flex: 1,
+}
+
+const $container: ViewStyle = {
   paddingBottom: 100,
 }
 
