@@ -8,7 +8,9 @@ import {
   TextStyle,
   TouchableOpacity,
   Alert,
+  StyleSheet,
 } from "react-native"
+import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -245,11 +247,21 @@ export const EncounterEditScreen = ({
           style={[
             $photoFrame,
             {
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              backgroundColor: "#F8F9FA",
               borderColor: colors.palette.primary200,
             },
           ]}
         >
+          {/* Notebook Background Pattern */}
+          <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+            <Defs>
+              <Pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <Circle cx="2" cy="2" r="1.5" fill="#A0C4FF" />
+              </Pattern>
+            </Defs>
+            <Rect width="100%" height="100%" fill="#F8F9FA" />
+            <Rect width="100%" height="100%" fill="url(#dots)" />
+          </Svg>
           <Image source={{ uri: photoUri }} style={$photo} resizeMode="contain" />
           <View
             style={[
