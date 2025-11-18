@@ -267,7 +267,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   onPress={() => setSelectedEncounterId(null)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Text text="✕" style={{ color: "white", fontWeight: "bold", fontSize: 16 }} />
+                  <Text text="✕" style={{ color: "white", fontWeight: "bold", fontSize: 14, includeFontPadding: false }} />
                 </TouchableOpacity>
               </View>
 
@@ -519,11 +519,10 @@ const $bottomCardContainer: ViewStyle = {
 }
 
 const $closeButton: ViewStyle = {
-  padding: 4,
   backgroundColor: "rgba(0,0,0,0.1)",
-  borderRadius: 12,
-  width: 24,
-  height: 24,
+  borderRadius: 14,
+  width: 28,
+  height: 28,
   alignItems: "center",
   justifyContent: "center",
 }
