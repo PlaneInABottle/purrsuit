@@ -1,6 +1,7 @@
 import React from "react"
-import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle } from "react-native"
+import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle, StyleSheet } from "react-native"
 import { observer } from "mobx-react-lite"
+import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { BackgroundDecorations } from "@/components/BackgroundDecorations"
@@ -110,9 +111,22 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         renderItem={({ item }) => (
           <View style={$gridItem}>
             {/* Card Container with enhanced styling */}
-            <View style={[$cardContainer, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+            <View style={[$cardContainer, { backgroundColor: "#F8F9FA" }]}>
+              {/* Notebook Background Pattern */}
+              <View style={StyleSheet.absoluteFill}>
+                <Svg width="100%" height="100%">
+                  <Defs>
+                    <Pattern id="dots" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
+                      <Circle cx="1.5" cy="1.5" r="1" fill="#A0C4FF" />
+                    </Pattern>
+                  </Defs>
+                  <Rect width="100%" height="100%" fill="#F8F9FA" />
+                  <Rect width="100%" height="100%" fill="url(#dots)" />
+                </Svg>
+              </View>
+
               {/* Image Section */}
-              <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="cover" />
+              <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="contain" />
 
               {/* GPS Location Badge */}
               {item.location.type === "gps" && (

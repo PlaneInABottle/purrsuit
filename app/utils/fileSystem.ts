@@ -48,7 +48,7 @@ export async function savePhoto(
     await initFileSystem()
 
     // Save full resolution photo
-    const photoFile = new File(photosDir, `${photoId}.jpg`)
+    const photoFile = new File(photosDir, `${photoId}.png`)
     const sourceFile = new File(sourceUri)
     await sourceFile.copy(photoFile)
 
@@ -72,10 +72,10 @@ async function generateThumbnail(sourceUri: string, photoId: string): Promise<st
   try {
     const manipResult = await manipulateAsync(sourceUri, [{ resize: THUMBNAIL_SIZE }], {
       compress: 0.8,
-      format: SaveFormat.JPEG,
+      format: SaveFormat.PNG,
     })
 
-    const thumbnailFile = new File(thumbnailsDir, `${photoId}_thumb.jpg`)
+    const thumbnailFile = new File(thumbnailsDir, `${photoId}_thumb.png`)
     const tempFile = new File(manipResult.uri)
     await tempFile.move(thumbnailFile)
 
@@ -92,18 +92,19 @@ async function generateThumbnail(sourceUri: string, photoId: string): Promise<st
  */
 export async function deletePhoto(photoId: string): Promise<void> {
   try {
-    const photoFile = new File(photosDir, `${photoId}.jpg`)
-    const thumbnailFile = new File(thumbnailsDir, `${photoId}_thumb.jpg`)
+    // Try to delete both png and jpg versions to handle legacy files
+    const photoFilePng = new File(photosDir, `${photoId}.png`)
+    const photoFileJpg = new File(photosDir, `${photoId}.jpg`)
+    const thumbnailFilePng = new File(thumbnailsDir, `${photoId}_thumb.png`)
+    const thumbnailFileJpg = new File(thumbnailsDir, `${photoId}_thumb.jpg`)
 
-    // Delete photo if exists
-    if (photoFile.exists) {
-      photoFile.delete()
-    }
+    // Delete photos
+    if (photoFilePng.exists) photoFilePng.delete()
+    if (photoFileJpg.exists) photoFileJpg.delete()
 
-    // Delete thumbnail if exists
-    if (thumbnailFile.exists) {
-      thumbnailFile.delete()
-    }
+    // Delete thumbnails
+    if (thumbnailFilePng.exists) thumbnailFilePng.delete()
+    if (thumbnailFileJpg.exists) thumbnailFileJpg.delete()
   } catch (error) {
     console.error("Failed to delete photo:", error)
     throw error
@@ -117,8 +118,9 @@ export async function deletePhoto(photoId: string): Promise<void> {
  */
 export function photoExists(photoId: string): boolean {
   try {
-    const photoFile = new File(photosDir, `${photoId}.jpg`)
-    return photoFile.exists
+    const photoFilePng = new File(photosDir, `${photoId}.png`)
+    const photoFileJpg = new File(photosDir, `${photoId}.jpg`)
+    return photoFilePng.exists || photoFileJpg.exists
   } catch {
     return false
   }
@@ -130,7 +132,8 @@ export function photoExists(photoId: string): boolean {
  * @returns Full photo URI
  */
 export function getPhotoUri(photoId: string): string {
-  return new File(photosDir, `${photoId}.jpg`).uri
+  const photoFilePng = new File(photosDir, `${photoId}.png`)
+  return photoFilePng.exists ? photoFilePng.uri : new File(photosDir, `${photoId}.jpg`).uri
 }
 
 /**
@@ -139,7 +142,8 @@ export function getPhotoUri(photoId: string): string {
  * @returns Thumbnail URI
  */
 export function getThumbnailUri(photoId: string): string {
-  return new File(thumbnailsDir, `${photoId}_thumb.jpg`).uri
+  const thumbFilePng = new File(thumbnailsDir, `${photoId}_thumb.png`)
+  return thumbFilePng.exists ? thumbFilePng.uri : new File(thumbnailsDir, `${photoId}_thumb.jpg`).uri
 }
 
 /**
@@ -184,7 +188,7 @@ export function cleanupOrphanedPhotos(validPhotoIds: string[]): number {
 
     for (const item of items) {
       if (item instanceof File) {
-        const photoId = item.name.replace(".jpg", "")
+        const photoId = item.name.replace(".jpg", "").replace(".png", "")
         if (!validPhotoIds.includes(photoId)) {
           deletePhoto(photoId)
           deletedCount++
