@@ -6,9 +6,11 @@ import {
   Image,
   ImageStyle,
   Alert,
+  StyleSheet,
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
+import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint, RotateCcw, ArrowRight, Scissors } from "lucide-react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -171,6 +173,16 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
     return (
       <Screen preset="fixed" contentContainerStyle={$container}>
         <View style={$previewContainer}>
+          {/* Notebook Background Pattern */}
+          <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+            <Defs>
+              <Pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <Circle cx="2" cy="2" r="1.5" fill="#A0C4FF" />
+              </Pattern>
+            </Defs>
+            <Rect width="100%" height="100%" fill="#F8F9FA" />
+            <Rect width="100%" height="100%" fill="url(#dots)" />
+          </Svg>
           <Image source={{ uri: capturedPhoto }} style={$previewImage} resizeMode="contain" />
         </View>
 
@@ -350,7 +362,7 @@ const $libraryButton: ViewStyle = {
 
 const $previewContainer: ViewStyle = {
   flex: 1,
-  backgroundColor: "black",
+  backgroundColor: "#F8F9FA",
 }
 
 const $previewImage: ImageStyle = {
