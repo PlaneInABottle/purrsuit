@@ -143,6 +143,10 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
             const coords = encounter.location.coordinates
             if (!coords) return null
 
+            const isSelected = selectedEncounterId === encounter.id
+            const size = isSelected ? 50 : 40
+            const borderRadius = size / 2
+
             return (
               <Marker
                 key={encounter.id}
@@ -150,7 +154,8 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   latitude: coords.latitude,
                   longitude: coords.longitude,
                 }}
-                anchor={{ x: 0.5, y: 1 }}
+                anchor={{ x: 0.5, y: 0.5 }}
+                zIndex={isSelected ? 999 : 1}
                 onPress={(e) => {
                   e.stopPropagation()
                   handleMarkerPress(encounter.id)
@@ -161,13 +166,19 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   style={[
                     $petMarker,
                     {
+                      width: size,
+                      height: size,
+                      borderRadius: borderRadius,
                       backgroundColor: getPetTypeColor(encounter.petType),
                       borderColor: "white",
-                      transform: [{ scale: selectedEncounterId === encounter.id ? 1.2 : 1 }]
+                      borderWidth: isSelected ? 3 : 2,
                     },
                   ]}
                 >
-                  <Text style={$markerEmoji} text={getPetTypeEmoji(encounter.petType)} />
+                  <Text 
+                    style={[$markerEmoji, { fontSize: isSelected ? 24 : 20 }]} 
+                    text={getPetTypeEmoji(encounter.petType)} 
+                  />
                 </View>
               </Marker>
             )
