@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Switch } from "@/components/Toggle/Switch"
+import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 
@@ -24,6 +25,9 @@ export const ProfileScreen = observer(function ProfileScreen(
 
   return (
     <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      {/* Background Decorations */}
+      <BackgroundDecorations />
+
       {/* Header Section with Gradient */}
       <View style={$headerContainer}>
         <Text preset="heading" text="Settings" style={$headerTitle} />
@@ -64,6 +68,7 @@ export const ProfileScreen = observer(function ProfileScreen(
 
 const $container: ViewStyle = {
   flex: 1,
+  backgroundColor: "white",
   paddingBottom: 100, // Space for tab bar
 }
 
