@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react"
 import { View, ViewStyle, Image as RNImage, Dimensions, Alert, TouchableOpacity, StyleSheet } from "react-native"
-import { Svg, Path, Defs, ClipPath, Image as SvgImage } from "react-native-svg"
+import { Svg, Path, Defs, ClipPath, Image as SvgImage, Circle, Rect, Pattern } from "react-native-svg"
 import { PanGestureHandler, GestureHandlerRootView, State } from "react-native-gesture-handler"
 import ViewShot, { captureRef } from "react-native-view-shot"
 import { Screen } from "@/components/Screen"
@@ -110,6 +110,17 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         style={$canvasContainer} 
         onLayout={(e) => setImageLayout(e.nativeEvent.layout)}
       >
+        {/* Notebook Background Pattern */}
+        <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
+          <Defs>
+            <Pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <Circle cx="2" cy="2" r="1.5" fill="#A0C4FF" />
+            </Pattern>
+          </Defs>
+          <Rect width="100%" height="100%" fill="#F8F9FA" />
+          <Rect width="100%" height="100%" fill="url(#dots)" />
+        </Svg>
+
         <GestureHandlerRootView style={{ flex: 1 }}>
           <PanGestureHandler
             onGestureEvent={handleGestureEvent}
@@ -130,7 +141,18 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                         <Path d={getPathData()} />
                       </ClipPath>
                     </Defs>
-                    {/* Background transparent */}
+                    
+                    {/* Sticker Border Effect */}
+                    <Path
+                      d={getPathData()}
+                      stroke="white"
+                      strokeWidth={12}
+                      fill="white"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Masked Image */}
                     <SvgImage
                       href={photoUri}
                       width="100%"
@@ -212,7 +234,7 @@ const $instructions: ViewStyle = {
 
 const $canvasContainer: ViewStyle = {
   flex: 1,
-  backgroundColor: "#1a1a1a", // Dark background to see the cutout better
+  backgroundColor: "#F8F9FA", // Light background for notebook look
   overflow: 'hidden',
 }
 
