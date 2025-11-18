@@ -14,7 +14,6 @@ import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
-import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { useAppTheme } from "@/theme/context"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useStores } from "@/models"
@@ -214,6 +213,7 @@ export const EncounterEditScreen = ({
   return (
     <Screen
       preset="scroll"
+      style={$container}
       contentContainerStyle={$scrollContent}
       safeAreaEdges={["top"]}
       keyboardShouldPersistTaps="handled"
@@ -221,11 +221,8 @@ export const EncounterEditScreen = ({
         enabled: false,
       }}
     >
-      {/* Background Decorations */}
-      <BackgroundDecorations />
-
       {/* Enhanced Header */}
-      <View style={[$header, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+      <View style={$header}>
         <TouchableOpacity
           onPress={handleCancel}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -471,6 +468,7 @@ export const EncounterEditScreen = ({
 
 const $container: ViewStyle = {
   flex: 1,
+  backgroundColor: "white",
 }
 
 const $header: ViewStyle = {
@@ -478,14 +476,11 @@ const $header: ViewStyle = {
   justifyContent: "space-between",
   alignItems: "center",
   paddingHorizontal: 20,
-  paddingVertical: 16,
+  paddingTop: 20,
+  paddingBottom: 10,
   borderBottomWidth: 0,
   minHeight: 60,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.05,
-  shadowRadius: 4,
-  elevation: 2,
+  backgroundColor: "white",
 }
 
 const $cancelButton: ViewStyle = {
