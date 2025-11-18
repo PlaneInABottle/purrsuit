@@ -127,19 +127,14 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
 
   return (
     <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top", "bottom"]}>
-      <View style={$header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={$iconButton}>
+      <View style={$headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={$backButton}>
           <ArrowLeft size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text preset="heading" text="Cut Out Pet ✂️" style={{ fontSize: 20 }} />
-        <View style={{ width: 40 }} />
-      </View>
-
-      <View style={$instructions}>
-        <Text 
-          text={isClosed ? "Looks good! Save or Reset." : "Draw a loop around your pet with your finger."} 
-          style={{ textAlign: "center", color: colors.textDim }}
-        />
+        <View>
+          <Text preset="heading" text="Cut Out Pet" style={$headerTitle} />
+          <Text text="Draw a loop to create a sticker" style={$headerSubtitle} />
+        </View>
       </View>
 
       <View 
@@ -222,22 +217,29 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         </GestureHandlerRootView>
       </View>
 
-      <View style={$footer}>
-        <Button
-          text="Reset"
-          preset="default"
+      <View style={$floatingControls}>
+        <TouchableOpacity
           onPress={handleReset}
-          style={$button}
-          LeftAccessory={(props) => <RotateCcw size={20} color={colors.text} style={props.style} />}
-        />
-        <Button
-          text="Save"
-          preset="primary"
+          style={[$iconButton, { backgroundColor: colors.palette.neutral100 }]}
+        >
+          <RotateCcw size={24} color={colors.text} />
+          <Text text="Reset" style={$iconButtonLabel} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
           onPress={handleSave}
           disabled={!isClosed}
-          style={$button}
-          LeftAccessory={(props) => <Check size={20} color={colors.palette.neutral100} style={props.style} />}
-        />
+          style={[
+            $primaryButton, 
+            { 
+              backgroundColor: isClosed ? colors.palette.primary500 : colors.palette.neutral300,
+              opacity: isClosed ? 1 : 0.7
+            }
+          ]}
+        >
+          <Text text="Save Sticker" style={$primaryButtonText} />
+          <Check size={20} color="white" />
+        </TouchableOpacity>
       </View>
     </Screen>
   )
@@ -245,43 +247,93 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
 
 const $container: ViewStyle = {
   flex: 1,
-  backgroundColor: "#000",
+  backgroundColor: "white",
 }
 
-const $header: ViewStyle = {
+const $headerContainer: ViewStyle = {
   flexDirection: "row",
-  justifyContent: "space-between",
   alignItems: "center",
-  paddingHorizontal: 16,
-  paddingVertical: 12,
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 10,
+  gap: 16,
+  zIndex: 10,
   backgroundColor: "white",
 }
 
-const $iconButton: ViewStyle = {
+const $backButton: ViewStyle = {
   padding: 8,
+  marginLeft: -8,
 }
 
-const $instructions: ViewStyle = {
-  padding: 12,
-  backgroundColor: "white",
-  borderBottomWidth: 1,
-  borderBottomColor: "#eee",
+const $headerTitle: TextStyle = {
+  fontSize: 24,
+  marginBottom: 2,
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 14,
+  opacity: 0.6,
 }
 
 const $canvasContainer: ViewStyle = {
   flex: 1,
-  backgroundColor: "#F8F9FA", // Light background for notebook look
+  backgroundColor: "#F8F9FA",
   overflow: 'hidden',
+  marginHorizontal: 16,
+  marginBottom: 140, // Increased to avoid occlusion by floating controls
+  marginTop: 10,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: "rgba(0,0,0,0.05)",
 }
 
-const $footer: ViewStyle = {
+const $floatingControls: ViewStyle = {
+  position: "absolute",
+  bottom: 40,
+  left: 20,
+  right: 20,
   flexDirection: "row",
-  justifyContent: "space-around",
-  padding: 16,
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: 12,
   backgroundColor: "white",
-  gap: 16,
+  borderRadius: 24,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 8,
+  gap: 12,
 }
 
-const $button: ViewStyle = {
+const $iconButton: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+  width: 60,
+  height: 60,
+  borderRadius: 30,
+  gap: 4,
+}
+
+const $iconButtonLabel: TextStyle = {
+  fontSize: 10,
+  fontWeight: "600",
+}
+
+const $primaryButton: ViewStyle = {
   flex: 1,
+  height: 60,
+  borderRadius: 30,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  marginLeft: 8,
+}
+
+const $primaryButtonText: TextStyle = {
+  color: "white",
+  fontSize: 16,
+  fontWeight: "700",
 }

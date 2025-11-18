@@ -172,6 +172,13 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   if (captureStep === "preview" && capturedPhoto) {
     return (
       <Screen preset="fixed" contentContainerStyle={$container}>
+        <View style={$headerContainer}>
+          <View>
+            <Text preset="heading" text="Review Capture" style={$headerTitle} />
+            <Text text="Perfect! Or want to try again?" style={$headerSubtitle} />
+          </View>
+        </View>
+
         <View style={$previewContainer}>
           {/* Notebook Background Pattern */}
           <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
@@ -183,63 +190,33 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             <Rect width="100%" height="100%" fill="#F8F9FA" />
             <Rect width="100%" height="100%" fill="url(#dots)" />
           </Svg>
-          <Image source={{ uri: capturedPhoto }} style={$previewImage} resizeMode="contain" />
+          <Image source={{ uri: capturedPhoto }} style={$previewImage} resizeMode="cover" />
         </View>
 
         <View style={$previewControls}>
-          <Button
-            text="Retake"
-            preset="default"
+          <TouchableOpacity
             onPress={handleRetake}
-            style={[
-              $actionButton,
-              {
-                backgroundColor: colors.palette.neutral100,
-                borderWidth: 2,
-                borderColor: colors.palette.neutral400,
-              },
-            ]}
-            LeftAccessory={(props) => (
-              <RotateCcw
-                size={20}
-                color={colors.text}
-                style={props.style}
-              />
-            )}
-          />
-          <Button
-            text="Edit"
-            preset="default"
+            style={[$iconButton, { backgroundColor: colors.palette.neutral100 }]}
+          >
+            <RotateCcw size={24} color={colors.text} />
+            <Text text="Retake" style={$iconButtonLabel} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={handleEdit}
-            style={[
-              $actionButton,
-              {
-                backgroundColor: colors.palette.neutral100,
-                borderWidth: 2,
-                borderColor: colors.palette.neutral400,
-              },
-            ]}
-            LeftAccessory={(props) => (
-              <Scissors
-                size={20}
-                color={colors.text}
-                style={props.style}
-              />
-            )}
-          />
-          <Button
-            text="Next"
-            preset="primary"
+            style={[$iconButton, { backgroundColor: colors.palette.neutral100 }]}
+          >
+            <Scissors size={24} color={colors.text} />
+            <Text text="Edit" style={$iconButtonLabel} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
             onPress={handleConfirm}
-            style={$nextButton}
-            RightAccessory={(props) => (
-              <ArrowRight
-                size={20}
-                color={colors.palette.neutral100}
-                style={props.style}
-              />
-            )}
-          />
+            style={[$primaryButton, { backgroundColor: colors.palette.primary500 }]}
+          >
+            <Text text="Next" style={$primaryButtonText} />
+            <ArrowRight size={20} color="white" />
+          </TouchableOpacity>
         </View>
       </Screen>
     )
@@ -306,6 +283,26 @@ const $centerContent: ViewStyle = {
   paddingHorizontal: 24,
 }
 
+const $headerContainer: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 20,
+  paddingTop: 20,
+  paddingBottom: 10,
+  gap: 16,
+  backgroundColor: "white",
+}
+
+const $headerTitle: TextStyle = {
+  fontSize: 24,
+  marginBottom: 2,
+}
+
+const $headerSubtitle: TextStyle = {
+  fontSize: 14,
+  opacity: 0.6,
+}
+
 const $camera: ViewStyle = {
   flex: 1,
 }
@@ -363,6 +360,13 @@ const $libraryButton: ViewStyle = {
 const $previewContainer: ViewStyle = {
   flex: 1,
   backgroundColor: "#F8F9FA",
+  marginHorizontal: 16,
+  marginBottom: 140, // Increased to avoid occlusion by floating controls
+  marginTop: 10,
+  borderRadius: 20,
+  borderWidth: 1,
+  borderColor: "rgba(0,0,0,0.05)",
+  overflow: "hidden",
 }
 
 const $previewImage: ImageStyle = {
@@ -371,21 +375,51 @@ const $previewImage: ImageStyle = {
 }
 
 const $previewControls: ViewStyle = {
+  position: "absolute",
+  bottom: 40,
+  left: 20,
+  right: 20,
   flexDirection: "row",
   justifyContent: "space-between",
-  paddingHorizontal: 16,
-  paddingVertical: 20,
+  alignItems: "center",
+  padding: 12,
+  backgroundColor: "white",
+  borderRadius: 24,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 8,
   gap: 12,
-  backgroundColor: "rgba(255, 255, 255, 0.95)",
-  borderTopWidth: 1,
-  borderTopColor: "rgba(0, 0, 0, 0.05)",
 }
 
-const $actionButton: ViewStyle = {
-  flex: 0.28,
-  paddingHorizontal: 0,
+const $iconButton: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "center",
+  width: 60,
+  height: 60,
+  borderRadius: 30,
+  gap: 4,
 }
 
-const $nextButton: ViewStyle = {
-  flex: 0.4,
+const $iconButtonLabel: TextStyle = {
+  fontSize: 10,
+  fontWeight: "600",
+}
+
+const $primaryButton: ViewStyle = {
+  flex: 1,
+  height: 60,
+  borderRadius: 30,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
+  marginLeft: 8,
+}
+
+const $primaryButtonText: TextStyle = {
+  color: "white",
+  fontSize: 16,
+  fontWeight: "700",
 }
