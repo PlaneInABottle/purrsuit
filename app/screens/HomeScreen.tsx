@@ -1,13 +1,23 @@
 import React from "react"
-import { View, ViewStyle, Image, ImageStyle, FlatList, TextStyle, StyleSheet, TouchableOpacity } from "react-native"
+import {
+  View,
+  ViewStyle,
+  Image,
+  ImageStyle,
+  FlatList,
+  TextStyle,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native"
 import { observer } from "mobx-react-lite"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
+
+import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { BackgroundDecorations } from "@/components/BackgroundDecorations"
-import { useAppTheme } from "@/theme/context"
 import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
+import { useAppTheme } from "@/theme/context"
 
 export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProps<"Home">) {
   const {
@@ -50,7 +60,12 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
   // Empty state
   if (encounters.length === 0) {
     return (
-      <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]} backgroundColor="white">
+      <Screen
+        preset="scroll"
+        contentContainerStyle={$container}
+        safeAreaEdges={["top"]}
+        backgroundColor="white"
+      >
         {/* Background Decorations */}
         <BackgroundDecorations />
 
@@ -64,7 +79,11 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         {/* Enhanced Empty State */}
         <View style={$emptyStateContainer}>
           <Text style={$emptyIcon} text="📷🐾" />
-          <Text preset="subheading" text="No encounters yet" style={{ marginTop: spacing.md, marginBottom: spacing.xs }} />
+          <Text
+            preset="subheading"
+            text="No encounters yet"
+            style={{ marginTop: spacing.md, marginBottom: spacing.xs }}
+          />
           <Text
             style={[$emptyDescription, { color: colors.textDim }]}
             text="Tap the camera to start your pet collection journey!"
@@ -72,10 +91,19 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
 
           {/* Suggestions Card */}
           <View style={[$suggestionCard, { backgroundColor: colors.palette.primary100 }]}>
-            <Text style={{ fontSize: 14, fontWeight: "600", marginBottom: spacing.sm }} text="💡 Try capturing:" />
-            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Your neighbor's cat or dog" />
+            <Text
+              style={{ fontSize: 14, fontWeight: "600", marginBottom: spacing.sm }}
+              text="💡 Try capturing:"
+            />
+            <Text
+              style={[$suggestionItem, { color: colors.textDim }]}
+              text="• Your neighbor's cat or dog"
+            />
             <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Pets at the park" />
-            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Wildlife you encounter" />
+            <Text
+              style={[$suggestionItem, { color: colors.textDim }]}
+              text="• Wildlife you encounter"
+            />
           </View>
         </View>
       </Screen>
@@ -84,7 +112,12 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
 
   // Grid view with encounters
   return (
-    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]} backgroundColor="white">
+    <Screen
+      preset="fixed"
+      contentContainerStyle={$container}
+      safeAreaEdges={["top"]}
+      backgroundColor="white"
+    >
       {/* Background Decorations */}
       <BackgroundDecorations />
 
@@ -108,53 +141,61 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
           <View style={$gridItem}>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => _props.navigation.navigate("EncounterDetail", { encounterId: item.id })}
+              onPress={() =>
+                _props.navigation.navigate("EncounterDetail", { encounterId: item.id })
+              }
             >
-            {/* Card Container with enhanced styling */}
-            <View style={[$cardContainer, { backgroundColor: "#F8F9FA" }]}>
-              {/* Notebook Background Pattern */}
-              <View style={StyleSheet.absoluteFill}>
-                <Svg width="100%" height="100%">
-                  <Defs>
-                    <Pattern id="dots" x="0" y="0" width="15" height="15" patternUnits="userSpaceOnUse">
-                      <Circle cx="1.5" cy="1.5" r="1" fill="#A0C4FF" />
-                    </Pattern>
-                  </Defs>
-                  <Rect width="100%" height="100%" fill="#F8F9FA" />
-                  <Rect width="100%" height="100%" fill="url(#dots)" />
-                </Svg>
-              </View>
-
-              {/* Image Section */}
-              <Image source={{ uri: item.photos.thumbnail }} style={$thumbnail} resizeMode="contain" />
-
-              {/* GPS Location Badge */}
-              {item.location.type === "gps" && (
-                <View
-                  style={[
-                    $gpsBadge,
-                    { backgroundColor: colors.palette.primary500 },
-                  ]}
-                >
-                  <Text text="📍" style={{ fontSize: 10 }} />
-                </View>
-              )}
-
-              {/* Info Section - Framed Style */}
-              <View style={[$cardInfoSection, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
-                {/* Pet Type Row */}
-                <View style={$petTypeRow}>
-                  <Text style={$petTypeEmoji} text={getPetTypeEmoji(item.petType)} />
-                  <Text
-                    style={[$petTypeText, { color: getPetTypeColor(item.petType) }]}
-                    text={item.petType}
-                  />
+              {/* Card Container with enhanced styling */}
+              <View style={[$cardContainer, { backgroundColor: "#F8F9FA" }]}>
+                {/* Notebook Background Pattern */}
+                <View style={StyleSheet.absoluteFill}>
+                  <Svg width="100%" height="100%">
+                    <Defs>
+                      <Pattern
+                        id="dots"
+                        x="0"
+                        y="0"
+                        width="15"
+                        height="15"
+                        patternUnits="userSpaceOnUse"
+                      >
+                        <Circle cx="1.5" cy="1.5" r="1" fill="#A0C4FF" />
+                      </Pattern>
+                    </Defs>
+                    <Rect width="100%" height="100%" fill="#F8F9FA" />
+                    <Rect width="100%" height="100%" fill="url(#dots)" />
+                  </Svg>
                 </View>
 
-                {/* Date Row */}
-                <Text style={[$dateRow, { color: colors.textDim }]} text={item.formattedDate} />
+                {/* Image Section */}
+                <Image
+                  source={{ uri: item.photos.thumbnail }}
+                  style={$thumbnail}
+                  resizeMode="contain"
+                />
+
+                {/* GPS Location Badge */}
+                {item.location.type === "gps" && (
+                  <View style={[$gpsBadge, { backgroundColor: colors.palette.primary500 }]}>
+                    <Text text="📍" style={{ fontSize: 10 }} />
+                  </View>
+                )}
+
+                {/* Info Section - Framed Style */}
+                <View style={[$cardInfoSection, { backgroundColor: "rgba(255, 255, 255, 0.95)" }]}>
+                  {/* Pet Type Row */}
+                  <View style={$petTypeRow}>
+                    <Text style={$petTypeEmoji} text={getPetTypeEmoji(item.petType)} />
+                    <Text
+                      style={[$petTypeText, { color: getPetTypeColor(item.petType) }]}
+                      text={item.petType}
+                    />
+                  </View>
+
+                  {/* Date Row */}
+                  <Text style={[$dateRow, { color: colors.textDim }]} text={item.formattedDate} />
+                </View>
               </View>
-            </View>
             </TouchableOpacity>
           </View>
         )}

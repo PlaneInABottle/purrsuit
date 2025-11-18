@@ -11,13 +11,12 @@ import {
   StyleSheet,
 } from "react-native"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
+
+import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { Button } from "@/components/Button"
-import { useAppTheme } from "@/theme/context"
-import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { useStores } from "@/models"
-import { savePhoto } from "@/utils/fileSystem"
+import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import {
   requestLocationPermissions,
   hasLocationPermissions,
@@ -27,6 +26,8 @@ import {
   formatAddress,
 } from "@/services/location"
 import type { LocationCoordinates } from "@/services/location"
+import { useAppTheme } from "@/theme/context"
+import { savePhoto } from "@/utils/fileSystem"
 
 type PetType = "cat" | "dog" | "other"
 
@@ -115,7 +116,11 @@ export const EncounterEditScreen = ({
       else timeOfDay = "night"
 
       // Determine location type
-      let locationData: { type: "none" | "manual" | "gps"; label?: string; coordinates?: { latitude: number; longitude: number } } = { type: "none" }
+      let locationData: {
+        type: "none" | "manual" | "gps"
+        label?: string
+        coordinates?: { latitude: number; longitude: number }
+      } = { type: "none" }
 
       if (locationCoords) {
         // Use GPS location if available
@@ -125,7 +130,8 @@ export const EncounterEditScreen = ({
             latitude: locationCoords.latitude,
             longitude: locationCoords.longitude,
           },
-          label: locationAddress || formatCoordinates(locationCoords.latitude, locationCoords.longitude),
+          label:
+            locationAddress || formatCoordinates(locationCoords.latitude, locationCoords.longitude),
         }
       } else if (location.trim()) {
         // Fall back to manual location
@@ -260,12 +266,7 @@ export const EncounterEditScreen = ({
             <Rect width="100%" height="100%" fill="url(#dots)" />
           </Svg>
           <Image source={{ uri: photoUri }} style={$photo} resizeMode="contain" />
-          <View
-            style={[
-              $photoCornerAccent,
-              { backgroundColor: colors.palette.accent500 },
-            ]}
-          />
+          <View style={[$photoCornerAccent, { backgroundColor: colors.palette.accent500 }]} />
         </View>
       </View>
 
@@ -279,7 +280,9 @@ export const EncounterEditScreen = ({
         <View style={$petTypeGrid}>
           {petTypeOptions.map((option) => {
             const isSelected = petType === option.value
-            const bgColor = isSelected ? getPetTypeBackground(option.value) : "rgba(255, 255, 255, 0.8)"
+            const bgColor = isSelected
+              ? getPetTypeBackground(option.value)
+              : "rgba(255, 255, 255, 0.8)"
             const borderColor = isSelected ? getPetTypeBorder(option.value) : colors.separator
             const textColor = isSelected ? getPetTypeColor(option.value) : colors.text
 
@@ -297,17 +300,9 @@ export const EncounterEditScreen = ({
                 onPress={() => setPetType(option.value)}
               >
                 <Text style={$petTypeEmoji} text={option.emoji} />
-                <Text
-                  style={[$petTypeLabel, { color: textColor }]}
-                  text={option.label}
-                />
+                <Text style={[$petTypeLabel, { color: textColor }]} text={option.label} />
                 {isSelected && (
-                  <View
-                    style={[
-                      $selectedIndicator,
-                      { backgroundColor: borderColor },
-                    ]}
-                  >
+                  <View style={[$selectedIndicator, { backgroundColor: borderColor }]}>
                     <Text
                       text="✓"
                       style={{
@@ -330,10 +325,7 @@ export const EncounterEditScreen = ({
           <Text text="📍" style={{ fontSize: 20, marginRight: 8 }} />
           <Text preset="subheading" text="Location" />
           <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
-            <Text
-              text="Optional"
-              style={[$optionalText, { color: colors.palette.accent600 }]}
-            />
+            <Text text="Optional" style={[$optionalText, { color: colors.palette.accent600 }]} />
           </View>
         </View>
 
@@ -349,9 +341,15 @@ export const EncounterEditScreen = ({
             ]}
           >
             <View style={$gpsLocationContent}>
-              <Text text="📡 GPS Location Captured" style={{ fontSize: 14, fontWeight: "600", marginBottom: 4 }} />
+              <Text
+                text="📡 GPS Location Captured"
+                style={{ fontSize: 14, fontWeight: "600", marginBottom: 4 }}
+              />
               {locationAddress ? (
-                <Text text={locationAddress} style={{ fontSize: 13, color: colors.text, marginBottom: 4 }} />
+                <Text
+                  text={locationAddress}
+                  style={{ fontSize: 13, color: colors.text, marginBottom: 4 }}
+                />
               ) : null}
               <Text
                 text={`${formatCoordinates(locationCoords.latitude, locationCoords.longitude)}`}
@@ -371,20 +369,31 @@ export const EncounterEditScreen = ({
           style={[
             $gpsButton,
             {
-              backgroundColor: locationCoords ? colors.palette.primary100 : colors.palette.secondary100,
+              backgroundColor: locationCoords
+                ? colors.palette.primary100
+                : colors.palette.secondary100,
               borderColor: locationCoords ? colors.palette.primary300 : colors.palette.secondary300,
             },
           ]}
         >
           <Text text="📡" style={{ fontSize: 18, marginRight: 8 }} />
           <Text
-            text={isGettingLocation ? "Getting location..." : locationCoords ? "Update GPS" : "Use Current Location"}
+            text={
+              isGettingLocation
+                ? "Getting location..."
+                : locationCoords
+                  ? "Update GPS"
+                  : "Use Current Location"
+            }
             style={{ color: colors.text, fontWeight: "500" }}
           />
         </TouchableOpacity>
 
         {/* Manual Location Input */}
-        <Text text="Or type a location name" style={{ fontSize: 12, color: colors.textDim, marginTop: 12, marginBottom: 8 }} />
+        <Text
+          text="Or type a location name"
+          style={{ fontSize: 12, color: colors.textDim, marginTop: 12, marginBottom: 8 }}
+        />
         <View
           style={[
             $inputWrapper,
@@ -411,10 +420,7 @@ export const EncounterEditScreen = ({
           <Text text="📝" style={{ fontSize: 20, marginRight: 8 }} />
           <Text preset="subheading" text="Notes" />
           <View style={[$optionalBadge, { backgroundColor: colors.palette.accent100 }]}>
-            <Text
-              text="Optional"
-              style={[$optionalText, { color: colors.palette.accent600 }]}
-            />
+            <Text text="Optional" style={[$optionalText, { color: colors.palette.accent600 }]} />
           </View>
         </View>
 
@@ -450,9 +456,7 @@ export const EncounterEditScreen = ({
           style={[
             $saveButton,
             {
-              backgroundColor: isSaving
-                ? colors.palette.neutral400
-                : colors.palette.primary500,
+              backgroundColor: isSaving ? colors.palette.neutral400 : colors.palette.primary500,
               shadowColor: colors.palette.primary500,
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,

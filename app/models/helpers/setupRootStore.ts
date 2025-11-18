@@ -1,7 +1,9 @@
 import { onSnapshot } from "mobx-state-tree"
-import { storage } from "@/utils/storage"
-import { IRootStore, RootStoreModel } from "../RootStore"
+
 import { api } from "@/services/api"
+import { storage } from "@/utils/storage"
+
+import { IRootStore, RootStoreModel } from "../RootStore"
 
 // Import Reactotron MST tracking if in dev mode
 let trackMSTNode: ((store: IRootStore) => void) | undefined

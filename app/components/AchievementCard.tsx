@@ -1,8 +1,10 @@
 import React from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity } from "react-native"
+
+import { useAppTheme } from "@/theme/context"
+
 import { Card } from "./Card"
 import { Text } from "./Text"
-import { useAppTheme } from "@/theme/context"
 
 export interface AchievementCardProps {
   /**

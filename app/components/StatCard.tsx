@@ -1,8 +1,10 @@
 import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
+
+import { useAppTheme } from "@/theme/context"
+
 import { Card } from "./Card"
 import { Text } from "./Text"
-import { useAppTheme } from "@/theme/context"
 
 export interface StatCardProps {
   /**
@@ -41,11 +43,7 @@ export function StatCard({ value, label, color, icon, style }: StatCardProps) {
       ContentComponent={
         <View style={$content}>
           {icon && <Text style={$icon} text={icon} />}
-          <Text
-            preset="subheading"
-            text={String(value)}
-            style={[{ color: color || colors.text }]}
-          />
+          <Text preset="subheading" text={String(value)} style={{ color: color || colors.text }} />
           <Text text={label} style={[$label, { color: colors.textDim }]} />
         </View>
       }

@@ -1,13 +1,32 @@
 import React from "react"
-import { View, ViewStyle, Image, ImageStyle, TextStyle, StyleSheet, TouchableOpacity, ScrollView } from "react-native"
+import {
+  View,
+  ViewStyle,
+  Image,
+  ImageStyle,
+  TextStyle,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native"
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  MapPin,
+  CloudSun,
+  Tag,
+  Smile,
+  FileText,
+} from "lucide-react-native"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
+
+import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { Button } from "@/components/Button"
-import { useAppTheme } from "@/theme/context"
 import { useStores } from "@/models"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
-import { ArrowLeft, Calendar, Clock, MapPin, CloudSun, Tag, Smile, FileText } from "lucide-react-native"
+import { useAppTheme } from "@/theme/context"
 
 export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetail">) => {
   const {
@@ -78,10 +97,10 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
   }
 
   return (
-    <Screen 
-      preset="scroll" 
-      safeAreaEdges={["top"]} 
-      contentContainerStyle={$container} 
+    <Screen
+      preset="scroll"
+      safeAreaEdges={["top"]}
+      contentContainerStyle={$container}
       style={{ backgroundColor: "white" }}
       backgroundColor="white"
     >
@@ -95,7 +114,10 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
           <ArrowLeft size={24} color={colors.palette.primary600} />
         </TouchableOpacity>
         <View style={$headerCenter}>
-          <Text text={getPetTypeEmoji(encounter.petType)} style={{ fontSize: 20, marginRight: 8 }} />
+          <Text
+            text={getPetTypeEmoji(encounter.petType)}
+            style={{ fontSize: 20, marginRight: 8 }}
+          />
           <Text preset="subheading" text="Encounter Details" />
         </View>
         <View style={{ width: 40 }} />
@@ -105,7 +127,7 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
       <View style={$heroSection}>
         <View style={$photoContainer}>
           {/* Notebook Background Pattern */}
-          <View style={[StyleSheet.absoluteFill, { borderRadius: 24, overflow: 'hidden' }]}>
+          <View style={[StyleSheet.absoluteFill, { borderRadius: 24, overflow: "hidden" }]}>
             <Svg width="100%" height="100%">
               <Defs>
                 <Pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -116,19 +138,12 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
               <Rect width="100%" height="100%" fill="url(#dots)" />
             </Svg>
           </View>
-          
-          <Image
-            source={{ uri: encounter.photos.original }}
-            style={$photo}
-            resizeMode="contain"
-          />
-          
+
+          <Image source={{ uri: encounter.photos.original }} style={$photo} resizeMode="contain" />
+
           {/* Corner Accent */}
           <View
-            style={[
-              $photoCornerAccent,
-              { backgroundColor: getPetTypeColor(encounter.petType) },
-            ]}
+            style={[$photoCornerAccent, { backgroundColor: getPetTypeColor(encounter.petType) }]}
           />
         </View>
       </View>
@@ -137,11 +152,16 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
       <View style={$contentSection}>
         {/* Pet Type Badge */}
         <View style={$petTypeContainer}>
-          <View style={[$petTypeBadge, { backgroundColor: getPetTypeBackground(encounter.petType) }]}>
-            <Text style={{ fontSize: 24, marginRight: 8 }} text={getPetTypeEmoji(encounter.petType)} />
-            <Text 
-              style={[$petTypeText, { color: getPetTypeColor(encounter.petType) }]} 
-              text={encounter.petType.charAt(0).toUpperCase() + encounter.petType.slice(1)} 
+          <View
+            style={[$petTypeBadge, { backgroundColor: getPetTypeBackground(encounter.petType) }]}
+          >
+            <Text
+              style={{ fontSize: 24, marginRight: 8 }}
+              text={getPetTypeEmoji(encounter.petType)}
+            />
+            <Text
+              style={[$petTypeText, { color: getPetTypeColor(encounter.petType) }]}
+              text={encounter.petType.charAt(0).toUpperCase() + encounter.petType.slice(1)}
             />
           </View>
         </View>

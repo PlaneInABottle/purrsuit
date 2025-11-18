@@ -1,6 +1,7 @@
 import React from "react"
 import { View, StyleSheet, Dimensions } from "react-native"
 import Svg, { Circle, Path, Ellipse, Defs, Pattern, Rect, G } from "react-native-svg"
+
 import { useAppTheme } from "@/theme/context"
 
 const { width, height } = Dimensions.get("window")
@@ -32,29 +33,164 @@ export function BackgroundDecorations() {
   // Generate a rich set of decorations
   const decorations: DecorationElement[] = [
     // Top / Header Area
-    { id: "t1", type: "paw", x: width * 0.1, y: height * 0.08, color: "primary", scale: 0.8, rotation: -15, opacity: 0.15 },
-    { id: "t2", type: "cloud", x: width * 0.8, y: height * 0.05, color: "secondary", scale: 1.2, rotation: 0, opacity: 0.1 },
-    { id: "t3", type: "star", x: width * 0.5, y: height * 0.12, color: "accent", scale: 0.6, rotation: 0, opacity: 0.2 },
+    {
+      id: "t1",
+      type: "paw",
+      x: width * 0.1,
+      y: height * 0.08,
+      color: "primary",
+      scale: 0.8,
+      rotation: -15,
+      opacity: 0.15,
+    },
+    {
+      id: "t2",
+      type: "cloud",
+      x: width * 0.8,
+      y: height * 0.05,
+      color: "secondary",
+      scale: 1.2,
+      rotation: 0,
+      opacity: 0.1,
+    },
+    {
+      id: "t3",
+      type: "star",
+      x: width * 0.5,
+      y: height * 0.12,
+      color: "accent",
+      scale: 0.6,
+      rotation: 0,
+      opacity: 0.2,
+    },
 
     // Upper Middle
-    { id: "um1", type: "fishbone", x: width * 0.85, y: height * 0.25, color: "neutral", scale: 0.9, rotation: 45, opacity: 0.12 },
-    { id: "um2", type: "blob", x: width * 0.05, y: height * 0.3, color: "secondary", scale: 1.5, rotation: 0, opacity: 0.08 },
-    { id: "um3", type: "heart", x: width * 0.3, y: height * 0.2, color: "primary", scale: 0.5, rotation: -10, opacity: 0.1 },
+    {
+      id: "um1",
+      type: "fishbone",
+      x: width * 0.85,
+      y: height * 0.25,
+      color: "neutral",
+      scale: 0.9,
+      rotation: 45,
+      opacity: 0.12,
+    },
+    {
+      id: "um2",
+      type: "blob",
+      x: width * 0.05,
+      y: height * 0.3,
+      color: "secondary",
+      scale: 1.5,
+      rotation: 0,
+      opacity: 0.08,
+    },
+    {
+      id: "um3",
+      type: "heart",
+      x: width * 0.3,
+      y: height * 0.2,
+      color: "primary",
+      scale: 0.5,
+      rotation: -10,
+      opacity: 0.1,
+    },
 
     // Middle
-    { id: "m1", type: "yarn", x: width * 0.75, y: height * 0.5, color: "accent", scale: 1.1, rotation: 0, opacity: 0.15 },
-    { id: "m2", type: "paw", x: width * 0.15, y: height * 0.55, color: "secondary", scale: 0.7, rotation: 20, opacity: 0.12 },
-    { id: "m3", type: "leaf", x: width * 0.5, y: height * 0.45, color: "neutral", scale: 0.8, rotation: -30, opacity: 0.1 },
+    {
+      id: "m1",
+      type: "yarn",
+      x: width * 0.75,
+      y: height * 0.5,
+      color: "accent",
+      scale: 1.1,
+      rotation: 0,
+      opacity: 0.15,
+    },
+    {
+      id: "m2",
+      type: "paw",
+      x: width * 0.15,
+      y: height * 0.55,
+      color: "secondary",
+      scale: 0.7,
+      rotation: 20,
+      opacity: 0.12,
+    },
+    {
+      id: "m3",
+      type: "leaf",
+      x: width * 0.5,
+      y: height * 0.45,
+      color: "neutral",
+      scale: 0.8,
+      rotation: -30,
+      opacity: 0.1,
+    },
 
     // Lower Middle
-    { id: "lm1", type: "blob", x: width * 0.9, y: height * 0.7, color: "primary", scale: 1.3, rotation: 180, opacity: 0.08 },
-    { id: "lm2", type: "star", x: width * 0.2, y: height * 0.75, color: "accent", scale: 0.7, rotation: 15, opacity: 0.15 },
-    { id: "lm3", type: "fishbone", x: width * 0.6, y: height * 0.65, color: "secondary", scale: 0.8, rotation: -10, opacity: 0.1 },
+    {
+      id: "lm1",
+      type: "blob",
+      x: width * 0.9,
+      y: height * 0.7,
+      color: "primary",
+      scale: 1.3,
+      rotation: 180,
+      opacity: 0.08,
+    },
+    {
+      id: "lm2",
+      type: "star",
+      x: width * 0.2,
+      y: height * 0.75,
+      color: "accent",
+      scale: 0.7,
+      rotation: 15,
+      opacity: 0.15,
+    },
+    {
+      id: "lm3",
+      type: "fishbone",
+      x: width * 0.6,
+      y: height * 0.65,
+      color: "secondary",
+      scale: 0.8,
+      rotation: -10,
+      opacity: 0.1,
+    },
 
     // Bottom
-    { id: "b1", type: "cloud", x: width * 0.1, y: height * 0.9, color: "neutral", scale: 1.4, rotation: 0, opacity: 0.12 },
-    { id: "b2", type: "paw", x: width * 0.8, y: height * 0.85, color: "primary", scale: 0.9, rotation: -25, opacity: 0.14 },
-    { id: "b3", type: "heart", x: width * 0.45, y: height * 0.92, color: "secondary", scale: 0.6, rotation: 10, opacity: 0.1 },
+    {
+      id: "b1",
+      type: "cloud",
+      x: width * 0.1,
+      y: height * 0.9,
+      color: "neutral",
+      scale: 1.4,
+      rotation: 0,
+      opacity: 0.12,
+    },
+    {
+      id: "b2",
+      type: "paw",
+      x: width * 0.8,
+      y: height * 0.85,
+      color: "primary",
+      scale: 0.9,
+      rotation: -25,
+      opacity: 0.14,
+    },
+    {
+      id: "b3",
+      type: "heart",
+      x: width * 0.45,
+      y: height * 0.92,
+      color: "secondary",
+      scale: 0.6,
+      rotation: 10,
+      opacity: 0.1,
+    },
   ]
 
   return (
@@ -77,13 +213,7 @@ export function BackgroundDecorations() {
   )
 }
 
-const StaticDecoration = ({
-  item,
-  color,
-}: {
-  item: DecorationElement
-  color: string
-}) => {
+const StaticDecoration = ({ item, color }: { item: DecorationElement; color: string }) => {
   return (
     <View
       style={{
@@ -147,7 +277,12 @@ const DecorationShape = ({ type, color }: { type: string; color: string }) => {
         <G>
           <Path d="M10,30 L50,30" stroke={color} strokeWidth="3" strokeLinecap="round" />
           <Path d="M45,30 L55,20 L55,40 Z" fill={color} />
-          <Path d="M15,20 L15,40 M25,18 L25,42 M35,20 L35,40" stroke={color} strokeWidth="3" strokeLinecap="round" />
+          <Path
+            d="M15,20 L15,40 M25,18 L25,42 M35,20 L35,40"
+            stroke={color}
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
           <Circle cx="8" cy="30" r="4" fill={color} />
         </G>
       )

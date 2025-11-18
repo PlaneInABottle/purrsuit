@@ -1,15 +1,33 @@
 import React, { useState, useRef } from "react"
-import { View, ViewStyle, Image as RNImage, Dimensions, Alert, TouchableOpacity, StyleSheet } from "react-native"
-import { Svg, Path, Defs, ClipPath, Image as SvgImage, Circle, Rect, Pattern } from "react-native-svg"
-import { PanGestureHandler, GestureHandlerRootView, State } from "react-native-gesture-handler"
-import ViewShot, { captureRef } from "react-native-view-shot"
+import {
+  View,
+  ViewStyle,
+  Image as RNImage,
+  Dimensions,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native"
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
+import { ArrowLeft, Check, RotateCcw, Scissors } from "lucide-react-native"
+import { PanGestureHandler, GestureHandlerRootView, State } from "react-native-gesture-handler"
+import {
+  Svg,
+  Path,
+  Defs,
+  ClipPath,
+  Image as SvgImage,
+  Circle,
+  Rect,
+  Pattern,
+} from "react-native-svg"
+import ViewShot, { captureRef } from "react-native-view-shot"
+
+import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { Button } from "@/components/Button"
-import { useAppTheme } from "@/theme/context"
 import { AppStackScreenProps } from "@/navigators/navigationTypes"
-import { ArrowLeft, Check, RotateCcw, Scissors } from "lucide-react-native"
+import { useAppTheme } from "@/theme/context"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -39,7 +57,10 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         // setPoints([])
         // setIsClosed(false)
       }
-    } else if (event.nativeEvent.state === State.END || event.nativeEvent.state === State.CANCELLED) {
+    } else if (
+      event.nativeEvent.state === State.END ||
+      event.nativeEvent.state === State.CANCELLED
+    ) {
       setIsDrawing(false)
       if (points.length > 10) {
         setIsClosed(true)
@@ -99,9 +120,9 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         ],
         { format: SaveFormat.PNG },
       )
-      
+
       // Pass back the new URI
-      // We need to navigate back to CaptureScreen with the new URI, 
+      // We need to navigate back to CaptureScreen with the new URI,
       // but CaptureScreen expects to be in 'preview' mode.
       // Since we can't easily pass params BACK to a previous screen in the stack without listeners,
       // we might want to navigate to EncounterEdit directly or use a callback.
@@ -111,7 +132,6 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         screen: "Capture",
         params: { editedPhotoUri: result.uri },
       } as any) // Type casting as MainTabParamList doesn't explicitly have params for Capture yet
-      
     } catch (error) {
       console.error("Failed to save edited image", error)
       Alert.alert("Error", "Failed to save edited image")
@@ -120,13 +140,18 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
 
   const getPathData = () => {
     if (points.length === 0) return ""
-    
+
     const d = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ")
     return isClosed ? `${d} Z` : d
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top", "bottom"]} backgroundColor="white">
+    <Screen
+      preset="fixed"
+      contentContainerStyle={$container}
+      safeAreaEdges={["top", "bottom"]}
+      backgroundColor="white"
+    >
       <View style={$headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={$backButton}>
           <ArrowLeft size={24} color={colors.text} />
@@ -137,10 +162,7 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
         </View>
       </View>
 
-      <View 
-        style={$canvasContainer} 
-        onLayout={(e) => setImageLayout(e.nativeEvent.layout)}
-      >
+      <View style={$canvasContainer} onLayout={(e) => setImageLayout(e.nativeEvent.layout)}>
         {/* Notebook Background Pattern */}
         <Svg style={StyleSheet.absoluteFill} width="100%" height="100%">
           <Defs>
@@ -164,7 +186,11 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                 If isClosed, we show the MASKED image.
                 If not closed, we show the original image + drawing path.
               */}
-              <View ref={captureViewRef} collapsable={false} style={{ flex: 1, backgroundColor: "transparent" }}>
+              <View
+                ref={captureViewRef}
+                collapsable={false}
+                style={{ flex: 1, backgroundColor: "transparent" }}
+              >
                 {isClosed ? (
                   <Svg style={{ flex: 1 }}>
                     <Defs>
@@ -172,7 +198,7 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                         <Path d={getPathData()} />
                       </ClipPath>
                     </Defs>
-                    
+
                     {/* Sticker Border Effect */}
                     <Path
                       d={getPathData()}
@@ -194,12 +220,17 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                   </Svg>
                 ) : (
                   <>
-                    <RNImage 
-                      source={{ uri: photoUri }} 
-                      style={{ width: "100%", height: "100%" }} 
-                      resizeMode="cover" 
+                    <RNImage
+                      source={{ uri: photoUri }}
+                      style={{ width: "100%", height: "100%" }}
+                      resizeMode="cover"
                     />
-                    <Svg style={[StyleSheet.absoluteFill, { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }]}>
+                    <Svg
+                      style={[
+                        StyleSheet.absoluteFill,
+                        { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 },
+                      ]}
+                    >
                       <Path
                         d={getPathData()}
                         stroke={colors.palette.primary500}
@@ -230,11 +261,11 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
           onPress={handleSave}
           disabled={!isClosed}
           style={[
-            $primaryButton, 
-            { 
+            $primaryButton,
+            {
               backgroundColor: isClosed ? colors.palette.primary500 : colors.palette.neutral300,
-              opacity: isClosed ? 1 : 0.7
-            }
+              opacity: isClosed ? 1 : 0.7,
+            },
           ]}
         >
           <Text text="Save Sticker" style={$primaryButtonText} />
@@ -279,7 +310,7 @@ const $headerSubtitle: TextStyle = {
 const $canvasContainer: ViewStyle = {
   flex: 1,
   backgroundColor: "#F8F9FA",
-  overflow: 'hidden',
+  overflow: "hidden",
   marginHorizontal: 16,
   marginBottom: 140, // Increased to avoid occlusion by floating controls
   marginTop: 10,

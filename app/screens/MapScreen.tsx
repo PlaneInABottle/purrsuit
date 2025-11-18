@@ -1,12 +1,22 @@
 import React, { useEffect, useState, useRef } from "react"
-import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle, Platform, ScrollView } from "react-native"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
-import { useStores } from "@/models"
-import { useAppTheme } from "@/theme/context"
-import { Text } from "@/components/Text"
-import { Screen } from "@/components/Screen"
-import type { AppStackScreenProps } from "@/navigators/navigationTypes"
+import {
+  View,
+  ViewStyle,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  TextStyle,
+  Platform,
+  ScrollView,
+} from "react-native"
 import { LocateFixed, Map as MapIcon, Filter } from "lucide-react-native"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+
+import { Screen } from "@/components/Screen"
+import { Text } from "@/components/Text"
+import { useStores } from "@/models"
+import type { AppStackScreenProps } from "@/navigators/navigationTypes"
+import { useAppTheme } from "@/theme/context"
 
 type PetType = "cat" | "dog" | "other"
 
@@ -114,115 +124,124 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
     setSelectedEncounterId(null)
   }
 
-  const selectedEncounter = selectedEncounterId 
-    ? gpsEncounters.find(e => e.id === selectedEncounterId) 
+  const selectedEncounter = selectedEncounterId
+    ? gpsEncounters.find((e) => e.id === selectedEncounterId)
     : null
 
   // Custom Map Style for Light Theme
   const mapStyle = [
     {
-      "elementType": "geometry",
-      "stylers": [{ "color": "#f5f5f5" }]
+      elementType: "geometry",
+      stylers: [{ color: "#f5f5f5" }],
     },
     {
-      "elementType": "labels.icon",
-      "stylers": [{ "visibility": "off" }]
+      elementType: "labels.icon",
+      stylers: [{ visibility: "off" }],
     },
     {
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#616161" }]
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#616161" }],
     },
     {
-      "elementType": "labels.text.stroke",
-      "stylers": [{ "color": "#f5f5f5" }]
+      elementType: "labels.text.stroke",
+      stylers: [{ color: "#f5f5f5" }],
     },
     {
-      "featureType": "administrative.land_parcel",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#bdbdbd" }]
+      featureType: "administrative.land_parcel",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#bdbdbd" }],
     },
     {
-      "featureType": "poi",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#eeeeee" }]
+      featureType: "poi",
+      elementType: "geometry",
+      stylers: [{ color: "#eeeeee" }],
     },
     {
-      "featureType": "poi",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#757575" }]
+      featureType: "poi",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#757575" }],
     },
     {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#e5e5e5" }]
+      featureType: "poi.park",
+      elementType: "geometry",
+      stylers: [{ color: "#e5e5e5" }],
     },
     {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#9e9e9e" }]
+      featureType: "poi.park",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#9e9e9e" }],
     },
     {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#ffffff" }]
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#ffffff" }],
     },
     {
-      "featureType": "road.arterial",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#757575" }]
+      featureType: "road.arterial",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#757575" }],
     },
     {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#dadada" }]
+      featureType: "road.highway",
+      elementType: "geometry",
+      stylers: [{ color: "#dadada" }],
     },
     {
-      "featureType": "road.highway",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#616161" }]
+      featureType: "road.highway",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#616161" }],
     },
     {
-      "featureType": "road.local",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#9e9e9e" }]
+      featureType: "road.local",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#9e9e9e" }],
     },
     {
-      "featureType": "transit.line",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#e5e5e5" }]
+      featureType: "transit.line",
+      elementType: "geometry",
+      stylers: [{ color: "#e5e5e5" }],
     },
     {
-      "featureType": "transit.station",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#eeeeee" }]
+      featureType: "transit.station",
+      elementType: "geometry",
+      stylers: [{ color: "#eeeeee" }],
     },
     {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [{ "color": "#c9c9c9" }]
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#c9c9c9" }],
     },
     {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [{ "color": "#9e9e9e" }]
-    }
+      featureType: "water",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#9e9e9e" }],
+    },
   ]
 
   // Calculate initial region based on first encounter
-  const initialRegion = gpsEncounters.length > 0 && gpsEncounters[0].location.coordinates ? {
-    latitude: gpsEncounters[0].location.coordinates.latitude,
-    longitude: gpsEncounters[0].location.coordinates.longitude,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  } : {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  }
+  const initialRegion =
+    gpsEncounters.length > 0 && gpsEncounters[0].location.coordinates
+      ? {
+          latitude: gpsEncounters[0].location.coordinates.latitude,
+          longitude: gpsEncounters[0].location.coordinates.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        }
+      : {
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }
 
   return (
-    <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContent} style={{ backgroundColor: "white" }} backgroundColor="white">
+    <Screen
+      preset="fixed"
+      safeAreaEdges={[]}
+      contentContainerStyle={$screenContent}
+      style={{ backgroundColor: "white" }}
+      backgroundColor="white"
+    >
       {/* Map View */}
       <View style={$mapContainer}>
         <MapView
@@ -274,9 +293,9 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                     },
                   ]}
                 >
-                  <Text 
-                    style={[$markerEmoji, { fontSize: isSelected ? 24 : 20 }]} 
-                    text={getPetTypeEmoji(encounter.petType)} 
+                  <Text
+                    style={[$markerEmoji, { fontSize: isSelected ? 24 : 20 }]}
+                    text={getPetTypeEmoji(encounter.petType)}
                   />
                 </View>
               </Marker>
@@ -290,10 +309,10 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
             <Text preset="heading" text="Encounter Map" style={$headerTitle} />
             <Text text={`${gpsEncounters.length} locations found`} style={$headerSubtitle} />
           </View>
-          
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={$filterScrollContent}
             style={$filterScrollView}
           >
@@ -321,17 +340,21 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 >
                   <Text
                     text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
-                    style={{ 
-                      color: textColor, 
+                    style={{
+                      color: textColor,
                       fontWeight: isSelected ? "700" : "500",
                       fontSize: 14,
-                      marginRight: type === "all" ? 0 : 4
+                      marginRight: type === "all" ? 0 : 4,
                     }}
                   />
                   {type !== "all" && (
-                    <Text 
-                      text={type.charAt(0).toUpperCase() + type.slice(1)} 
-                      style={{ color: textColor, fontWeight: isSelected ? "700" : "500", fontSize: 13 }} 
+                    <Text
+                      text={type.charAt(0).toUpperCase() + type.slice(1)}
+                      style={{
+                        color: textColor,
+                        fontWeight: isSelected ? "700" : "500",
+                        fontSize: 13,
+                      }}
                     />
                   )}
                 </TouchableOpacity>
@@ -364,20 +387,32 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 ]}
               >
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(selectedEncounter.petType)} />
+                  <Text
+                    style={$calloutHeaderEmoji}
+                    text={getPetTypeEmoji(selectedEncounter.petType)}
+                  />
                   <Text
                     style={$calloutHeaderText}
                     text={
-                      selectedEncounter.petType.charAt(0).toUpperCase() + selectedEncounter.petType.slice(1)
+                      selectedEncounter.petType.charAt(0).toUpperCase() +
+                      selectedEncounter.petType.slice(1)
                     }
                   />
                 </View>
-                <TouchableOpacity 
-                  style={$closeButton} 
+                <TouchableOpacity
+                  style={$closeButton}
                   onPress={() => setSelectedEncounterId(null)}
                   hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Text text="✕" style={{ color: "white", fontWeight: "bold", fontSize: 14, includeFontPadding: false }} />
+                  <Text
+                    text="✕"
+                    style={{
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: 14,
+                      includeFontPadding: false,
+                    }}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -387,7 +422,11 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date" />
                   <Text
                     style={[$calloutValue, { color: colors.text }]}
-                    text={new Date(selectedEncounter.timestamp).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                    text={new Date(selectedEncounter.timestamp).toLocaleDateString(undefined, {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   />
                 </View>
 
@@ -401,7 +440,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                     })}
                   />
                 </View>
-                
+
                 {selectedEncounter.note && (
                   <View style={$calloutRow}>
                     <Text style={[$calloutLabel, { color: colors.textDim }]} text="📝 Note" />
@@ -422,13 +461,19 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   { backgroundColor: getPetTypeColor(selectedEncounter.petType) + "15" }, // 10% opacity
                 ]}
               >
-                <Text 
-                  style={[$calloutButtonText, { color: getPetTypeColor(selectedEncounter.petType) }]} 
-                  text="View Full Details" 
+                <Text
+                  style={[
+                    $calloutButtonText,
+                    { color: getPetTypeColor(selectedEncounter.petType) },
+                  ]}
+                  text="View Full Details"
                 />
-                <Text 
-                  style={[$calloutButtonArrow, { color: getPetTypeColor(selectedEncounter.petType) }]} 
-                  text="→" 
+                <Text
+                  style={[
+                    $calloutButtonArrow,
+                    { color: getPetTypeColor(selectedEncounter.petType) },
+                  ]}
+                  text="→"
                 />
               </TouchableOpacity>
             </View>

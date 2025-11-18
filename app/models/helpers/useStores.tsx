@@ -1,4 +1,5 @@
 import { createContext, FC, PropsWithChildren, useContext, useEffect, useState } from "react"
+
 import { IRootStore } from "../RootStore"
 import { setupRootStore } from "./setupRootStore"
 
@@ -39,9 +40,7 @@ export const StoreProvider: FC<PropsWithChildren<StoreProviderProps>> = ({ child
     return null
   }
 
-  return (
-    <RootStoreContext.Provider value={rootStore}>{children}</RootStoreContext.Provider>
-  )
+  return <RootStoreContext.Provider value={rootStore}>{children}</RootStoreContext.Provider>
 }
 
 /**

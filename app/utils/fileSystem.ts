@@ -143,7 +143,9 @@ export function getPhotoUri(photoId: string): string {
  */
 export function getThumbnailUri(photoId: string): string {
   const thumbFilePng = new File(thumbnailsDir, `${photoId}_thumb.png`)
-  return thumbFilePng.exists ? thumbFilePng.uri : new File(thumbnailsDir, `${photoId}_thumb.jpg`).uri
+  return thumbFilePng.exists
+    ? thumbFilePng.uri
+    : new File(thumbnailsDir, `${photoId}_thumb.jpg`).uri
 }
 
 /**

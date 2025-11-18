@@ -10,12 +10,23 @@ import {
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
+import {
+  RefreshCw,
+  Image as ImageIcon,
+  Camera,
+  Zap,
+  ZapOff,
+  CircleSlash,
+  PawPrint,
+  RotateCcw,
+  ArrowRight,
+  Scissors,
+} from "lucide-react-native"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
-import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint, RotateCcw, ArrowRight, Scissors } from "lucide-react-native"
+
+import { Button } from "@/components/Button"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
-import { Button } from "@/components/Button"
-import { useAppTheme } from "@/theme/context"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 import {
   requestCameraPermissions,
@@ -25,6 +36,7 @@ import {
   cycleFlashMode,
   getFlashModeType,
 } from "@/services/camera"
+import { useAppTheme } from "@/theme/context"
 import { generateUUID } from "@/utils/uuid"
 
 type CaptureStep = "camera" | "preview"

@@ -1,14 +1,15 @@
 import React from "react"
 import { TextStyle } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Home, Camera, MapPin, Settings } from "lucide-react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { HomeScreen } from "@/screens/HomeScreen"
 import { CaptureScreen } from "@/screens/CaptureScreen"
+import { HomeScreen } from "@/screens/HomeScreen"
 import { MapScreen } from "@/screens/MapScreen"
 import { ProfileScreen } from "@/screens/ProfileScreen"
 import { useAppTheme } from "@/theme/context"
+
 import type { MainTabParamList } from "./navigationTypes"
 
 const Tab = createBottomTabNavigator<MainTabParamList>()
