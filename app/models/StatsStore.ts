@@ -100,7 +100,7 @@ export const StatsStoreModel = types
     /**
      * Record a new encounter and update stats
      */
-    recordEncounter(petType: "cat" | "dog" | "other" | "unknown", location?: string) {
+    recordEncounter(petType: "cat" | "dog" | "other", location?: string) {
       self.totalEncounters += 1
 
       // Update pet type counter

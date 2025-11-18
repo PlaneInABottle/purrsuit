@@ -36,7 +36,7 @@ const EncountersStoreModel = types
     /**
      * Get encounters by pet type
      */
-    getByPetType(petType: "cat" | "dog" | "other" | "unknown") {
+    getByPetType(petType: "cat" | "dog" | "other") {
       return this.encountersArray.filter((e) => e.petType === petType)
     },
     /**
@@ -57,7 +57,7 @@ const EncountersStoreModel = types
       const rootStore = getRoot<IRootStore>(self)
       const location = encounter.location?.type === "manual" ? encounter.location.label : undefined
       rootStore.statsStore.recordEncounter(
-        encounter.petType as "cat" | "dog" | "other" | "unknown",
+        encounter.petType as "cat" | "dog" | "other",
         location,
       )
 

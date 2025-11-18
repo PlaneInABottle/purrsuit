@@ -45,7 +45,7 @@ export const EncounterModel = types
     photos: Photo,
 
     // Pet Information
-    petType: types.enumeration(["cat", "dog", "other", "unknown"]),
+    petType: types.enumeration(["cat", "dog", "other"]),
     mood: types.optional(types.array(types.string), []), // ["happy", "playful"]
     tags: types.optional(types.array(types.string), []), // ["fluffy", "orange"]
 
@@ -117,7 +117,7 @@ export const EncounterModel = types
     /**
      * Update pet type
      */
-    setPetType(type: "cat" | "dog" | "other" | "unknown") {
+    setPetType(type: "cat" | "dog" | "other") {
       self.petType = type
     },
     /**

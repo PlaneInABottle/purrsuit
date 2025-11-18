@@ -8,7 +8,7 @@ import { Screen } from "@/components/Screen"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
 import { LocateFixed, Map as MapIcon, Filter } from "lucide-react-native"
 
-type PetType = "cat" | "dog" | "other" | "unknown"
+type PetType = "cat" | "dog" | "other"
 
 const getPetTypeColor = (type: PetType): string => {
   switch (type) {

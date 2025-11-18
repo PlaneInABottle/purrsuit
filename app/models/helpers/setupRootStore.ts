@@ -13,7 +13,7 @@ if (__DEV__) {
 /**
  * The key we'll be saving our state as within MMKV storage.
  */
-const ROOT_STATE_STORAGE_KEY = "root-store-v1"
+const ROOT_STATE_STORAGE_KEY = "root-store-v2"
 
 /**
  * Setup the root store with persistence and environment injection.

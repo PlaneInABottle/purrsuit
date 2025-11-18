@@ -28,7 +28,7 @@ import {
 } from "@/services/location"
 import type { LocationCoordinates } from "@/services/location"
 
-type PetType = "cat" | "dog" | "other" | "unknown"
+type PetType = "cat" | "dog" | "other"
 
 export const EncounterEditScreen = ({
   route,
@@ -41,7 +41,7 @@ export const EncounterEditScreen = ({
   const { photoUri, encounterId } = route.params
 
   // Form state
-  const [petType, setPetType] = useState<PetType>("unknown")
+  const [petType, setPetType] = useState<PetType>("cat")
   const [location, setLocation] = useState("")
   const [note, setNote] = useState("")
   const [isSaving, setIsSaving] = useState(false)
@@ -53,7 +53,6 @@ export const EncounterEditScreen = ({
     { value: "cat", label: "Cat", emoji: "🐱" },
     { value: "dog", label: "Dog", emoji: "🐶" },
     { value: "other", label: "Other", emoji: "🐾" },
-    { value: "unknown", label: "Unknown", emoji: "❓" },
   ]
 
   async function handleGetCurrentLocation() {
