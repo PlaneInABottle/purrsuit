@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
-import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle } from "react-native"
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps"
+import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle, Platform } from "react-native"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { useStores } from "@/models"
 import { useAppTheme } from "@/theme/context"
 import { Text } from "@/components/Text"
@@ -43,6 +43,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
   const mapRef = useRef<MapView>(null)
   const [selectedPetType, setSelectedPetType] = useState<PetType | "all">("all")
   const [initialRegionSet, setInitialRegionSet] = useState(false)
+  const [selectedEncounterId, setSelectedEncounterId] = useState<string | null>(null)
 
   // Get encounters with GPS coordinates
   const gpsEncounters = encountersStore.encountersArray
@@ -103,6 +104,18 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
   const handleViewDetails = (encounterId: string) => {
     navigation.navigate("EncounterDetail", { encounterId })
   }
+
+  const handleMarkerPress = (id: string) => {
+    setSelectedEncounterId(id)
+  }
+
+  const handleMapPress = () => {
+    setSelectedEncounterId(null)
+  }
+
+  const selectedEncounter = selectedEncounterId 
+    ? gpsEncounters.find(e => e.id === selectedEncounterId) 
+    : null
 
   return (
     <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$screenContent}>
@@ -174,6 +187,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
           onMapReady={() => console.log("✅ MapView is READY")}
           onError={(e) => console.error("❌ MapView ERROR:", e)}
           onLayout={(e) => console.log("📏 MapView layout:", e.nativeEvent.layout)}
+          onPress={handleMapPress}
         >
           {gpsEncounters.map((encounter) => {
             const coords = encounter.location.coordinates
@@ -187,7 +201,10 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   longitude: coords.longitude,
                 }}
                 anchor={{ x: 0.5, y: 1 }}
-                calloutAnchor={{ x: 0.5, y: -0.5 }}
+                onPress={(e) => {
+                  e.stopPropagation()
+                  handleMarkerPress(encounter.id)
+                }}
               >
                 {/* Custom small circular marker with pet type emoji */}
                 <View
@@ -196,72 +213,93 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                     {
                       backgroundColor: getPetTypeColor(encounter.petType),
                       borderColor: getPetTypeColor(encounter.petType),
+                      transform: [{ scale: selectedEncounterId === encounter.id ? 1.2 : 1 }]
                     },
                   ]}
                 >
                   <Text style={$markerEmoji} text={getPetTypeEmoji(encounter.petType)} />
                 </View>
-
-                {/* Custom Callout */}
-                <Callout tooltip onPress={() => handleViewDetails(encounter.id)}>
-                  <View style={[$calloutContainer, { backgroundColor: colors.background }]}>
-                    {/* Header with pet type emoji and color */}
-                    <View
-                      style={[
-                        $calloutHeader,
-                        { backgroundColor: getPetTypeColor(encounter.petType) },
-                      ]}
-                    >
-                      <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(encounter.petType)} />
-                      <Text
-                        style={$calloutHeaderText}
-                        text={
-                          encounter.petType.charAt(0).toUpperCase() + encounter.petType.slice(1)
-                        }
-                      />
-                    </View>
-
-                    {/* Content */}
-                    <View style={$calloutContent}>
-                      <View style={$calloutRow}>
-                        <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date:" />
-                        <Text
-                          style={[$calloutValue, { color: colors.text }]}
-                          text={new Date(encounter.timestamp).toLocaleDateString()}
-                        />
-                      </View>
-
-                      <View style={$calloutRow}>
-                        <Text style={[$calloutLabel, { color: colors.textDim }]} text="⏰ Time:" />
-                        <Text
-                          style={[$calloutValue, { color: colors.text }]}
-                          text={new Date(encounter.timestamp).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        />
-                      </View>
-                    </View>
-
-                    {/* Button */}
-                    <View
-                      style={[
-                        $calloutButton,
-                        { backgroundColor: getPetTypeColor(encounter.petType) },
-                      ]}
-                    >
-                      <Text style={$calloutButtonText} text="View Full Details" />
-                      <Text style={$calloutButtonArrow} text="→" />
-                    </View>
-                  </View>
-                </Callout>
               </Marker>
             )
           })}
         </MapView>
 
-        {/* Fit All Button */}
-        {gpsEncounters.length > 0 && (
+        {/* Bottom Card for Selected Encounter */}
+        {selectedEncounter && (
+          <View style={$bottomCardContainer}>
+            <View style={[$calloutContainer, { width: "100%", backgroundColor: colors.background }]}>
+              {/* Header with pet type emoji and color */}
+              <View
+                style={[
+                  $calloutHeader,
+                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
+                ]}
+              >
+                <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(selectedEncounter.petType)} />
+                <Text
+                  style={$calloutHeaderText}
+                  text={
+                    selectedEncounter.petType.charAt(0).toUpperCase() + selectedEncounter.petType.slice(1)
+                  }
+                />
+                <TouchableOpacity 
+                  style={$closeButton} 
+                  onPress={() => setSelectedEncounterId(null)}
+                >
+                  <Text text="✕" style={{ color: "white", fontWeight: "bold" }} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Content */}
+              <View style={$calloutContent}>
+                <View style={$calloutRow}>
+                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date:" />
+                  <Text
+                    style={[$calloutValue, { color: colors.text }]}
+                    text={new Date(selectedEncounter.timestamp).toLocaleDateString()}
+                  />
+                </View>
+
+                <View style={$calloutRow}>
+                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="⏰ Time:" />
+                  <Text
+                    style={[$calloutValue, { color: colors.text }]}
+                    text={new Date(selectedEncounter.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  />
+                </View>
+                
+                {selectedEncounter.note && (
+                  <View style={$calloutRow}>
+                    <Text style={[$calloutLabel, { color: colors.textDim }]} text="📝 Note:" />
+                    <Text
+                      style={[$calloutValue, { color: colors.text }]}
+                      text={selectedEncounter.note}
+                      numberOfLines={1}
+                    />
+                  </View>
+                )}
+              </View>
+
+              {/* Button */}
+              <TouchableOpacity
+                onPress={() => handleViewDetails(selectedEncounter.id)}
+                style={[
+                  $calloutButton,
+                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
+                ]}
+              >
+                <Text style={$calloutButtonText} text="View Full Details" />
+                <Text style={$calloutButtonArrow} text="→" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Fit All Button - Hide when card is shown */}
+        {gpsEncounters.length > 0 && !selectedEncounterId && (
           <TouchableOpacity
             onPress={fitAllMarkers}
             style={[
@@ -469,4 +507,23 @@ const $calloutButtonArrow: TextStyle = {
   fontSize: 14,
   fontWeight: "700",
   color: "#FFF",
+}
+
+const $bottomCardContainer: ViewStyle = {
+  position: "absolute",
+  bottom: 30,
+  left: 16,
+  right: 16,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.2,
+  shadowRadius: 8,
+  elevation: 8,
+}
+
+const $closeButton: ViewStyle = {
+  position: "absolute",
+  right: 10,
+  top: 10,
+  padding: 4,
 }
