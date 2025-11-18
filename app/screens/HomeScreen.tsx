@@ -227,7 +227,9 @@ const $thumbnail: ImageStyle = {
 
 const $cardInfoSection: ViewStyle = {
   padding: 12,
-  gap: 6,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
 }
 
 const $petTypeRow: ViewStyle = {
