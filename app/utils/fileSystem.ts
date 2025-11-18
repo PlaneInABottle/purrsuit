@@ -12,7 +12,7 @@ const photosDir = new Directory(baseDir, "photos")
 const thumbnailsDir = new Directory(baseDir, "thumbnails")
 
 // Thumbnail dimensions
-const THUMBNAIL_SIZE = { width: 300, height: 300 }
+const THUMBNAIL_WIDTH = 300
 
 /**
  * Initialize the directory structure
@@ -70,7 +70,7 @@ export async function savePhoto(
  */
 async function generateThumbnail(sourceUri: string, photoId: string): Promise<string> {
   try {
-    const manipResult = await manipulateAsync(sourceUri, [{ resize: THUMBNAIL_SIZE }], {
+    const manipResult = await manipulateAsync(sourceUri, [{ resize: { width: THUMBNAIL_WIDTH } }], {
       compress: 0.8,
       format: SaveFormat.PNG,
     })
