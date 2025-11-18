@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react"
-import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle, Platform } from "react-native"
+import { View, ViewStyle, TouchableOpacity, Alert, StyleSheet, TextStyle, Platform, ScrollView } from "react-native"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { useStores } from "@/models"
 import { useAppTheme } from "@/theme/context"
 import { Text } from "@/components/Text"
 import { Screen } from "@/components/Screen"
 import type { AppStackScreenProps } from "@/navigators/navigationTypes"
+import { LocateFixed, Map as MapIcon, Filter } from "lucide-react-native"
 
 type PetType = "cat" | "dog" | "other" | "unknown"
 
@@ -118,48 +119,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
     : null
 
   return (
-    <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$screenContent}>
-      {/* Header Section with Gradient */}
-      <View style={$headerContainer}>
-        <Text preset="heading" text="Encounter Map" style={$headerTitle} />
-        <Text text="Explore your findings" style={$headerSubtitle} />
-      </View>
-
-      {/* Pet Type Filter */}
-      <View style={$filterContainer}>
-        <Text style={[$filterLabel, { color: colors.textDim }]} text="Filter by pet type:" />
-        <View style={$filterButtonsRow}>
-          {(["all", "cat", "dog", "other"] as const).map((type) => {
-            const isSelected = selectedPetType === type
-            const bgColor = isSelected
-              ? type === "all"
-                ? colors.palette.primary500
-                : getPetTypeColor(type as PetType)
-              : colors.palette.neutral100
-            const textColor = isSelected ? "#FFF" : colors.text
-
-            return (
-              <TouchableOpacity
-                key={type}
-                onPress={() => setSelectedPetType(type)}
-                style={[
-                  $filterButton,
-                  {
-                    backgroundColor: bgColor,
-                    borderColor: isSelected ? "transparent" : colors.separator,
-                  },
-                ]}
-              >
-                <Text
-                  text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
-                  style={{ color: textColor, fontWeight: isSelected ? "600" : "500" }}
-                />
-              </TouchableOpacity>
-            )
-          })}
-        </View>
-      </View>
-
+    <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContent} style={{ backgroundColor: "white" }}>
       {/* Map View */}
       <View style={$mapContainer}>
         <MapView
@@ -173,7 +133,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
             longitudeDelta: 0.0421,
           }}
           showsUserLocation
-          showsMyLocationButton
+          showsMyLocationButton={false} // We'll use our own button
           onMapReady={() => console.log("✅ MapView is READY")}
           onError={(e) => console.error("❌ MapView ERROR:", e)}
           onLayout={(e) => console.log("📏 MapView layout:", e.nativeEvent.layout)}
@@ -202,7 +162,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                     $petMarker,
                     {
                       backgroundColor: getPetTypeColor(encounter.petType),
-                      borderColor: getPetTypeColor(encounter.petType),
+                      borderColor: "white",
                       transform: [{ scale: selectedEncounterId === encounter.id ? 1.2 : 1 }]
                     },
                   ]}
@@ -214,10 +174,78 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
           })}
         </MapView>
 
+        {/* Floating Header & Filters */}
+        <View style={$floatingHeaderContainer}>
+          <View style={$headerTextContainer}>
+            <Text preset="heading" text="Encounter Map" style={$headerTitle} />
+            <Text text={`${gpsEncounters.length} locations found`} style={$headerSubtitle} />
+          </View>
+          
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={$filterScrollContent}
+            style={$filterScrollView}
+          >
+            {(["all", "cat", "dog", "other"] as const).map((type) => {
+              const isSelected = selectedPetType === type
+              const bgColor = isSelected
+                ? type === "all"
+                  ? colors.palette.primary500
+                  : getPetTypeColor(type as PetType)
+                : "white"
+              const textColor = isSelected ? "#FFF" : colors.text
+              const borderColor = isSelected ? "transparent" : colors.palette.neutral200
+
+              return (
+                <TouchableOpacity
+                  key={type}
+                  onPress={() => setSelectedPetType(type)}
+                  style={[
+                    $filterButton,
+                    {
+                      backgroundColor: bgColor,
+                      borderColor: borderColor,
+                    },
+                  ]}
+                >
+                  <Text
+                    text={type === "all" ? "All" : getPetTypeEmoji(type as PetType)}
+                    style={{ 
+                      color: textColor, 
+                      fontWeight: isSelected ? "700" : "500",
+                      fontSize: 14,
+                      marginRight: type === "all" ? 0 : 4
+                    }}
+                  />
+                  {type !== "all" && (
+                    <Text 
+                      text={type.charAt(0).toUpperCase() + type.slice(1)} 
+                      style={{ color: textColor, fontWeight: isSelected ? "700" : "500", fontSize: 13 }} 
+                    />
+                  )}
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+        </View>
+
+        {/* Map Controls (Right Side) */}
+        <View style={$mapControls}>
+          {gpsEncounters.length > 0 && !selectedEncounterId && (
+            <TouchableOpacity
+              onPress={fitAllMarkers}
+              style={[$fitAllButton, { backgroundColor: colors.palette.primary500 }]}
+            >
+              <Text text="📍 Fit All" style={{ color: "#FFF", fontWeight: "600", fontSize: 12 }} />
+            </TouchableOpacity>
+          )}
+        </View>
+
         {/* Bottom Card for Selected Encounter */}
         {selectedEncounter && (
           <View style={$bottomCardContainer}>
-            <View style={[$calloutContainer, { width: "100%", backgroundColor: colors.background }]}>
+            <View style={[$calloutContainer, { width: "100%", backgroundColor: "white" }]}>
               {/* Header with pet type emoji and color */}
               <View
                 style={[
@@ -225,33 +253,36 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                   { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
                 ]}
               >
-                <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(selectedEncounter.petType)} />
-                <Text
-                  style={$calloutHeaderText}
-                  text={
-                    selectedEncounter.petType.charAt(0).toUpperCase() + selectedEncounter.petType.slice(1)
-                  }
-                />
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <Text style={$calloutHeaderEmoji} text={getPetTypeEmoji(selectedEncounter.petType)} />
+                  <Text
+                    style={$calloutHeaderText}
+                    text={
+                      selectedEncounter.petType.charAt(0).toUpperCase() + selectedEncounter.petType.slice(1)
+                    }
+                  />
+                </View>
                 <TouchableOpacity 
                   style={$closeButton} 
                   onPress={() => setSelectedEncounterId(null)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
-                  <Text text="✕" style={{ color: "white", fontWeight: "bold" }} />
+                  <Text text="✕" style={{ color: "white", fontWeight: "bold", fontSize: 16 }} />
                 </TouchableOpacity>
               </View>
 
               {/* Content */}
               <View style={$calloutContent}>
                 <View style={$calloutRow}>
-                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date:" />
+                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="📅 Date" />
                   <Text
                     style={[$calloutValue, { color: colors.text }]}
-                    text={new Date(selectedEncounter.timestamp).toLocaleDateString()}
+                    text={new Date(selectedEncounter.timestamp).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
                   />
                 </View>
 
                 <View style={$calloutRow}>
-                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="⏰ Time:" />
+                  <Text style={[$calloutLabel, { color: colors.textDim }]} text="⏰ Time" />
                   <Text
                     style={[$calloutValue, { color: colors.text }]}
                     text={new Date(selectedEncounter.timestamp).toLocaleTimeString([], {
@@ -263,7 +294,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 
                 {selectedEncounter.note && (
                   <View style={$calloutRow}>
-                    <Text style={[$calloutLabel, { color: colors.textDim }]} text="📝 Note:" />
+                    <Text style={[$calloutLabel, { color: colors.textDim }]} text="📝 Note" />
                     <Text
                       style={[$calloutValue, { color: colors.text }]}
                       text={selectedEncounter.note}
@@ -278,30 +309,20 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 onPress={() => handleViewDetails(selectedEncounter.id)}
                 style={[
                   $calloutButton,
-                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
+                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) + "15" }, // 10% opacity
                 ]}
               >
-                <Text style={$calloutButtonText} text="View Full Details" />
-                <Text style={$calloutButtonArrow} text="→" />
+                <Text 
+                  style={[$calloutButtonText, { color: getPetTypeColor(selectedEncounter.petType) }]} 
+                  text="View Full Details" 
+                />
+                <Text 
+                  style={[$calloutButtonArrow, { color: getPetTypeColor(selectedEncounter.petType) }]} 
+                  text="→" 
+                />
               </TouchableOpacity>
             </View>
           </View>
-        )}
-
-        {/* Fit All Button - Hide when card is shown */}
-        {gpsEncounters.length > 0 && !selectedEncounterId && (
-          <TouchableOpacity
-            onPress={fitAllMarkers}
-            style={[
-              $fitAllButton,
-              {
-                backgroundColor: colors.palette.primary500,
-                shadowColor: colors.palette.primary500,
-              },
-            ]}
-          >
-            <Text text="📍 Fit All" style={{ color: "#FFF", fontWeight: "600", fontSize: 12 }} />
-          </TouchableOpacity>
         )}
       </View>
     </Screen>
@@ -313,16 +334,32 @@ const $screenContent: ViewStyle = {
   flexDirection: "column",
 }
 
-const $headerContainer: ViewStyle = {
+const $floatingHeaderContainer: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  paddingTop: Platform.OS === "ios" ? 20 : 40,
+  paddingBottom: 20,
+  backgroundColor: "white",
+  borderBottomLeftRadius: 24,
+  borderBottomRightRadius: 24,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.1,
+  shadowRadius: 12,
+  elevation: 8,
+  zIndex: 10,
+}
+
+const $headerTextContainer: ViewStyle = {
   paddingHorizontal: 20,
-  paddingTop: 20,
-  paddingBottom: 10,
-  flexShrink: 0,
+  marginBottom: 16,
 }
 
 const $headerTitle: TextStyle = {
-  fontSize: 28,
-  marginBottom: 4,
+  fontSize: 24,
+  marginBottom: 2,
 }
 
 const $headerSubtitle: TextStyle = {
@@ -330,33 +367,29 @@ const $headerSubtitle: TextStyle = {
   opacity: 0.6,
 }
 
-const $filterContainer: ViewStyle = {
-  paddingHorizontal: 16,
-  paddingVertical: 12,
-  borderBottomWidth: 1,
-  borderBottomColor: "rgba(0, 0, 0, 0.05)",
-  flexShrink: 0,
+const $filterScrollView: ViewStyle = {
+  maxHeight: 50,
 }
 
-const $filterLabel: TextStyle = {
-  fontSize: 12,
-  fontWeight: "500",
-  marginBottom: 10,
-}
-
-const $filterButtonsRow: ViewStyle = {
-  flexDirection: "row",
-  gap: 8,
+const $filterScrollContent: ViewStyle = {
+  paddingHorizontal: 20,
+  gap: 10,
 }
 
 const $filterButton: ViewStyle = {
-  paddingHorizontal: 12,
+  flexDirection: "row",
+  paddingHorizontal: 16,
   paddingVertical: 8,
-  borderRadius: 16,
+  borderRadius: 20,
   borderWidth: 1,
   alignItems: "center",
   justifyContent: "center",
-  minWidth: 45,
+  height: 40,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.05,
+  shadowRadius: 4,
+  elevation: 2,
 }
 
 const $mapContainer: ViewStyle = {
@@ -364,13 +397,18 @@ const $mapContainer: ViewStyle = {
   position: "relative",
 }
 
-const $fitAllButton: ViewStyle = {
+const $mapControls: ViewStyle = {
   position: "absolute",
-  bottom: 20,
   right: 16,
+  bottom: 30, // Moved to bottom
+  gap: 12,
+}
+
+const $fitAllButton: ViewStyle = {
   paddingHorizontal: 16,
   paddingVertical: 10,
   borderRadius: 12,
+  shadowColor: "#000",
   shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.3,
   shadowRadius: 8,
@@ -378,10 +416,10 @@ const $fitAllButton: ViewStyle = {
 }
 
 const $petMarker: ViewStyle = {
-  width: 36,
-  height: 36,
-  borderRadius: 18,
-  borderWidth: 1.5,
+  width: 40,
+  height: 40,
+  borderRadius: 20,
+  borderWidth: 2,
   alignItems: "center",
   justifyContent: "center",
   // iOS shadow
@@ -394,63 +432,60 @@ const $petMarker: ViewStyle = {
 }
 
 const $markerEmoji: TextStyle = {
-  fontSize: 16,
-  fontWeight: "600",
+  fontSize: 20,
 }
 
 const $calloutContainer: ViewStyle = {
-  width: 200,
-  borderRadius: 12,
+  borderRadius: 20,
   overflow: "hidden",
   // iOS shadow
   shadowColor: "#000",
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.2,
-  shadowRadius: 8,
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.15,
+  shadowRadius: 16,
   // Android elevation
-  elevation: 6,
+  elevation: 10,
 }
 
 const $calloutHeader: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
-  justifyContent: "center",
-  paddingVertical: 8,
-  paddingHorizontal: 12,
-  gap: 6,
+  justifyContent: "space-between",
+  paddingVertical: 12,
+  paddingHorizontal: 16,
 }
 
 const $calloutHeaderEmoji: TextStyle = {
-  fontSize: 20,
+  fontSize: 24,
 }
 
 const $calloutHeaderText: TextStyle = {
-  fontSize: 15,
+  fontSize: 16,
   fontWeight: "700",
   color: "#FFF",
 }
 
 const $calloutContent: ViewStyle = {
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  gap: 6,
+  paddingHorizontal: 16,
+  paddingVertical: 16,
+  gap: 10,
 }
 
 const $calloutRow: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
-  gap: 6,
+  gap: 10,
 }
 
 const $calloutLabel: TextStyle = {
-  fontSize: 11,
-  fontWeight: "500",
-  minWidth: 70,
+  fontSize: 12,
+  fontWeight: "600",
+  width: 60,
 }
 
 const $calloutValue: TextStyle = {
-  fontSize: 13,
-  fontWeight: "600",
+  fontSize: 14,
+  fontWeight: "500",
   flex: 1,
 }
 
@@ -458,31 +493,22 @@ const $calloutButton: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  paddingVertical: 8,
-  paddingHorizontal: 12,
-  marginHorizontal: 10,
-  marginBottom: 10,
-  borderRadius: 8,
-  gap: 6,
-  // iOS shadow
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.2,
-  shadowRadius: 3,
-  // Android elevation
-  elevation: 2,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  marginHorizontal: 16,
+  marginBottom: 16,
+  borderRadius: 12,
+  gap: 8,
 }
 
 const $calloutButtonText: TextStyle = {
-  fontSize: 12,
+  fontSize: 14,
   fontWeight: "700",
-  color: "#FFF",
 }
 
 const $calloutButtonArrow: TextStyle = {
-  fontSize: 14,
+  fontSize: 16,
   fontWeight: "700",
-  color: "#FFF",
 }
 
 const $bottomCardContainer: ViewStyle = {
@@ -490,16 +516,14 @@ const $bottomCardContainer: ViewStyle = {
   bottom: 30,
   left: 16,
   right: 16,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.2,
-  shadowRadius: 8,
-  elevation: 8,
 }
 
 const $closeButton: ViewStyle = {
-  position: "absolute",
-  right: 10,
-  top: 10,
   padding: 4,
+  backgroundColor: "rgba(0,0,0,0.1)",
+  borderRadius: 12,
+  width: 24,
+  height: 24,
+  alignItems: "center",
+  justifyContent: "center",
 }
