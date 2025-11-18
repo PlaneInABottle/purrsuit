@@ -78,7 +78,13 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
   }
 
   return (
-    <Screen preset="scroll" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$container} style={{ backgroundColor: "white" }}>
+    <Screen 
+      preset="scroll" 
+      safeAreaEdges={["top"]} 
+      contentContainerStyle={$container} 
+      style={{ backgroundColor: "white" }}
+      backgroundColor="white"
+    >
       {/* Header */}
       <View style={$header}>
         <TouchableOpacity

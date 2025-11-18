@@ -144,7 +144,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   // Permission states
   if (hasPermission === null) {
     return (
-      <Screen preset="fixed" contentContainerStyle={$container}>
+      <Screen preset="fixed" contentContainerStyle={$container} backgroundColor="white">
         <View style={$centerContent}>
           <Text text="Requesting camera permissions..." />
         </View>
@@ -154,7 +154,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
 
   if (hasPermission === false) {
     return (
-      <Screen preset="fixed" contentContainerStyle={$container}>
+      <Screen preset="fixed" contentContainerStyle={$container} backgroundColor="white">
         <View style={$centerContent}>
           <Camera size={64} color={colors.textDim} strokeWidth={1.5} style={{ marginBottom: 16 }} />
           <Text text="Camera access required" preset="subheading" />
@@ -171,7 +171,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   // Preview mode
   if (captureStep === "preview" && capturedPhoto) {
     return (
-      <Screen preset="fixed" contentContainerStyle={$container}>
+      <Screen preset="fixed" contentContainerStyle={$container} backgroundColor="white">
         <View style={$headerContainer}>
           <View>
             <Text preset="heading" text="Review Capture" style={$headerTitle} />
@@ -274,6 +274,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
 
 const $container: ViewStyle = {
   flex: 1,
+  backgroundColor: "white",
 }
 
 const $centerContent: ViewStyle = {

@@ -126,7 +126,7 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top", "bottom"]}>
+    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top", "bottom"]} backgroundColor="white">
       <View style={$headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={$backButton}>
           <ArrowLeft size={24} color={colors.text} />

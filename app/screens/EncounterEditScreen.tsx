@@ -215,6 +215,7 @@ export const EncounterEditScreen = ({
       style={$container}
       contentContainerStyle={$scrollContent}
       safeAreaEdges={["top"]}
+      backgroundColor="white"
       keyboardShouldPersistTaps="handled"
       KeyboardAvoidingViewProps={{
         enabled: false,

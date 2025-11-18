@@ -50,7 +50,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
   // Empty state
   if (encounters.length === 0) {
     return (
-      <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+      <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]} backgroundColor="white">
         {/* Background Decorations */}
         <BackgroundDecorations />
 
@@ -84,7 +84,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
 
   // Grid view with encounters
   return (
-    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]}>
+    <Screen preset="fixed" contentContainerStyle={$container} safeAreaEdges={["top"]} backgroundColor="white">
       {/* Background Decorations */}
       <BackgroundDecorations />
 

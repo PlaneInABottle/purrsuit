@@ -222,7 +222,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
   }
 
   return (
-    <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContent} style={{ backgroundColor: "white" }}>
+    <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContent} style={{ backgroundColor: "white" }} backgroundColor="white">
       {/* Map View */}
       <View style={$mapContainer}>
         <MapView
