@@ -9,7 +9,7 @@ import {
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"
-import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint, RotateCcw, ArrowRight } from "lucide-react-native"
+import { RefreshCw, Image as ImageIcon, Camera, Zap, ZapOff, CircleSlash, PawPrint, RotateCcw, ArrowRight, Scissors } from "lucide-react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -40,6 +40,14 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null)
 
   const cameraRef = useRef<CameraView>(null)
+
+  // Handle returned edited photo
+  React.useEffect(() => {
+    if (_props.route.params?.editedPhotoUri) {
+      setCapturedPhoto(_props.route.params.editedPhotoUri)
+      setCaptureStep("preview")
+    }
+  }, [_props.route.params?.editedPhotoUri])
 
   // Helper function to render flash mode icon
   const renderFlashIcon = () => {
@@ -109,6 +117,11 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
     setCaptureStep("camera")
   }
 
+  function handleEdit() {
+    if (!capturedPhoto) return
+    _props.navigation.navigate("PhotoEdit", { photoUri: capturedPhoto })
+  }
+
   function handleConfirm() {
     if (!capturedPhoto) return
 
@@ -167,7 +180,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             preset="default"
             onPress={handleRetake}
             style={[
-              $retakeButton,
+              $actionButton,
               {
                 backgroundColor: colors.palette.neutral100,
                 borderWidth: 2,
@@ -176,6 +189,26 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
             ]}
             LeftAccessory={(props) => (
               <RotateCcw
+                size={20}
+                color={colors.text}
+                style={props.style}
+              />
+            )}
+          />
+          <Button
+            text="Edit"
+            preset="default"
+            onPress={handleEdit}
+            style={[
+              $actionButton,
+              {
+                backgroundColor: colors.palette.neutral100,
+                borderWidth: 2,
+                borderColor: colors.palette.neutral400,
+              },
+            ]}
+            LeftAccessory={(props) => (
+              <Scissors
                 size={20}
                 color={colors.text}
                 style={props.style}
@@ -336,10 +369,11 @@ const $previewControls: ViewStyle = {
   borderTopColor: "rgba(0, 0, 0, 0.05)",
 }
 
-const $retakeButton: ViewStyle = {
-  flex: 0.35,
+const $actionButton: ViewStyle = {
+  flex: 0.28,
+  paddingHorizontal: 0,
 }
 
 const $nextButton: ViewStyle = {
-  flex: 0.6,
+  flex: 0.4,
 }

@@ -69,11 +69,13 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
       {/* Hero Section with Photo and Overlays */}
       <View style={$heroSection}>
         {/* Photo with rounded corners and shadow */}
-        <Image
-          source={{ uri: encounter.photos.original }}
-          style={$photo}
-          resizeMode="cover"
-        />
+        <View style={$photoContainer}>
+          <Image
+            source={{ uri: encounter.photos.original }}
+            style={$photo}
+            resizeMode="contain"
+          />
+        </View>
 
         {/* Pet Type Badge - Top Right */}
         <View
@@ -225,11 +227,11 @@ const $heroSection: ViewStyle = {
   position: "relative",
 }
 
-const $photo: ImageStyle = {
+const $photoContainer: ViewStyle = {
   width: "100%",
   height: 420,
   borderRadius: 20,
-  overflow: "hidden",
+  backgroundColor: "white",
   // iOS shadow
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 8 },
@@ -237,6 +239,12 @@ const $photo: ImageStyle = {
   shadowRadius: 12,
   // Android elevation
   elevation: 8,
+}
+
+const $photo: ImageStyle = {
+  width: "100%",
+  height: "100%",
+  borderRadius: 20,
 }
 
 const $petTypeBadge: ViewStyle = {

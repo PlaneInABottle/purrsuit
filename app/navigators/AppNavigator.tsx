@@ -12,6 +12,7 @@ import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { EncounterDetailScreen } from "@/screens/EncounterDetailScreen"
 import { EncounterEditScreen } from "@/screens/EncounterEditScreen"
+import { PhotoEditScreen } from "@/screens/PhotoEditScreen"
 import { useAppTheme } from "@/theme/context"
 import { MainTabNavigator } from "./MainTabNavigator"
 
@@ -55,6 +56,11 @@ const AppStack = () => {
         name="EncounterDetail"
         component={EncounterDetailScreen}
         options={{ presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="PhotoEdit"
+        component={PhotoEditScreen}
+        options={{ presentation: "fullScreenModal" }}
       />
 
       {/* Welcome/Onboarding - uncomment when needed */}

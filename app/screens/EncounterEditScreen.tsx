@@ -250,7 +250,7 @@ export const EncounterEditScreen = ({
             },
           ]}
         >
-          <Image source={{ uri: photoUri }} style={$photo} resizeMode="cover" />
+          <Image source={{ uri: photoUri }} style={$photo} resizeMode="contain" />
           <View
             style={[
               $photoCornerAccent,
@@ -499,7 +499,7 @@ const $photoSection: ViewStyle = {
 const $photoFrame: ViewStyle = {
   borderRadius: 16,
   overflow: "hidden",
-  aspectRatio: 1,
+  aspectRatio: 3 / 4,
   borderWidth: 3,
   shadowColor: "#FF8A80",
   shadowOffset: { width: 0, height: 4 },

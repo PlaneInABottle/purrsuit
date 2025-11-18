@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 // Main Tab Navigator types (Purrsuit app)
 export type MainTabParamList = {
   Home: undefined
-  Capture: undefined
+  Capture: { editedPhotoUri?: string } | undefined
   Stats: undefined
   Map: undefined
   Profile: undefined
@@ -31,6 +31,7 @@ export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<MainTabParamList>
   EncounterDetail: { encounterId: string }
   EncounterEdit: { photoUri: string; encounterId: string }
+  PhotoEdit: { photoUri: string }
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
