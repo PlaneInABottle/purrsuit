@@ -46,6 +46,16 @@ const EncountersStoreModel = types
     get encountersWithLocation() {
       return this.encountersArray.filter((e) => e.hasLocation)
     },
+    /**
+     * Get encounters filtered by time range
+     * @param hours Number of hours to look back, or 'all' for all time
+     */
+    getEncountersByTimeRange(hours: number | "all") {
+      if (hours === "all") return this.encountersArray
+
+      const cutoffTime = Date.now() - hours * 60 * 60 * 1000
+      return this.encountersArray.filter((encounter) => encounter.timestamp >= cutoffTime)
+    },
   }))
   .actions((self) => ({
     /**

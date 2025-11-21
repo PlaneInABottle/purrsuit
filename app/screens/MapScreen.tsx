@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from "react-native"
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
+import { Clock } from "lucide-react-native"
 
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -52,16 +53,25 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
   const { encountersStore } = useStores()
   const mapRef = useRef<MapView>(null)
   const [selectedPetType, setSelectedPetType] = useState<PetType | "all">("all")
+  const [timeFilter, setTimeFilter] = useState<"24h" | "7d" | "all">("all")
   const [initialRegionSet, setInitialRegionSet] = useState(false)
   const [selectedEncounterId, setSelectedEncounterId] = useState<string | null>(null)
 
+  // Filter encounters based on selection
+  const timeFilteredEncounters = encountersStore.getEncountersByTimeRange(
+    timeFilter === "24h" ? 24 : timeFilter === "7d" ? 24 * 7 : "all",
+  )
+
+  const filteredEncounters = timeFilteredEncounters.filter((e) => {
+    if (!e.hasLocation) return false
+    if (selectedPetType === "all") return true
+    return e.petType === selectedPetType
+  })
+
   // Get encounters with GPS coordinates
-  const gpsEncounters = encountersStore.encountersArray
-    .filter((encounter) => encounter.location.type === "gps" && encounter.location.coordinates)
-    .filter((encounter) => {
-      if (selectedPetType === "all") return true
-      return encounter.petType === selectedPetType
-    })
+  const gpsEncounters = filteredEncounters.filter(
+    (e) => e.location.type === "gps" && e.location.coordinates,
+  )
 
   // Debug logging
   React.useEffect(() => {
@@ -361,6 +371,51 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                       ]}
                     />
                   )}
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+
+          {/* Time Filter */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={$filterScrollContent}
+            style={[$filterScrollView, { marginTop: 10 }]}
+          >
+            {(["all", "24h", "7d"] as const).map((filter) => {
+              const isSelected = timeFilter === filter
+              const bgColor = isSelected ? colors.palette.secondary500 : "white"
+              const textColor = isSelected ? "#FFF" : colors.text
+              const borderColor = isSelected ? "transparent" : colors.palette.neutral200
+
+              let label = "All Time"
+              if (filter === "24h") label = "Last 24h"
+              if (filter === "7d") label = "Last 7 Days"
+
+              return (
+                <TouchableOpacity
+                  key={filter}
+                  onPress={() => setTimeFilter(filter)}
+                  style={[
+                    $filterButton,
+                    {
+                      backgroundColor: bgColor,
+                      borderColor: borderColor,
+                    },
+                  ]}
+                >
+                  <Clock size={14} color={textColor} style={{ marginRight: 6 }} />
+                  <Text
+                    text={label}
+                    style={[
+                      $filterButtonLabel,
+                      {
+                        color: textColor,
+                        fontWeight: isSelected ? "700" : "500",
+                      },
+                    ]}
+                  />
                 </TouchableOpacity>
               )
             })}
