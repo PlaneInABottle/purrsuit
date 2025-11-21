@@ -16,6 +16,8 @@ import { LegalScreen } from "@/screens/LegalScreen"
 import { PhotoEditScreen } from "@/screens/PhotoEditScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
+import { useStores } from "@/models"
+import { observer } from "mobx-react-lite"
 
 import { MainTabNavigator } from "./MainTabNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
@@ -31,10 +33,11 @@ const exitRoutes = Config.exitRoutes
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
-const AppStack = () => {
+const AppStack = observer(() => {
   const {
     theme: { colors },
   } = useAppTheme()
+  const { userStore } = useStores()
 
   return (
     <Stack.Navigator
@@ -46,6 +49,11 @@ const AppStack = () => {
         },
       }}
     >
+      {/* Welcome/Onboarding */}
+      {!userStore.hasCompletedOnboarding && (
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      )}
+
       {/* Main App Flow - Bottom Tabs */}
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
 
@@ -67,14 +75,11 @@ const AppStack = () => {
       />
       <Stack.Screen name="Legal" component={LegalScreen} />
 
-      {/* Welcome/Onboarding - uncomment when needed */}
-      {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
-
       {/** 🔥 Your screens go here */}
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
-}
+})
 
 export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()
