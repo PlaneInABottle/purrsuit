@@ -31,7 +31,8 @@
       },
       "env": {
         "SENTRY_ORG": "veto",
-        "SENTRY_PROJECT": "purrsuit"
+        "SENTRY_PROJECT": "purrsuit",
+        "SENTRY_URL": "https://de.sentry.io"
       }
     },
     "preview:device": {
@@ -41,7 +42,8 @@
     "production": {
       "env": {
         "SENTRY_ORG": "veto",
-        "SENTRY_PROJECT": "purrsuit"
+        "SENTRY_PROJECT": "purrsuit",
+        "SENTRY_URL": "https://de.sentry.io"
       }
     }
   },
