@@ -52,6 +52,9 @@ export function AchievementCard({
     theme: { colors, spacing },
   } = useAppTheme()
 
+  const iconOpacity = isUnlocked ? 1 : 0.6
+  const iconContainerBg = isUnlocked ? colors.palette.primary100 : colors.palette.neutral200
+
   const cardContent = (
     <View style={$content}>
       {/* Badge Icon */}
@@ -59,11 +62,11 @@ export function AchievementCard({
         style={[
           $iconContainer,
           {
-            backgroundColor: isUnlocked ? colors.palette.primary100 : colors.palette.neutral200,
+            backgroundColor: iconContainerBg,
           },
         ]}
       >
-        <Text style={[$icon, { opacity: isUnlocked ? 1 : 0.6 }]} text={icon} />
+        <Text style={[$icon, { opacity: iconOpacity }]} text={icon} />
       </View>
 
       {/* Badge Info */}

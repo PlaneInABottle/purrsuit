@@ -1,5 +1,5 @@
-import { onSnapshot } from "mobx-state-tree"
 import * as Sentry from "@sentry/react-native"
+import { onSnapshot } from "mobx-state-tree"
 
 import { api } from "@/services/api"
 import { storage } from "@/utils/storage"

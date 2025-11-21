@@ -7,8 +7,10 @@
 
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { observer } from "mobx-react-lite"
 
 import Config from "@/config"
+import { useStores } from "@/models"
 import { EncounterDetailScreen } from "@/screens/EncounterDetailScreen"
 import { EncounterEditScreen } from "@/screens/EncounterEditScreen"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
@@ -16,13 +18,11 @@ import { LegalScreen } from "@/screens/LegalScreen"
 import { PhotoEditScreen } from "@/screens/PhotoEditScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
-import { useStores } from "@/models"
-import { observer } from "mobx-react-lite"
+import { routingInstrumentation } from "@/utils/crashReporting"
 
 import { MainTabNavigator } from "./MainTabNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
-import { routingInstrumentation } from "@/utils/crashReporting"
 
 /**
  * This is a list of all the route names that will exit the app if the back button

@@ -1,4 +1,3 @@
-import React from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
