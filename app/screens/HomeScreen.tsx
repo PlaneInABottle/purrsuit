@@ -1,4 +1,3 @@
-import React from "react"
 import {
   View,
   ViewStyle,
@@ -21,7 +20,7 @@ import { useAppTheme } from "@/theme/context"
 
 export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProps<"Home">) {
   const {
-    theme: { colors, spacing },
+    theme: { colors },
   } = useAppTheme()
   const { encountersStore } = useStores()
 

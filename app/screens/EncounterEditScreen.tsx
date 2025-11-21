@@ -4,6 +4,7 @@ import {
   ViewStyle,
   Image,
   ImageStyle,
+  // eslint-disable-next-line no-restricted-imports
   TextInput,
   TextStyle,
   TouchableOpacity,
@@ -294,7 +295,7 @@ export const EncounterEditScreen = ({
                   {
                     backgroundColor: bgColor,
                     borderColor: borderColor,
-                    borderWidth: isSelected ? 2.5 : 1.5,
+                    borderWidth: isSelected ? $borderWidthSelected : $borderWidthDefault,
                   },
                 ]}
                 onPress={() => setPetType(option.value)}
@@ -385,7 +386,7 @@ export const EncounterEditScreen = ({
           style={[
             $inputWrapper,
             {
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              backgroundColor: $inputBackgroundColor,
               borderColor: location ? colors.palette.primary300 : colors.separator,
             },
           ]}
@@ -415,7 +416,7 @@ export const EncounterEditScreen = ({
           style={[
             $textAreaWrapper,
             {
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              backgroundColor: $inputBackgroundColor,
               borderColor: note ? colors.palette.primary300 : colors.separator,
             },
           ]}
@@ -445,10 +446,7 @@ export const EncounterEditScreen = ({
             {
               backgroundColor: isSaving ? colors.palette.neutral400 : colors.palette.primary500,
               shadowColor: colors.palette.primary500,
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 6,
+              ...$saveButtonShadow,
             },
           ]}
         />
@@ -724,4 +722,15 @@ const $manualLocationLabel: TextStyle = {
   fontSize: 12,
   marginTop: 12,
   marginBottom: 8,
+}
+
+const $borderWidthSelected = 2.5
+const $borderWidthDefault = 1.5
+const $inputBackgroundColor = "rgba(255, 255, 255, 0.95)"
+
+const $saveButtonShadow = {
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 8,
+  elevation: 6,
 }

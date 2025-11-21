@@ -1,4 +1,3 @@
-import { useMemo } from "react"
 import {
   View,
   ViewStyle,
@@ -90,7 +89,7 @@ export const EncounterDetailScreen = (props: AppStackScreenProps<"EncounterDetai
       preset="scroll"
       safeAreaEdges={["top"]}
       contentContainerStyle={$container}
-      style={{ backgroundColor: "white" }}
+      style={$screenStyle}
       backgroundColor="white"
     >
       {/* Header */}
@@ -462,4 +461,8 @@ const $patternContainer: ViewStyle = {
 const $petTypeEmoji: TextStyle = {
   fontSize: 24,
   marginRight: 8,
+}
+
+const $screenStyle: ViewStyle = {
+  backgroundColor: "white",
 }

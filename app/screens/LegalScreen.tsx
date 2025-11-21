@@ -1,4 +1,3 @@
-import React from "react"
 import { View, ViewStyle, ScrollView, TextStyle, TouchableOpacity } from "react-native"
 import { ArrowLeft } from "lucide-react-native"
 
@@ -10,7 +9,7 @@ import { useAppTheme } from "@/theme/context"
 export const LegalScreen = ({ navigation, route }: AppStackScreenProps<"Legal">) => {
   const { type } = route.params
   const {
-    theme: { colors, spacing },
+    theme: { colors },
   } = useAppTheme()
 
   const isPrivacy = type === "privacy"

@@ -8,17 +8,13 @@ import {
   useMemo,
 } from "react"
 import { StyleProp, useColorScheme } from "react-native"
-import {
-  DarkTheme as NavDarkTheme,
-  DefaultTheme as NavDefaultTheme,
-  Theme as NavTheme,
-} from "@react-navigation/native"
+import { DefaultTheme as NavDefaultTheme, Theme as NavTheme } from "@react-navigation/native"
 import { useMMKVString } from "react-native-mmkv"
 
 import { storage } from "@/utils/storage"
 
 import { setImperativeTheming } from "./context.utils"
-import { darkTheme, lightTheme } from "./theme"
+import { lightTheme } from "./theme"
 import type {
   AllowedStylesT,
   ImmutableThemeContextModeT,
@@ -53,12 +49,12 @@ export interface ThemeProviderProps {
  */
 export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   children,
-  initialContext,
+  _initialContext,
 }) => {
   // The operating system theme:
-  const systemColorScheme = useColorScheme()
+  const _systemColorScheme = useColorScheme()
   // Our saved theme context: can be "light", "dark", or undefined (system theme)
-  const [themeScheme, setThemeScheme] = useMMKVString("ignite.themeScheme", storage)
+  const [_themeScheme, setThemeScheme] = useMMKVString("ignite.themeScheme", storage)
 
   /**
    * This function is used to set the theme context and is exported from the useAppTheme() hook.

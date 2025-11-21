@@ -10,10 +10,7 @@
  * The app navigation resides in ./app/navigators, so head over there
  * if you're interested in adding screens and navigators.
  */
-import { initCrashReporting, sentryWrap } from "./utils/crashReporting"
 import "./utils/gestureHandler"
-
-initCrashReporting()
 
 if (__DEV__) {
   // Load Reactotron in development only.
@@ -27,14 +24,18 @@ import { useFonts } from "expo-font"
 import * as Linking from "expo-linking"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
+
 import { initI18n } from "./i18n"
 import { StoreProvider } from "./models"
 import { AppNavigator } from "./navigators/AppNavigator"
 import { useNavigationPersistence } from "./navigators/navigationUtilities"
 import { ThemeProvider } from "./theme/context"
 import { customFontsToLoad } from "./theme/typography"
+import { initCrashReporting, sentryWrap } from "./utils/crashReporting"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import * as storage from "./utils/storage"
+
+initCrashReporting()
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 

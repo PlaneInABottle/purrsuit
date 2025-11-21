@@ -1,4 +1,3 @@
-import React from "react"
 import { View, ViewStyle, TextStyle, ScrollView, TouchableOpacity } from "react-native"
 import { ChevronRight, FileText, Shield } from "lucide-react-native"
 import { observer } from "mobx-react-lite"
@@ -16,8 +15,6 @@ export const ProfileScreen = observer(function ProfileScreen(props: MainTabScree
   } = useAppTheme()
   const { statsStore } = useStores()
   const { navigation } = props
-
-  const topLocations = statsStore.topLocations.slice(0, 5)
 
   return (
     <Screen
@@ -58,7 +55,7 @@ export const ProfileScreen = observer(function ProfileScreen(props: MainTabScree
           </View>
 
           <View style={$miniStatsContainer}>
-            <View style={[$miniStatCard, { backgroundColor: "#7DB3E8" }]}>
+            <View style={[$miniStatCard, { backgroundColor: $streakCardColor }]}>
               <Text text="🔥" style={$emojiIcon} />
               <View>
                 <Text
@@ -70,7 +67,7 @@ export const ProfileScreen = observer(function ProfileScreen(props: MainTabScree
               </View>
             </View>
 
-            <View style={[$miniStatCard, { backgroundColor: "#E88888" }]}>
+            <View style={[$miniStatCard, { backgroundColor: $achievementCardColor }]}>
               <Text text="⭐" style={$emojiIcon} />
               <View>
                 <Text
@@ -154,7 +151,7 @@ export const ProfileScreen = observer(function ProfileScreen(props: MainTabScree
                     backgroundColor: achievement.isUnlocked
                       ? colors.palette.primary100
                       : colors.palette.neutral100,
-                    opacity: achievement.isUnlocked ? 1 : 0.7,
+                    opacity: achievement.isUnlocked ? $opacityUnlocked : $opacityLocked,
                   },
                 ]}
               >
@@ -419,3 +416,8 @@ const $progressBarFill: ViewStyle = {
   height: "100%",
   borderRadius: 2,
 }
+
+const $streakCardColor = "#7DB3E8"
+const $achievementCardColor = "#E88888"
+const $opacityUnlocked = 1
+const $opacityLocked = 0.7

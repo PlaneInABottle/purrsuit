@@ -1,4 +1,5 @@
 import * as Location from "expo-location"
+
 import {
   formatCoordinates,
   formatAddress,
@@ -45,7 +46,9 @@ describe("LocationService", () => {
 
   describe("Permissions", () => {
     it("checks permissions correctly", async () => {
-      ;(Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: "granted" })
+      ;(Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+        status: "granted",
+      })
       const result = await hasLocationPermissions()
       expect(result).toBe(true)
     })
@@ -63,13 +66,15 @@ describe("LocationService", () => {
   describe("getCurrentLocation", () => {
     it("returns location when permission is granted", async () => {
       // Mock permission check
-      ;(Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: "granted" })
-      
+      ;(Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+        status: "granted",
+      })
+
       // Mock location retrieval
       ;(Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
         coords: {
           latitude: 40.7128,
-          longitude: -74.0060,
+          longitude: -74.006,
           accuracy: 10,
         },
       })
@@ -77,7 +82,7 @@ describe("LocationService", () => {
       const location = await getCurrentLocation()
       expect(location).toEqual({
         latitude: 40.7128,
-        longitude: -74.0060,
+        longitude: -74.006,
         accuracy: 10,
       })
     })

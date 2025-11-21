@@ -30,7 +30,7 @@ describe("EncounterStore", () => {
 
   it("handles location views correctly", () => {
     const encounter = EncounterModel.create(mockEncounterData)
-    
+
     // Default: no location
     expect(encounter.hasLocation).toBe(false)
     expect(encounter.locationDisplay).toBe("No location")
@@ -55,10 +55,10 @@ describe("EncounterStore", () => {
 
   it("can manage mood tags", () => {
     const encounter = EncounterModel.create(mockEncounterData)
-    
+
     encounter.addMood("happy")
     expect(encounter.mood).toContain("happy")
-    
+
     encounter.addMood("happy") // Duplicate check
     expect(encounter.mood.length).toBe(1)
 
@@ -68,10 +68,10 @@ describe("EncounterStore", () => {
 
   it("can manage custom tags", () => {
     const encounter = EncounterModel.create(mockEncounterData)
-    
+
     encounter.addTag("fluffy")
     expect(encounter.tags).toContain("fluffy")
-    
+
     encounter.removeTag("fluffy")
     expect(encounter.tags).not.toContain("fluffy")
   })

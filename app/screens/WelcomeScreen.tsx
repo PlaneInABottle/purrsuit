@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import { FC, useState } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle, Alert, Linking } from "react-native"
 import { useCameraPermissions } from "expo-camera"
 import * as Location from "expo-location"
@@ -15,216 +15,192 @@ import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
 const welcomeFace = require("@assets/images/welcome-face.png")
 
-export const WelcomeScreen: FC<AppStackScreenProps<"Welcome">> = observer(function WelcomeScreen({
-  navigation,
-}) {
-  const {
-    theme: { colors, spacing },
-  } = useAppTheme()
-  const { userStore } = useStores()
-  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+export const WelcomeScreen: FC<AppStackScreenProps<"Welcome">> = observer(
+  function WelcomeScreen(_props) {
+    const {
+      theme: { colors },
+    } = useAppTheme()
+    const { userStore } = useStores()
+    const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const [step, setStep] = useState(0)
-  const [cameraPermission, requestCameraPermission] = useCameraPermissions()
-  const [locationChoice, setLocationChoice] = useState<"none" | "manual" | "gps">("manual")
+    const [step, setStep] = useState(0)
+    const [cameraPermission, requestCameraPermission] = useCameraPermissions()
+    const [locationChoice, setLocationChoice] = useState<"none" | "manual" | "gps">("manual")
 
-  // Step 1: Welcome
-  const renderWelcomeStep = () => (
-    <View style={$stepContainer}>
-      <View style={$iconContainer}>
-        <Image
-          source={welcomeFace}
-          style={$welcomeImage}
-          resizeMode="contain"
+    // Step 1: Welcome
+    const renderWelcomeStep = () => (
+      <View style={$stepContainer}>
+        <View style={$iconContainer}>
+          <Image source={welcomeFace} style={$welcomeImage} resizeMode="contain" />
+        </View>
+        <Text preset="heading" text="Welcome to Purrsuit! 🐾" style={$heading} />
+        <Text
+          preset="subheading"
+          text="Your private journal for the adorable pets you meet every day."
+          style={$subheading}
         />
+        <View style={$spacer} />
+        <Button text="Get Started" preset="filled" onPress={() => setStep(1)} style={$button} />
       </View>
-      <Text preset="heading" text="Welcome to Purrsuit! 🐾" style={$heading} />
-      <Text
-        preset="subheading"
-        text="Your private journal for the adorable pets you meet every day."
-        style={$subheading}
-      />
-      <View style={$spacer} />
-      <Button
-        text="Get Started"
-        preset="filled"
-        onPress={() => setStep(1)}
-        style={$button}
-      />
-    </View>
-  )
+    )
 
-  // Step 2: Camera Permissions
-  const handleCameraPermission = async () => {
-    if (cameraPermission?.granted) {
-      setStep(2)
-      return
-    }
-
-    const result = await requestCameraPermission()
-    if (result.granted) {
-      setStep(2)
-    } else {
-      Alert.alert(
-        "Camera Required",
-        "Purrsuit needs camera access to snap photos of pets! Please enable it in settings.",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Open Settings", onPress: () => Linking.openSettings() },
-        ]
-      )
-    }
-  }
-
-  const renderCameraStep = () => (
-    <View style={$stepContainer}>
-      <View style={[$iconCircle, { backgroundColor: colors.palette.primary100 }]}>
-        <Camera size={64} color={colors.palette.primary500} />
-      </View>
-      <Text preset="heading" text="Capture Moments 📸" style={$heading} />
-      <Text
-        text="Purrsuit needs camera access to save photos of the furry friends you find."
-        style={$bodyText}
-      />
-      <View style={$spacer} />
-      <Button
-        text={cameraPermission?.granted ? "Camera Enabled ✅" : "Allow Camera Access"}
-        preset="filled"
-        onPress={handleCameraPermission}
-        style={$button}
-      />
-      {!cameraPermission?.granted && (
-        <Button
-          text="Maybe Later"
-          preset="reversed"
-          onPress={() => setStep(2)}
-          style={$secondaryButton}
-        />
-      )}
-    </View>
-  )
-
-  // Step 3: Location Choice
-  const handleLocationChoice = async () => {
-    if (locationChoice === "gps") {
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== "granted") {
-        Alert.alert(
-          "Location Permission Denied",
-          "We couldn't access your location. Switching to Manual Tags mode.",
-          [{ text: "OK", onPress: () => setLocationChoice("manual") }]
-        )
+    // Step 2: Camera Permissions
+    const handleCameraPermission = async () => {
+      if (cameraPermission?.granted) {
+        setStep(2)
         return
       }
+
+      const result = await requestCameraPermission()
+      if (result.granted) {
+        setStep(2)
+      } else {
+        Alert.alert(
+          "Camera Required",
+          "Purrsuit needs camera access to snap photos of pets! Please enable it in settings.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Open Settings", onPress: () => Linking.openSettings() },
+          ],
+        )
+      }
     }
-    
-    userStore.setLocationPermission(locationChoice)
-    setStep(3)
-  }
 
-  const renderLocationStep = () => (
-    <View style={$stepContainer}>
-      <View style={[$iconCircle, { backgroundColor: colors.palette.secondary100 }]}>
-        <Map size={64} color={colors.palette.secondary500} />
-      </View>
-      <Text preset="heading" text="Remember Places 📍" style={$heading} />
-      <Text
-        text="How would you like to remember where you met these pets?"
-        style={$bodyText}
-      />
-
-      <View style={$optionsContainer}>
-        <OptionItem
-          icon={<MapPin size={24} color={colors.palette.neutral500} />}
-          title="Manual Tags (Recommended)"
-          description="Type names like 'Park' or 'Cafe'"
-          isSelected={locationChoice === "manual"}
-          onPress={() => setLocationChoice("manual")}
+    const renderCameraStep = () => (
+      <View style={$stepContainer}>
+        <View style={[$iconCircle, { backgroundColor: colors.palette.primary100 }]}>
+          <Camera size={64} color={colors.palette.primary500} />
+        </View>
+        <Text preset="heading" text="Capture Moments 📸" style={$heading} />
+        <Text
+          text="Purrsuit needs camera access to save photos of the furry friends you find."
+          style={$bodyText}
         />
-        <OptionItem
-          icon={<Navigation size={24} color={colors.palette.neutral500} />}
-          title="GPS Location"
-          description="Automatically save coordinates"
-          isSelected={locationChoice === "gps"}
-          onPress={() => setLocationChoice("gps")}
+        <View style={$spacer} />
+        <Button
+          text={cameraPermission?.granted ? "Camera Enabled ✅" : "Allow Camera Access"}
+          preset="filled"
+          onPress={handleCameraPermission}
+          style={$button}
         />
-        <OptionItem
-          icon={<Check size={24} color={colors.palette.neutral500} />}
-          title="No Location"
-          description="Just the photos, please"
-          isSelected={locationChoice === "none"}
-          onPress={() => setLocationChoice("none")}
-        />
-      </View>
-
-      <View style={$spacer} />
-      <Button
-        text="Continue"
-        preset="filled"
-        onPress={handleLocationChoice}
-        style={$button}
-      />
-    </View>
-  )
-
-  // Step 4: Ready
-  const handleFinish = () => {
-    userStore.completeOnboarding()
-    // Navigation will automatically handle the switch to MainTabs 
-    // because of the conditional rendering in AppNavigator (once we implement it)
-    // But for now, we can also explicitly navigate if needed, 
-    // though the state change usually triggers a re-render of the navigator.
-  }
-
-  const renderReadyStep = () => (
-    <View style={$stepContainer}>
-      <View style={[$iconCircle, { backgroundColor: colors.palette.accent100 }]}>
-        <Text text="🎉" style={{ fontSize: 64 }} />
-      </View>
-      <Text preset="heading" text="You're All Set!" style={$heading} />
-      <Text
-        text="Go find some furry friends and start your collection!"
-        style={$bodyText}
-      />
-      <View style={$spacer} />
-      <Button
-        text="Start Exploring"
-        preset="filled"
-        onPress={handleFinish}
-        style={$button}
-      />
-    </View>
-  )
-
-  return (
-    <Screen 
-      preset="fixed" 
-      contentContainerStyle={[$container, $bottomContainerInsets]}
-      backgroundColor={colors.background}
-    >
-      {step === 0 && renderWelcomeStep()}
-      {step === 1 && renderCameraStep()}
-      {step === 2 && renderLocationStep()}
-      {step === 3 && renderReadyStep()}
-      
-      {/* Step Indicator */}
-      <View style={$dotsContainer}>
-        {[0, 1, 2, 3].map((i) => (
-          <View
-            key={i}
-            style={[
-              $dot,
-              { 
-                backgroundColor: i === step ? colors.palette.primary500 : colors.palette.neutral300,
-                width: i === step ? 24 : 8 
-              }
-            ]}
+        {!cameraPermission?.granted && (
+          <Button
+            text="Maybe Later"
+            preset="reversed"
+            onPress={() => setStep(2)}
+            style={$secondaryButton}
           />
-        ))}
+        )}
       </View>
-    </Screen>
-  )
-})
+    )
+
+    // Step 3: Location Choice
+    const handleLocationChoice = async () => {
+      if (locationChoice === "gps") {
+        const { status } = await Location.requestForegroundPermissionsAsync()
+        if (status !== "granted") {
+          Alert.alert(
+            "Location Permission Denied",
+            "We couldn't access your location. Switching to Manual Tags mode.",
+            [{ text: "OK", onPress: () => setLocationChoice("manual") }],
+          )
+          return
+        }
+      }
+
+      userStore.setLocationPermission(locationChoice)
+      setStep(3)
+    }
+
+    const renderLocationStep = () => (
+      <View style={$stepContainer}>
+        <View style={[$iconCircle, { backgroundColor: colors.palette.secondary100 }]}>
+          <Map size={64} color={colors.palette.secondary500} />
+        </View>
+        <Text preset="heading" text="Remember Places 📍" style={$heading} />
+        <Text text="How would you like to remember where you met these pets?" style={$bodyText} />
+
+        <View style={$optionsContainer}>
+          <OptionItem
+            icon={<MapPin size={24} color={colors.palette.neutral500} />}
+            title="Manual Tags (Recommended)"
+            description="Type names like 'Park' or 'Cafe'"
+            isSelected={locationChoice === "manual"}
+            onPress={() => setLocationChoice("manual")}
+          />
+          <OptionItem
+            icon={<Navigation size={24} color={colors.palette.neutral500} />}
+            title="GPS Location"
+            description="Automatically save coordinates"
+            isSelected={locationChoice === "gps"}
+            onPress={() => setLocationChoice("gps")}
+          />
+          <OptionItem
+            icon={<Check size={24} color={colors.palette.neutral500} />}
+            title="No Location"
+            description="Just the photos, please"
+            isSelected={locationChoice === "none"}
+            onPress={() => setLocationChoice("none")}
+          />
+        </View>
+
+        <View style={$spacer} />
+        <Button text="Continue" preset="filled" onPress={handleLocationChoice} style={$button} />
+      </View>
+    )
+
+    // Step 4: Ready
+    const handleFinish = () => {
+      userStore.completeOnboarding()
+      // Navigation will automatically handle the switch to MainTabs
+      // because of the conditional rendering in AppNavigator (once we implement it)
+      // But for now, we can also explicitly navigate if needed,
+      // though the state change usually triggers a re-render of the navigator.
+    }
+
+    const renderReadyStep = () => (
+      <View style={$stepContainer}>
+        <View style={[$iconCircle, { backgroundColor: colors.palette.accent100 }]}>
+          <Text text="🎉" style={$celebrationEmoji} />
+        </View>
+        <Text preset="heading" text="You're All Set!" style={$heading} />
+        <Text text="Go find some furry friends and start your collection!" style={$bodyText} />
+        <View style={$spacer} />
+        <Button text="Start Exploring" preset="filled" onPress={handleFinish} style={$button} />
+      </View>
+    )
+
+    return (
+      <Screen
+        preset="fixed"
+        contentContainerStyle={[$container, $bottomContainerInsets]}
+        backgroundColor={colors.background}
+      >
+        {step === 0 && renderWelcomeStep()}
+        {step === 1 && renderCameraStep()}
+        {step === 2 && renderLocationStep()}
+        {step === 3 && renderReadyStep()}
+
+        {/* Step Indicator */}
+        <View style={$dotsContainer}>
+          {[0, 1, 2, 3].map((i) => (
+            <View
+              key={i}
+              style={[
+                $dot,
+                {
+                  backgroundColor:
+                    i === step ? colors.palette.primary500 : colors.palette.neutral300,
+                  width: i === step ? $dotWidthActive : $dotWidthInactive,
+                },
+              ]}
+            />
+          ))}
+        </View>
+      </Screen>
+    )
+  },
+)
 
 interface OptionItemProps {
   icon: React.ReactNode
@@ -369,3 +345,10 @@ const $dot: ViewStyle = {
   height: 8,
   borderRadius: 4,
 }
+
+const $celebrationEmoji: TextStyle = {
+  fontSize: 64,
+}
+
+const $dotWidthActive = 24
+const $dotWidthInactive = 8

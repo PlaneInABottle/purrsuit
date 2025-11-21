@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef } from "react"
 import {
   View,
   ViewStyle,
@@ -9,13 +9,13 @@ import {
   Platform,
   ScrollView,
 } from "react-native"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { Clock } from "lucide-react-native"
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useStores } from "@/models"
-import type { AppStackScreenProps, AppStackParamList, MainTabScreenProps } from "@/navigators/navigationTypes"
+import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 
 type PetType = "cat" | "dog" | "other"
@@ -298,13 +298,18 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                       height: size,
                       borderRadius: borderRadius,
                       backgroundColor: getPetTypeColor(encounter.petType as PetType),
-                      borderColor: "white",
-                      borderWidth: isSelected ? 3 : 2,
+                      borderColor: $markerBorderColor,
+                      borderWidth: isSelected
+                        ? $markerBorderWidthSelected
+                        : $markerBorderWidthDefault,
                     },
                   ]}
                 >
                   <Text
-                    style={[$markerEmoji, { fontSize: isSelected ? 24 : 20 }]}
+                    style={[
+                      $markerEmoji,
+                      { fontSize: isSelected ? $markerEmojiSizeSelected : $markerEmojiSizeDefault },
+                    ]}
                     text={getPetTypeEmoji(encounter.petType as PetType)}
                   />
                 </View>
@@ -354,8 +359,8 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                       $filterButtonText,
                       {
                         color: textColor,
-                        fontWeight: isSelected ? "700" : "500",
-                        marginRight: type === "all" ? 0 : 4,
+                        fontWeight: isSelected ? $fontWeightSelected : $fontWeightDefault,
+                        marginRight: type === "all" ? $marginRightNone : $marginRightDefault,
                       },
                     ]}
                   />
@@ -366,7 +371,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                         $filterButtonLabel,
                         {
                           color: textColor,
-                          fontWeight: isSelected ? "700" : "500",
+                          fontWeight: isSelected ? $fontWeightSelected : $fontWeightDefault,
                         },
                       ]}
                     />
@@ -381,7 +386,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={$filterScrollContent}
-            style={[$filterScrollView, { marginTop: 10 }]}
+            style={[$filterScrollView, $timeFilterScrollView]}
           >
             {(["all", "24h", "7d"] as const).map((filter) => {
               const isSelected = timeFilter === filter
@@ -405,14 +410,14 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                     },
                   ]}
                 >
-                  <Clock size={14} color={textColor} style={{ marginRight: 6 }} />
+                  <Clock size={14} color={textColor} style={$clockIconStyle} />
                   <Text
                     text={label}
                     style={[
                       $filterButtonLabel,
                       {
                         color: textColor,
-                        fontWeight: isSelected ? "700" : "500",
+                        fontWeight: isSelected ? $fontWeightSelected : $fontWeightDefault,
                       },
                     ]}
                   />
@@ -768,3 +773,17 @@ const $closeButton: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
 }
+
+const $markerBorderColor = "white"
+const $markerBorderWidthSelected = 3
+const $markerBorderWidthDefault = 2
+const $markerEmojiSizeSelected = 24
+const $markerEmojiSizeDefault = 20
+const $fontWeightSelected = "700"
+const $fontWeightDefault = "500"
+const $timeFilterScrollView: ViewStyle = {
+  marginTop: 10,
+}
+const $clockIconStyle = { marginRight: 6 }
+const $marginRightNone = 0
+const $marginRightDefault = 4

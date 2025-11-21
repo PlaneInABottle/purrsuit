@@ -18,10 +18,7 @@ export const initCrashReporting = () => {
       // Only enable in production
       enabled: !__DEV__,
       // Integrations
-      integrations: [
-        Sentry.reactNativeTracingIntegration(),
-        routingInstrumentation,
-      ],
+      integrations: [Sentry.reactNativeTracingIntegration(), routingInstrumentation],
     })
   }
 }

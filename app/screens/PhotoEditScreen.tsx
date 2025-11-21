@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import { useState, useRef } from "react"
 import {
   View,
   ViewStyle,
@@ -250,7 +250,7 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
             $primaryButton,
             {
               backgroundColor: isClosed ? colors.palette.primary500 : colors.palette.neutral300,
-              opacity: isClosed ? 1 : 0.7,
+              opacity: isClosed ? $opacityEnabled : $opacityDisabled,
             },
           ]}
         >
@@ -376,3 +376,6 @@ const $absoluteFill: ViewStyle = {
   right: 0,
   bottom: 0,
 }
+
+const $opacityEnabled = 1
+const $opacityDisabled = 0.7
