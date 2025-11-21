@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Lint
+        run: npm run lint:check
+
+      - name: Type Check
+        run: npm run compile
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Verify Metro Bundle
+        run: npx react-native bundle --platform android --dev false --entry-file index.tsx --bundle-output android-bundle.js
