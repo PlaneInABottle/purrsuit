@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import { useEffect } from "react"
+
 import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
@@ -20,7 +20,7 @@ import { useAppTheme } from "@/theme/context"
 import { MainTabNavigator } from "./MainTabNavigator"
 import type { AppStackParamList, NavigationProps } from "./navigationTypes"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
-import { routingInstrumentation } from "@/app"
+import { routingInstrumentation } from "@/utils/crashReporting"
 
 /**
  * This is a list of all the route names that will exit the app if the back button
@@ -80,13 +80,6 @@ export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
-
-  // Register Sentry with the navigation container once it's ready
-  useEffect(() => {
-    if (routingInstrumentation) {
-      routingInstrumentation.registerNavigationContainer(navigationRef)
-    }
-  }, [])
 
   return (
     <NavigationContainer

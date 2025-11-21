@@ -10,10 +10,9 @@
  * The app navigation resides in ./app/navigators, so head over there
  * if you're interested in adding screens and navigators.
  */
-import * as Sentry from "@sentry/react-native"
+import { initCrashReporting, sentryWrap } from "./utils/crashReporting"
 
-// Import routing instrumentation that will be set up in AppNavigator
-export let routingInstrumentation: Sentry.ReactNavigationInstrumentation
+initCrashReporting()
 
 if (__DEV__) {
   // Load Reactotron in development only.
@@ -38,30 +37,7 @@ import { customFontsToLoad } from "./theme/typography"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import * as storage from "./utils/storage"
 
-// Initialize Sentry for error tracking
-const sentryDSN = process.env.SENTRY_DSN
-if (sentryDSN) {
-  // Create routing instrumentation for Sentry navigation tracking
-  routingInstrumentation = new Sentry.ReactNavigationInstrumentation()
 
-  Sentry.init({
-    dsn: sentryDSN,
-    enableAutoSessionTracking: true,
-    // Only capture errors, disable performance monitoring
-    tracesSampleRate: 0,
-    // Offline caching - store up to 30 events locally before sending
-    maxCacheItems: 30,
-    // Only enable in production
-    enabled: !__DEV__,
-    // Integrations
-    integrations: [
-      new Sentry.ReactNativeTracing({
-        routingInstrumentation,
-        enableNativeFramesTracking: false,
-      }),
-    ],
-  })
-}
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -141,4 +117,4 @@ function AppWithProviders() {
 }
 
 // Wrap App with Sentry for error tracking
-export const App = Sentry.wrap(AppWithProviders)
+export const App = sentryWrap(AppWithProviders)
