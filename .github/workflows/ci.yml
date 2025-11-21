@@ -31,5 +31,5 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Verify Metro Bundle
-        run: npx react-native bundle --platform android --dev false --entry-file index.tsx --bundle-output android-bundle.js
+      - name: Verify Build
+        run: npm run compile
