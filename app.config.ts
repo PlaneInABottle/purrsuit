@@ -59,5 +59,11 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
       ],
       ...existingPlugins,
     ],
+    extra: {
+      ...config.extra,
+      eas: {
+        projectId: "35e1f951-78f4-43fa-88b4-0c7f2ae5daca",
+      },
+    },
   }
 }
