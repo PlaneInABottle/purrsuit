@@ -60,6 +60,13 @@
       "react-native-maps",
       {}
     ],
+    [
+      "@sentry/react-native/expo",
+      {
+        "organization": "veto",
+        "project": "purrsuit"
+      }
+    ],
     "expo-build-properties"
   ],
   "experiments": {
