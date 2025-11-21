@@ -1,6 +1,6 @@
 {
   "name": "purrsuitMobileApp",
-  "slug": "purrsuitMobileApp",
+  "slug": "purrsuit",
   "scheme": "purrsuitmobileapp",
   "version": "1.0.0",
   "orientation": "portrait",
@@ -23,15 +23,13 @@
     },
     "allowBackup": false,
     "edgeToEdgeEnabled": true,
-    "config": {
-    }
+    "config": {}
   },
   "ios": {
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
     "bundleIdentifier": "com.purrsuit.app",
-    "config": {
-    }
+    "config": {}
   },
   "web": {
     "favicon": "./assets/images/app-icon-web-favicon.png",
@@ -60,8 +58,7 @@
     ],
     [
       "react-native-maps",
-      {
-      }
+      {}
     ],
     "expo-build-properties"
   ],
@@ -72,5 +69,6 @@
     "ignite": {
       "version": "11.3.2"
     }
-  }
+  },
+  "owner": "smokymumbo"
 }
