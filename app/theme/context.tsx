@@ -84,11 +84,11 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
 
   const navigationTheme: NavTheme = useMemo(() => {
     return NavDefaultTheme
-  }, [themeContext])
+  }, [])
 
   const theme: Theme = useMemo(() => {
     return lightTheme
-  }, [themeContext])
+  }, [])
 
   useEffect(() => {
     setImperativeTheming(theme)

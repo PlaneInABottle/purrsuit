@@ -1,4 +1,3 @@
-import React from "react"
 import { View, ViewStyle, TextStyle, TouchableOpacity } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
@@ -106,7 +105,7 @@ export function AchievementCard({
         {/* Unlocked Badge */}
         {isUnlocked && (
           <View style={$unlockedBadge}>
-            <Text style={{ color: colors.palette.primary600, fontSize: 10 }} text="✓ UNLOCKED" />
+            <Text style={$unlockedText} text="✓ UNLOCKED" />
           </View>
         )}
       </View>
@@ -182,4 +181,9 @@ const $progressText: TextStyle = {
 
 const $unlockedBadge: ViewStyle = {
   marginTop: 4,
+}
+
+const $unlockedText: TextStyle = {
+  color: "#6B4226",
+  fontSize: 10,
 }

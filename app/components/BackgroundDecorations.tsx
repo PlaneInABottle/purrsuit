@@ -1,4 +1,3 @@
-import React from "react"
 import { View, StyleSheet, Dimensions } from "react-native"
 import Svg, { Circle, Path, Ellipse, Defs, Pattern, Rect, G } from "react-native-svg"
 
@@ -214,21 +213,21 @@ export function BackgroundDecorations() {
 }
 
 const StaticDecoration = ({ item, color }: { item: DecorationElement; color: string }) => {
+  const $decorationStyle = {
+    position: "absolute" as const,
+    top: 0 as const,
+    left: 0 as const,
+    transform: [
+      { translateX: item.x },
+      { translateY: item.y },
+      { rotate: `${item.rotation}deg` },
+      { scale: item.scale },
+    ],
+    opacity: item.opacity,
+  }
+
   return (
-    <View
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        transform: [
-          { translateX: item.x },
-          { translateY: item.y },
-          { rotate: `${item.rotation}deg` },
-          { scale: item.scale },
-        ],
-        opacity: item.opacity,
-      }}
-    >
+    <View style={$decorationStyle}>
       <Svg width={60} height={60} viewBox="0 0 60 60">
         <DecorationShape type={item.type} color={color} />
       </Svg>

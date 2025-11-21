@@ -11,6 +11,7 @@
  * if you're interested in adding screens and navigators.
  */
 import { initCrashReporting, sentryWrap } from "./utils/crashReporting"
+import "./utils/gestureHandler"
 
 initCrashReporting()
 
@@ -20,7 +21,6 @@ if (__DEV__) {
   // If you turn it off in metro.config.js, you'll have to manually import it.
   require("./devtools/ReactotronConfig.ts")
 }
-import "./utils/gestureHandler"
 
 import { useEffect, useState } from "react"
 import { useFonts } from "expo-font"
