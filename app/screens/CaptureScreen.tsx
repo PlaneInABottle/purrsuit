@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   View,
   ViewStyle,
@@ -57,7 +57,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   const cameraRef = useRef<CameraView>(null)
 
   // Handle returned edited photo
-  React.useEffect(() => {
+  useEffect(() => {
     if (_props.route.params?.editedPhotoUri) {
       setCapturedPhoto(_props.route.params.editedPhotoUri)
       setCaptureStep("preview")
@@ -82,7 +82,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
   }
 
   // Request permissions on mount
-  React.useEffect(() => {
+  useEffect(() => {
     checkPermissions()
   }, [])
 

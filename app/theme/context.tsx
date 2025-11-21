@@ -49,7 +49,7 @@ export interface ThemeProviderProps {
  */
 export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   children,
-  _initialContext,
+  initialContext: _initialContext,
 }) => {
   // The operating system theme:
   const _systemColorScheme = useColorScheme()

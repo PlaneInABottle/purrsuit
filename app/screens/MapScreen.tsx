@@ -74,7 +74,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
   )
 
   // Debug logging
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("🗺️ MapScreen Debug:")
     console.log("  Total encounters:", encountersStore.encountersArray.length)
     console.log("  GPS encounters:", gpsEncounters.length)
