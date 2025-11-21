@@ -1,4 +1,5 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
+import { Instance, SnapshotIn, SnapshotOut, types, getRoot } from "mobx-state-tree"
+import type { IRootStore } from "./RootStore"
 
 /**
  * Photo references for an encounter
@@ -229,3 +230,97 @@ export const EncounterModel = types
 export interface IEncounter extends Instance<typeof EncounterModel> {}
 export interface IEncounterSnapshotIn extends SnapshotIn<typeof EncounterModel> {}
 export interface IEncounterSnapshotOut extends SnapshotOut<typeof EncounterModel> {}
+
+/**
+ * Encounters collection store
+ * Manages the collection of all pet encounters
+ */
+export const EncounterStoreModel = types
+  .model("EncounterStore", {
+    encounters: types.optional(types.map(EncounterModel), {}),
+    recentLocationTags: types.optional(types.array(types.string), []),
+  })
+  .views((self) => ({
+    /**
+     * Get all encounters as array, sorted by timestamp (newest first)
+     */
+    get encountersArray() {
+      return Array.from(self.encounters.values()).sort((a, b) => b.timestamp - a.timestamp)
+    },
+    /**
+     * Get encounter by ID
+     */
+    getById(id: string) {
+      return self.encounters.get(id)
+    },
+    /**
+     * Get total encounter count
+     */
+    get count() {
+      return self.encounters.size
+    },
+    /**
+     * Get encounters by pet type
+     */
+    getByPetType(petType: "cat" | "dog" | "other") {
+      return this.encountersArray.filter((e) => e.petType === petType)
+    },
+    /**
+     * Get encounters with location
+     */
+    get encountersWithLocation() {
+      return this.encountersArray.filter((e) => e.hasLocation)
+    },
+    /**
+     * Get encounters filtered by time range
+     * @param hours Number of hours to look back, or 'all' for all time
+     */
+    getEncountersByTimeRange(hours: number | "all") {
+      if (hours === "all") return this.encountersArray
+
+      const cutoffTime = Date.now() - hours * 60 * 60 * 1000
+      return this.encountersArray.filter((encounter) => encounter.timestamp >= cutoffTime)
+    },
+  }))
+  .actions((self) => ({
+    /**
+     * Add new encounter
+     */
+    addEncounter(encounter: SnapshotIn<typeof EncounterModel>) {
+      self.encounters.put(encounter)
+
+      // Record in stats store
+      const rootStore = getRoot<IRootStore>(self)
+      const location = encounter.location?.type === "manual" ? encounter.location.label : undefined
+      rootStore.statsStore.recordEncounter(encounter.petType as "cat" | "dog" | "other", location)
+
+      // Update recent location tags
+      if (encounter.location?.label && encounter.location.type === "manual") {
+        const label = encounter.location.label
+        if (!self.recentLocationTags.includes(label)) {
+          self.recentLocationTags.unshift(label)
+          // Keep only 10 most recent
+          if (self.recentLocationTags.length > 10) {
+            self.recentLocationTags.splice(10)
+          }
+        }
+      }
+    },
+    /**
+     * Remove encounter
+     */
+    removeEncounter(id: string) {
+      self.encounters.delete(id)
+    },
+    /**
+     * Clear all encounters
+     */
+    clearAll() {
+      self.encounters.clear()
+      self.recentLocationTags.clear()
+    },
+  }))
+
+export interface IEncounterStore extends Instance<typeof EncounterStoreModel> {}
+export interface IEncounterStoreSnapshotIn extends SnapshotIn<typeof EncounterStoreModel> {}
+export interface IEncounterStoreSnapshotOut extends SnapshotOut<typeof EncounterStoreModel> {}
