@@ -51,6 +51,13 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
     },
     plugins: [
       [
+        "@sentry/react-native/expo",
+        {
+          // Sentry Expo plugin configuration
+          // Automatically captures unhandled promise rejections and global errors
+        },
+      ],
+      [
         "react-native-maps",
         {
           iosGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,

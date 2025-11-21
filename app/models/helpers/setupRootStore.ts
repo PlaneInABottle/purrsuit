@@ -1,4 +1,5 @@
 import { onSnapshot } from "mobx-state-tree"
+import * as Sentry from "@sentry/react-native"
 
 import { api } from "@/services/api"
 import { storage } from "@/utils/storage"
@@ -34,6 +35,13 @@ export async function setupRootStore(rootStore?: IRootStore) {
       restoredState = JSON.parse(data)
     }
   } catch (error) {
+    // Report storage errors to Sentry for monitoring
+    Sentry.captureException(error, {
+      tags: {
+        source: "setupRootStore",
+        operation: "loadPersistedState",
+      },
+    })
     // If there's any problem loading, ignore and start fresh
     if (__DEV__) {
       console.error("Error loading root store:", error)
@@ -50,7 +58,20 @@ export async function setupRootStore(rootStore?: IRootStore) {
 
   // Track changes and persist to storage automatically
   onSnapshot(finalStore, (snapshot) => {
-    storage.set(ROOT_STATE_STORAGE_KEY, JSON.stringify(snapshot))
+    try {
+      storage.set(ROOT_STATE_STORAGE_KEY, JSON.stringify(snapshot))
+    } catch (error) {
+      // Report persistence errors to Sentry
+      Sentry.captureException(error, {
+        tags: {
+          source: "setupRootStore",
+          operation: "persistSnapshot",
+        },
+      })
+      if (__DEV__) {
+        console.error("Error persisting snapshot:", error)
+      }
+    }
   })
 
   // Setup Reactotron MST tracking in development

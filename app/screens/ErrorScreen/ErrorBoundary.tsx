@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from "react"
+import * as Sentry from "@sentry/react-native"
 
 import { ErrorDetails } from "./ErrorDetails"
 
@@ -37,9 +38,14 @@ export class ErrorBoundary extends Component<Props, State> {
       errorInfo,
     })
 
-    // You can also log error messages to an error reporting service here
-    // This is a great place to put BugSnag, Sentry, crashlytics, etc:
-    // reportCrash(error)
+    // Report error to Sentry for offline-first error tracking
+    Sentry.captureException(error, {
+      contexts: {
+        react: {
+          componentStack: errorInfo.componentStack,
+        },
+      },
+    })
   }
 
   // Reset the error back to null
