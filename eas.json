@@ -30,7 +30,7 @@
         "buildType": "apk"
       },
       "env": {
-        "SENTRY_ORG": "smokymumbo",
+        "SENTRY_ORG": "veto",
         "SENTRY_PROJECT": "purrsuit"
       }
     },
