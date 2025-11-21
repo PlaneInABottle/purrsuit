@@ -31,5 +31,5 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Verify Build
-        run: npm run compile
+      - name: Verify Bundle
+        run: npx expo export --platform android --dump-sourcemap --output-dir dist
