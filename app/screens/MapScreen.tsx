@@ -14,7 +14,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useStores } from "@/models"
-import type { AppStackScreenProps } from "@/navigators/navigationTypes"
+import type { AppStackScreenProps, AppStackParamList, MainTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
 
 type PetType = "cat" | "dog" | "other"
@@ -45,7 +45,7 @@ const getPetTypeEmoji = (type: PetType): string => {
   }
 }
 
-export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
+export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
   const {
     theme: { colors },
   } = useAppTheme()
@@ -252,6 +252,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
           showsUserLocation
           showsMyLocationButton={false} // We'll use our own button
           onMapReady={() => console.log("✅ MapView is READY")}
+          // @ts-ignore - onError is not in the type definition but works
           onError={(e) => console.error("❌ MapView ERROR:", e)}
           onLayout={(e) => console.log("📏 MapView layout:", e.nativeEvent.layout)}
           onPress={handleMapPress}
@@ -286,7 +287,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                       width: size,
                       height: size,
                       borderRadius: borderRadius,
-                      backgroundColor: getPetTypeColor(encounter.petType),
+                      backgroundColor: getPetTypeColor(encounter.petType as PetType),
                       borderColor: "white",
                       borderWidth: isSelected ? 3 : 2,
                     },
@@ -294,7 +295,7 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 >
                   <Text
                     style={[$markerEmoji, { fontSize: isSelected ? 24 : 20 }]}
-                    text={getPetTypeEmoji(encounter.petType)}
+                    text={getPetTypeEmoji(encounter.petType as PetType)}
                   />
                 </View>
               </Marker>
@@ -386,13 +387,13 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
               <View
                 style={[
                   $calloutHeader,
-                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) },
+                  { backgroundColor: getPetTypeColor(selectedEncounter.petType as PetType) },
                 ]}
               >
                 <View style={$calloutHeaderContent}>
                   <Text
                     style={$calloutHeaderEmoji}
-                    text={getPetTypeEmoji(selectedEncounter.petType)}
+                    text={getPetTypeEmoji(selectedEncounter.petType as PetType)}
                   />
                   <Text
                     style={$calloutHeaderText}
@@ -453,20 +454,20 @@ export const MapScreen = ({ navigation }: AppStackScreenProps<"Home">) => {
                 onPress={() => handleViewDetails(selectedEncounter.id)}
                 style={[
                   $calloutButton,
-                  { backgroundColor: getPetTypeColor(selectedEncounter.petType) + "15" }, // 10% opacity
+                  { backgroundColor: getPetTypeColor(selectedEncounter.petType as PetType) + "15" }, // 10% opacity
                 ]}
               >
                 <Text
                   style={[
                     $calloutButtonText,
-                    { color: getPetTypeColor(selectedEncounter.petType) },
+                    { color: getPetTypeColor(selectedEncounter.petType as PetType) },
                   ]}
                   text="View Full Details"
                 />
                 <Text
                   style={[
                     $calloutButtonArrow,
-                    { color: getPetTypeColor(selectedEncounter.petType) },
+                    { color: getPetTypeColor(selectedEncounter.petType as PetType) },
                   ]}
                   text="→"
                 />

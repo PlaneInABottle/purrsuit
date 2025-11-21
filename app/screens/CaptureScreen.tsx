@@ -7,6 +7,7 @@ import {
   ImageStyle,
   Alert,
   StyleSheet,
+  TextStyle,
 } from "react-native"
 import { CameraView } from "expo-camera"
 import type { CameraType, FlashMode } from "expo-camera"

@@ -6,6 +6,8 @@ import {
   Alert,
   TouchableOpacity,
   StyleSheet,
+  TextStyle,
+  ImageStyle,
 } from "react-native"
 import { manipulateAsync, SaveFormat } from "expo-image-manipulator"
 import { ArrowLeft, Check, RotateCcw } from "lucide-react-native"
@@ -209,7 +211,11 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                   </Svg>
                 ) : (
                   <>
-                    <RNImage source={{ uri: photoUri }} style={$fullSize} resizeMode="cover" />
+                    <RNImage
+                      source={{ uri: photoUri }}
+                      style={$fullSize as ImageStyle}
+                      resizeMode="cover"
+                    />
                     <Svg style={[StyleSheet.absoluteFill, $absoluteFill]}>
                       <Path
                         d={getPathData()}

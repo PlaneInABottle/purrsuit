@@ -70,7 +70,7 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         <BackgroundDecorations />
 
         {/* Header */}
-        <View style={$header}>
+        <View style={$headerContainer}>
           <View style={$headerTop}>
             <Text preset="heading" text="🏠 My Collection" />
           </View>
@@ -215,6 +215,12 @@ const $headerTitle: TextStyle = {
 const $headerSubtitle: TextStyle = {
   fontSize: 14,
   opacity: 0.6,
+}
+
+const $headerTop: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
 }
 
 const $gridContent: ViewStyle = {

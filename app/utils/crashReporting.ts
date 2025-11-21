@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/react-native"
 
-export let routingInstrumentation: Sentry.ReactNavigationInstrumentation | undefined
+export const routingInstrumentation = Sentry.reactNavigationIntegration()
 
 /**
  * Initialize Sentry for error tracking
@@ -8,9 +8,6 @@ export let routingInstrumentation: Sentry.ReactNavigationInstrumentation | undef
 export const initCrashReporting = () => {
   const sentryDSN = process.env.SENTRY_DSN
   if (sentryDSN) {
-    // Create routing instrumentation for Sentry navigation tracking
-    routingInstrumentation = new Sentry.ReactNavigationInstrumentation()
-
     Sentry.init({
       dsn: sentryDSN,
       enableAutoSessionTracking: true,
@@ -22,10 +19,8 @@ export const initCrashReporting = () => {
       enabled: !__DEV__,
       // Integrations
       integrations: [
-        new Sentry.ReactNativeTracing({
-          routingInstrumentation,
-          enableNativeFramesTracking: false,
-        }),
+        Sentry.reactNativeTracingIntegration(),
+        routingInstrumentation,
       ],
     })
   }
