@@ -55,7 +55,6 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
         {
           organization: "veto",
           project: "purrsuit",
-          url: "https://de.sentry.io",
         },
       ],
       [
