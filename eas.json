@@ -38,7 +38,12 @@
       "extends": "preview",
       "ios": { "simulator": false }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "SENTRY_ORG": "veto",
+        "SENTRY_PROJECT": "purrsuit"
+      }
+    }
   },
   "submit": {
     "production": {}

@@ -53,8 +53,8 @@ module.exports = ({ config }: ConfigContext): Partial<ExpoConfig> => {
       [
         "@sentry/react-native/expo",
         {
-          // Sentry Expo plugin configuration
-          // Automatically captures unhandled promise rejections and global errors
+          organization: "veto",
+          project: "purrsuit",
         },
       ],
       [
