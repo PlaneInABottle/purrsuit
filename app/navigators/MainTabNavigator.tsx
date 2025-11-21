@@ -1,4 +1,4 @@
-import React from "react"
+import { useMemo } from "react"
 import { TextStyle } from "react-native"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { Home, Camera, MapPin, Settings } from "lucide-react-native"

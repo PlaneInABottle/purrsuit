@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import { useState, useRef } from "react"
 import {
   View,
   ViewStyle,
@@ -169,13 +169,10 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
     return (
       <Screen preset="fixed" contentContainerStyle={$container} backgroundColor="white">
         <View style={$centerContent}>
-          <Camera size={64} color={colors.textDim} strokeWidth={1.5} style={{ marginBottom: 16 }} />
+          <Camera size={64} color={colors.textDim} strokeWidth={1.5} style={$cameraIcon} />
           <Text text="Camera access required" preset="subheading" />
-          <Text
-            text="Please grant camera permissions to capture photos"
-            style={{ color: colors.textDim, marginTop: 8, textAlign: "center" }}
-          />
-          <Button text="Grant Permission" onPress={checkPermissions} style={{ marginTop: 24 }} />
+          <Text text="Please grant camera permissions to capture photos" style={$permissionText} />
+          <Button text="Grant Permission" onPress={checkPermissions} style={$grantButton} />
         </View>
       </Screen>
     )
@@ -274,7 +271,7 @@ export const CaptureScreen = (_props: MainTabScreenProps<"Capture">) => {
               size={36}
               color={colors.palette.primary500}
               strokeWidth={2}
-              style={{ position: "absolute" }}
+              style={$pawPrintIcon}
             />
           </TouchableOpacity>
 
@@ -295,6 +292,23 @@ const $centerContent: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
   paddingHorizontal: 24,
+}
+
+const $cameraIcon: ImageStyle = {
+  marginBottom: 16,
+}
+
+const $permissionText: TextStyle = {
+  marginTop: 8,
+  textAlign: "center",
+}
+
+const $grantButton: ViewStyle = {
+  marginTop: 24,
+}
+
+const $pawPrintIcon: ImageStyle = {
+  position: "absolute",
 }
 
 const $headerContainer: ViewStyle = {

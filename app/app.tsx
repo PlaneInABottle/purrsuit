@@ -27,7 +27,6 @@ import { useFonts } from "expo-font"
 import * as Linking from "expo-linking"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
-
 import { initI18n } from "./i18n"
 import { StoreProvider } from "./models"
 import { AppNavigator } from "./navigators/AppNavigator"
