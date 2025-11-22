@@ -56,4 +56,5 @@ export const reportCrash = (error: Error, type: ErrorType = ErrorType.FATAL) => 
   }
 }
 
-export const sentryWrap = (Component: any) => (process.env.SENTRY_DSN ? Sentry.wrap(Component) : Component)
+export const sentryWrap = (Component: any) =>
+  process.env.SENTRY_DSN ? Sentry.wrap(Component) : Component
