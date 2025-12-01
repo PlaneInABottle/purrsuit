@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback } from "react"
 import {
   View,
   ViewStyle,
@@ -9,13 +9,20 @@ import {
   Platform,
   ScrollView,
 } from "react-native"
+import {
+  MapView,
+  Camera,
+  PointAnnotation,
+  type CameraRef,
+  type MapViewRef,
+} from "@maplibre/maplibre-react-native"
 import { Clock } from "lucide-react-native"
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps"
 
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
+import { MAP_STYLES, type MapStyleKey, toMapLibreCoords } from "@/services/offlineMapManager"
 import { useAppTheme } from "@/theme/context"
 
 type PetType = "cat" | "dog" | "other"
@@ -51,13 +58,19 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
     theme: { colors },
   } = useAppTheme()
   const { encountersStore } = useStores()
-  const mapRef = useRef<MapView>(null)
+  const mapRef = useRef<MapViewRef>(null)
+  const cameraRef = useRef<CameraRef>(null)
   const [selectedPetType, setSelectedPetType] = useState<PetType | "all">("all")
   const [timeFilter, setTimeFilter] = useState<"24h" | "7d" | "all">("all")
-  const [initialRegionSet, setInitialRegionSet] = useState(false)
   const [selectedEncounterId, setSelectedEncounterId] = useState<string | null>(null)
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>("liberty")
 
-  // Filter encounters based on selection
+  // Get ALL GPS encounters (unfiltered) for initial camera position
+  const allGpsEncounters = encountersStore.encountersArray.filter(
+    (e) => e.location.type === "gps" && e.location.coordinates,
+  )
+
+  // Filter encounters based on selection (for display)
   const timeFilteredEncounters = encountersStore.getEncountersByTimeRange(
     timeFilter === "24h" ? 24 : timeFilter === "7d" ? 24 * 7 : "all",
   )
@@ -68,7 +81,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
     return e.petType === selectedPetType
   })
 
-  // Get encounters with GPS coordinates
+  // Get filtered encounters with GPS coordinates (for markers)
   const gpsEncounters = filteredEncounters.filter(
     (e) => e.location.type === "gps" && e.location.coordinates,
   )
@@ -80,46 +93,62 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
     console.log("  GPS encounters:", gpsEncounters.length)
   }, [gpsEncounters.length, encountersStore.encountersArray.length])
 
-  // Set initial region to first GPS encounter or default
-  useEffect(() => {
-    if (!initialRegionSet && gpsEncounters.length > 0) {
-      const firstEncounter = gpsEncounters[0]
-      const coords = firstEncounter.location.coordinates
-      if (coords && mapRef.current) {
-        mapRef.current.animateToRegion(
-          {
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
-          },
-          1000,
-        )
-        setInitialRegionSet(true)
-      }
-    }
-  }, [gpsEncounters, initialRegionSet])
+  // Calculate initial center coordinate based on ALL encounters (not filtered)
+  // This prevents camera jumping when filters change
+  const initialCenter =
+    allGpsEncounters.length > 0 && allGpsEncounters[0].location.coordinates
+      ? {
+          longitude: allGpsEncounters[0].location.coordinates.longitude,
+          latitude: allGpsEncounters[0].location.coordinates.latitude,
+        }
+      : { longitude: -122.4324, latitude: 37.78825 } // Default: San Francisco
 
-  const fitAllMarkers = () => {
+  const fitAllMarkers = useCallback(() => {
     if (gpsEncounters.length === 0) {
       Alert.alert("No GPS Locations", "No encounters with GPS location data yet.")
       return
     }
 
+    // Calculate bounds from all coordinates
     const coordinates = gpsEncounters
       .map((encounter) => encounter.location.coordinates!)
-      .map((coords) => ({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      }))
+      .map((coords) => toMapLibreCoords(coords))
 
-    if (mapRef.current) {
-      mapRef.current.fitToCoordinates(coordinates, {
-        edgePadding: { top: 100, right: 50, bottom: 200, left: 50 },
-        animated: true,
+    if (coordinates.length === 1) {
+      // Single marker - just center on it
+      cameraRef.current?.easeTo({
+        center: { longitude: coordinates[0][0], latitude: coordinates[0][1] },
+        zoom: 14,
+        duration: 1000,
       })
+      return
     }
-  }
+
+    // Calculate bounding box
+    const lngs = coordinates.map((c) => c[0])
+    const lats = coordinates.map((c) => c[1])
+    const minLng = Math.min(...lngs)
+    const maxLng = Math.max(...lngs)
+    const minLat = Math.min(...lats)
+    const maxLat = Math.max(...lats)
+
+    // Add padding
+    const lngPadding = (maxLng - minLng) * 0.2 || 0.01
+    const latPadding = (maxLat - minLat) * 0.2 || 0.01
+
+    // fitBounds takes [west, south, east, north]
+    const bounds: [number, number, number, number] = [
+      minLng - lngPadding, // west
+      minLat - latPadding, // south
+      maxLng + lngPadding, // east
+      maxLat + latPadding, // north
+    ]
+
+    cameraRef.current?.fitBounds(bounds, {
+      padding: { top: 100, right: 50, bottom: 200, left: 50 },
+      duration: 1000,
+    })
+  }, [gpsEncounters])
 
   const handleViewDetails = (encounterId: string) => {
     navigation.navigate("EncounterDetail", { encounterId })
@@ -137,112 +166,6 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
     ? gpsEncounters.find((e) => e.id === selectedEncounterId)
     : null
 
-  // Custom Map Style for Light Theme
-  const mapStyle = [
-    {
-      elementType: "geometry",
-      stylers: [{ color: "#f5f5f5" }],
-    },
-    {
-      elementType: "labels.icon",
-      stylers: [{ visibility: "off" }],
-    },
-    {
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#616161" }],
-    },
-    {
-      elementType: "labels.text.stroke",
-      stylers: [{ color: "#f5f5f5" }],
-    },
-    {
-      featureType: "administrative.land_parcel",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#bdbdbd" }],
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [{ color: "#eeeeee" }],
-    },
-    {
-      featureType: "poi",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#757575" }],
-    },
-    {
-      featureType: "poi.park",
-      elementType: "geometry",
-      stylers: [{ color: "#e5e5e5" }],
-    },
-    {
-      featureType: "poi.park",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#9e9e9e" }],
-    },
-    {
-      featureType: "road",
-      elementType: "geometry",
-      stylers: [{ color: "#ffffff" }],
-    },
-    {
-      featureType: "road.arterial",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#757575" }],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry",
-      stylers: [{ color: "#dadada" }],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#616161" }],
-    },
-    {
-      featureType: "road.local",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#9e9e9e" }],
-    },
-    {
-      featureType: "transit.line",
-      elementType: "geometry",
-      stylers: [{ color: "#e5e5e5" }],
-    },
-    {
-      featureType: "transit.station",
-      elementType: "geometry",
-      stylers: [{ color: "#eeeeee" }],
-    },
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [{ color: "#c9c9c9" }],
-    },
-    {
-      featureType: "water",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#9e9e9e" }],
-    },
-  ]
-
-  // Calculate initial region based on first encounter
-  const initialRegion =
-    gpsEncounters.length > 0 && gpsEncounters[0].location.coordinates
-      ? {
-          latitude: gpsEncounters[0].location.coordinates.latitude,
-          longitude: gpsEncounters[0].location.coordinates.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }
-      : {
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }
-
   return (
     <Screen
       preset="fixed"
@@ -256,17 +179,16 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
         <MapView
           ref={mapRef}
           style={StyleSheet.absoluteFillObject}
-          provider={PROVIDER_GOOGLE}
-          customMapStyle={mapStyle}
-          initialRegion={initialRegion}
-          showsUserLocation
-          showsMyLocationButton={false} // We'll use our own button
-          onMapReady={() => console.log("✅ MapView is READY")}
-          // @ts-ignore - onError is not in the type definition but works
-          onError={(e) => console.error("❌ MapView ERROR:", e)}
-          onLayout={(e) => console.log("📏 MapView layout:", e.nativeEvent.layout)}
+          mapStyle={MAP_STYLES[mapStyle].url}
           onPress={handleMapPress}
         >
+          <Camera
+            ref={cameraRef}
+            longitude={initialCenter.longitude}
+            latitude={initialCenter.latitude}
+            zoom={12}
+          />
+
           {gpsEncounters.map((encounter) => {
             const coords = encounter.location.coordinates
             if (!coords) return null
@@ -274,22 +196,16 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
             const isSelected = selectedEncounterId === encounter.id
             const size = isSelected ? 50 : 40
             const borderRadius = size / 2
+            const coordinate = toMapLibreCoords(coords)
 
             return (
-              <Marker
+              <PointAnnotation
                 key={encounter.id}
-                coordinate={{
-                  latitude: coords.latitude,
-                  longitude: coords.longitude,
-                }}
+                id={encounter.id}
+                coordinate={coordinate}
                 anchor={{ x: 0.5, y: 0.5 }}
-                zIndex={isSelected ? 999 : 1}
-                onPress={(e) => {
-                  e.stopPropagation()
-                  handleMarkerPress(encounter.id)
-                }}
+                onSelected={() => handleMarkerPress(encounter.id)}
               >
-                {/* Custom small circular marker with pet type emoji */}
                 <View
                   style={[
                     $petMarker,
@@ -308,12 +224,14 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
                   <Text
                     style={[
                       $markerEmoji,
-                      { fontSize: isSelected ? $markerEmojiSizeSelected : $markerEmojiSizeDefault },
+                      {
+                        fontSize: isSelected ? $markerEmojiSizeSelected : $markerEmojiSizeDefault,
+                      },
                     ]}
                     text={getPetTypeEmoji(encounter.petType as PetType)}
                   />
                 </View>
-              </Marker>
+              </PointAnnotation>
             )
           })}
         </MapView>
@@ -429,6 +347,32 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
 
         {/* Map Controls (Right Side) */}
         <View style={$mapControls}>
+          {/* Map Style Selector */}
+          <View style={$styleSelector}>
+            {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((styleKey) => {
+              const isActive = mapStyle === styleKey
+              const style = MAP_STYLES[styleKey]
+              return (
+                <TouchableOpacity
+                  key={styleKey}
+                  onPress={() => setMapStyle(styleKey)}
+                  style={[
+                    $styleButton,
+                    {
+                      backgroundColor: isActive ? colors.palette.primary500 : "white",
+                      borderColor: isActive ? colors.palette.primary500 : colors.palette.neutral300,
+                    },
+                  ]}
+                >
+                  <Text
+                    text={style.name}
+                    style={[$styleButtonText, { color: isActive ? "white" : colors.text }]}
+                  />
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
           {gpsEncounters.length > 0 && !selectedEncounterId && (
             <TouchableOpacity
               onPress={fitAllMarkers}
@@ -623,8 +567,33 @@ const $mapContainer: ViewStyle = {
 const $mapControls: ViewStyle = {
   position: "absolute",
   right: 16,
-  bottom: 30, // Moved to bottom
+  bottom: 30,
   gap: 12,
+  alignItems: "flex-end",
+}
+
+const $styleSelector: ViewStyle = {
+  backgroundColor: "white",
+  borderRadius: 12,
+  padding: 6,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  elevation: 4,
+  gap: 4,
+}
+
+const $styleButton: ViewStyle = {
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 8,
+  borderWidth: 1,
+}
+
+const $styleButtonText: TextStyle = {
+  fontSize: 11,
+  fontWeight: "600",
 }
 
 const $fitAllButton: ViewStyle = {
