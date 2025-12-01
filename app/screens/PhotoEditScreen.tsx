@@ -219,8 +219,8 @@ export const PhotoEditScreen = ({ navigation, route }: AppStackScreenProps<"Phot
                     <Svg style={[StyleSheet.absoluteFill, $absoluteFill]}>
                       <Path
                         d={getPathData()}
-                        stroke={colors.palette.primary500}
-                        strokeWidth={3}
+                        stroke="#FF6B6B"
+                        strokeWidth={5}
                         fill="transparent"
                         strokeLinecap="round"
                         strokeLinejoin="round"
