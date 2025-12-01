@@ -7,6 +7,7 @@ import {
   TextStyle,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native"
 import { observer } from "mobx-react-lite"
 import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
@@ -25,6 +26,22 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
   const { encountersStore } = useStores()
 
   const encounters = encountersStore.encountersArray
+
+  // Handle delete encounter with confirmation
+  const handleDeleteEncounter = (id: string, petType: string) => {
+    Alert.alert(
+      "Delete Encounter",
+      `Are you sure you want to delete this ${petType} encounter? This cannot be undone.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => encountersStore.removeEncounter(id),
+        },
+      ],
+    )
+  }
 
   // Helper function to get pet type emoji
   const getPetTypeEmoji = (petType: string): string => {
@@ -136,6 +153,8 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
               onPress={() =>
                 _props.navigation.navigate("EncounterDetail", { encounterId: item.id })
               }
+              onLongPress={() => handleDeleteEncounter(item.id, item.petType)}
+              delayLongPress={500}
             >
               {/* Card Container with enhanced styling */}
               <View style={[$cardContainer, $cardBackground]}>
