@@ -8,6 +8,8 @@ import {
   TextStyle,
   Platform,
   ScrollView,
+  Modal,
+  Pressable,
 } from "react-native"
 import {
   MapView,
@@ -16,7 +18,8 @@ import {
   type CameraRef,
   type MapViewRef,
 } from "@maplibre/maplibre-react-native"
-import { Clock } from "lucide-react-native"
+import { Clock, Layers, X, Check } from "lucide-react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
@@ -58,12 +61,14 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
     theme: { colors },
   } = useAppTheme()
   const { encountersStore } = useStores()
+  const insets = useSafeAreaInsets()
   const mapRef = useRef<MapViewRef>(null)
   const cameraRef = useRef<CameraRef>(null)
   const [selectedPetType, setSelectedPetType] = useState<PetType | "all">("all")
   const [timeFilter, setTimeFilter] = useState<"24h" | "7d" | "all">("all")
   const [selectedEncounterId, setSelectedEncounterId] = useState<string | null>(null)
   const [mapStyle, setMapStyle] = useState<MapStyleKey>("liberty")
+  const [showStyleSheet, setShowStyleSheet] = useState(false)
 
   // Get ALL GPS encounters (unfiltered) for initial camera position
   const allGpsEncounters = encountersStore.encountersArray.filter(
@@ -200,8 +205,8 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
 
             return (
               <PointAnnotation
-                key={`${encounter.id}-${isSelected ? "selected" : "normal"}`}
-                id={encounter.id}
+                key={`${encounter.id}-${isSelected ? "selected" : "normal"}-${mapStyle}`}
+                id={`${encounter.id}-${mapStyle}`}
                 coordinate={coordinate}
                 anchor={{ x: 0.5, y: 0.5 }}
                 onSelected={() => handleMarkerPress(encounter.id)}
@@ -347,31 +352,13 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
 
         {/* Map Controls (Right Side) */}
         <View style={$mapControls}>
-          {/* Map Style Selector */}
-          <View style={$styleSelector}>
-            {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((styleKey) => {
-              const isActive = mapStyle === styleKey
-              const style = MAP_STYLES[styleKey]
-              return (
-                <TouchableOpacity
-                  key={styleKey}
-                  onPress={() => setMapStyle(styleKey)}
-                  style={[
-                    $styleButton,
-                    {
-                      backgroundColor: isActive ? colors.palette.primary500 : "white",
-                      borderColor: isActive ? colors.palette.primary500 : colors.palette.neutral300,
-                    },
-                  ]}
-                >
-                  <Text
-                    text={style.name}
-                    style={[$styleButtonText, { color: isActive ? "white" : colors.text }]}
-                  />
-                </TouchableOpacity>
-              )
-            })}
-          </View>
+          {/* Layers Button - Opens Style Sheet */}
+          <TouchableOpacity
+            onPress={() => setShowStyleSheet(true)}
+            style={[$layersButton, { backgroundColor: colors.background }]}
+          >
+            <Layers size={20} color={colors.text} />
+          </TouchableOpacity>
 
           {gpsEncounters.length > 0 && !selectedEncounterId && (
             <TouchableOpacity
@@ -382,6 +369,84 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
             </TouchableOpacity>
           )}
         </View>
+
+        {/* Map Style Bottom Sheet */}
+        <Modal
+          visible={showStyleSheet}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowStyleSheet(false)}
+        >
+          <Pressable style={$sheetOverlay} onPress={() => setShowStyleSheet(false)}>
+            <Pressable
+              style={[$sheetContent, { paddingBottom: Math.max(insets.bottom, 20) + 20 }]}
+              onPress={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <View style={$sheetHeader}>
+                <Text preset="subheading" text="Map Style" />
+                <TouchableOpacity
+                  onPress={() => setShowStyleSheet(false)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <X size={24} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Style Grid */}
+              <View style={$styleGrid}>
+                {(Object.keys(MAP_STYLES) as MapStyleKey[]).map((styleKey) => {
+                  const isActive = mapStyle === styleKey
+                  const style = MAP_STYLES[styleKey]
+                  return (
+                    <TouchableOpacity
+                      key={styleKey}
+                      onPress={() => {
+                        setMapStyle(styleKey)
+                        setShowStyleSheet(false)
+                      }}
+                      style={[
+                        $styleGridItem,
+                        {
+                          borderColor: isActive
+                            ? colors.palette.primary500
+                            : colors.palette.neutral300,
+                          backgroundColor: isActive
+                            ? colors.palette.primary100
+                            : colors.palette.neutral100,
+                        },
+                      ]}
+                    >
+                      <View style={$styleGridItemContent}>
+                        <Text
+                          text={style.name}
+                          style={[
+                            $styleGridItemName,
+                            { color: isActive ? colors.palette.primary600 : colors.text },
+                          ]}
+                        />
+                        <Text
+                          text={style.description}
+                          style={[$styleGridItemDesc, { color: colors.textDim }]}
+                        />
+                      </View>
+                      {isActive && (
+                        <View
+                          style={[
+                            $styleGridItemCheck,
+                            { backgroundColor: colors.palette.primary500 },
+                          ]}
+                        >
+                          <Check size={14} color="white" />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  )
+                })}
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
 
         {/* Bottom Card for Selected Encounter */}
         {selectedEncounter && (
@@ -572,28 +637,76 @@ const $mapControls: ViewStyle = {
   alignItems: "flex-end",
 }
 
-const $styleSelector: ViewStyle = {
-  backgroundColor: "white",
-  borderRadius: 12,
-  padding: 6,
+const $layersButton: ViewStyle = {
+  width: 44,
+  height: 44,
+  borderRadius: 22,
+  alignItems: "center",
+  justifyContent: "center",
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.15,
   shadowRadius: 6,
   elevation: 4,
+}
+
+const $sheetOverlay: ViewStyle = {
+  flex: 1,
+  backgroundColor: "rgba(0,0,0,0.4)",
+  justifyContent: "flex-end",
+}
+
+const $sheetContent: ViewStyle = {
+  backgroundColor: "white",
+  borderTopLeftRadius: 24,
+  borderTopRightRadius: 24,
+  paddingTop: 20,
+  paddingHorizontal: 20,
+}
+
+const $sheetHeader: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 20,
+}
+
+const $styleGrid: ViewStyle = {
+  flexDirection: "row",
+  flexWrap: "wrap",
+  gap: 12,
+}
+
+const $styleGridItem: ViewStyle = {
+  width: "47%",
+  padding: 16,
+  borderRadius: 16,
+  borderWidth: 2,
+  position: "relative",
+}
+
+const $styleGridItemContent: ViewStyle = {
   gap: 4,
 }
 
-const $styleButton: ViewStyle = {
-  paddingHorizontal: 12,
-  paddingVertical: 6,
-  borderRadius: 8,
-  borderWidth: 1,
+const $styleGridItemName: TextStyle = {
+  fontSize: 16,
+  fontWeight: "600",
 }
 
-const $styleButtonText: TextStyle = {
-  fontSize: 11,
-  fontWeight: "600",
+const $styleGridItemDesc: TextStyle = {
+  fontSize: 12,
+}
+
+const $styleGridItemCheck: ViewStyle = {
+  position: "absolute",
+  top: 12,
+  right: 12,
+  width: 24,
+  height: 24,
+  borderRadius: 12,
+  alignItems: "center",
+  justifyContent: "center",
 }
 
 const $fitAllButton: ViewStyle = {
