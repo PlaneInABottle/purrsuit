@@ -18,7 +18,7 @@ import {
   type CameraRef,
   type MapViewRef,
 } from "@maplibre/maplibre-react-native"
-import { Clock, Layers, X, Check } from "lucide-react-native"
+import { Clock, Layers, X, Check, Maximize } from "lucide-react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Screen } from "@/components/Screen"
@@ -365,7 +365,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
               onPress={fitAllMarkers}
               style={[$fitAllButton, { backgroundColor: colors.palette.primary500 }]}
             >
-              <Text text="📍 Fit All" style={$fitAllButtonText} />
+              <Maximize size={18} color="white" />
             </TouchableOpacity>
           )}
         </View>
@@ -710,20 +710,16 @@ const $styleGridItemCheck: ViewStyle = {
 }
 
 const $fitAllButton: ViewStyle = {
-  paddingHorizontal: 16,
-  paddingVertical: 10,
-  borderRadius: 12,
+  width: 44,
+  height: 44,
+  borderRadius: 22,
+  alignItems: "center",
+  justifyContent: "center",
   shadowColor: "#000",
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.3,
-  shadowRadius: 8,
-  elevation: 6,
-}
-
-const $fitAllButtonText: TextStyle = {
-  color: "#FFF",
-  fontWeight: "600",
-  fontSize: 12,
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  elevation: 4,
 }
 
 const $petMarker: ViewStyle = {
