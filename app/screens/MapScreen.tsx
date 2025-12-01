@@ -200,7 +200,7 @@ export const MapScreen = ({ navigation }: MainTabScreenProps<"Map">) => {
 
             return (
               <PointAnnotation
-                key={encounter.id}
+                key={`${encounter.id}-${isSelected ? "selected" : "normal"}`}
                 id={encounter.id}
                 coordinate={coordinate}
                 anchor={{ x: 0.5, y: 0.5 }}
@@ -631,6 +631,9 @@ const $petMarker: ViewStyle = {
 
 const $markerEmoji: TextStyle = {
   fontSize: 20,
+  textAlign: "center",
+  textAlignVertical: "center",
+  includeFontPadding: false,
 }
 
 const $calloutContainer: ViewStyle = {
