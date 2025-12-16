@@ -40,94 +40,151 @@
     <h1>Privacy Policy for Purrsuit</h1>
     <p class="last-updated">Last Updated: December 16, 2025</p>
 
+    <div
+      style="
+        background-color: #e8f4f8;
+        padding: 10px;
+        border-left: 4px solid #3498db;
+        margin: 15px 0;
+      "
+    >
+      <strong>Important:</strong> Purrsuit is designed as an offline-first app. All your data stays
+      on your device and is never transmitted to external servers.
+    </div>
+
     <h2>1. Introduction</h2>
     <p>
-      Welcome to Purrsuit. This privacy policy explains how we collect, use, and protect your
-      information when you use our mobile application.
+      Purrsuit is an offline-first mobile app for tracking and managing pet encounters. Your privacy
+      is our priority - we never collect, store, or transmit your personal data to external servers.
     </p>
 
     <h2>2. Information We Collect</h2>
-    <h3>2.1 Location Data</h3>
+
+    <h3>2.1 Photos and Pet Encounter Data</h3>
     <p>
-      Our app collects and uses your location data to provide location-based services and features.
-      This data is used solely to enhance your experience within the app.
+      We store the following information locally on your device when you choose to create pet
+      encounters:
+    </p>
+    <ul>
+      <li>Photos you capture (original and thumbnail versions stored locally)</li>
+      <li>Pet type (cat, dog, or other)</li>
+      <li>Mood tags, custom tags, and stickers you've added</li>
+      <li>Weather conditions and time of day (optional)</li>
+      <li>Optional notes you've written</li>
+    </ul>
+
+    <h3>2.2 Location Data (Optional)</h3>
+    <p>Location data collection is entirely optional and under your control:</p>
+    <ul>
+      <li>
+        You can add GPS coordinates by granting location permission and choosing "Use Current
+        Location"
+      </li>
+      <li>You can add manual location labels (custom text descriptions)</li>
+      <li>You can skip location entirely for any encounter</li>
+    </ul>
+    <p>Location data, when provided, is stored locally on your device only.</p>
+
+    <h3>2.3 No Automatic Data Collection</h3>
+    <p>
+      We do not automatically collect any device information, usage statistics, or other data about
+      your device or app behavior.
     </p>
 
-    <h3>2.2 User-Provided Information</h3>
-    <p>We may collect information that you provide directly to us, such as:</p>
-    <ul>
-      <li>Account information</li>
-      <li>Profile data</li>
-      <li>User-generated content</li>
-    </ul>
-
-    <h3>2.3 Automatically Collected Information</h3>
-    <p>We may automatically collect certain information about your device, including:</p>
-    <ul>
-      <li>Device type and model</li>
-      <li>Operating system version</li>
-      <li>App usage statistics</li>
-    </ul>
-
     <h2>3. How We Use Your Information</h2>
-    <p>We use the collected information to:</p>
+    <p>Your data is used solely within the app to:</p>
     <ul>
-      <li>Provide and maintain our services</li>
-      <li>Improve user experience</li>
-      <li>Develop new features</li>
-      <li>Communicate with you about the app</li>
+      <li>Display your pet encounters with photos and information</li>
+      <li>Show encounter details, tags, and metadata you've added</li>
+      <li>Provide offline mapping when location data is included</li>
     </ul>
 
     <h2>4. Data Storage and Security</h2>
     <p>
-      We implement appropriate technical and organizational measures to protect your personal
-      information against unauthorized access, alteration, disclosure, or destruction.
+      All your data is stored locally on your device using encrypted storage (MMKV). Your photos,
+      encounter information, and any location data never leave your device. We do not use cloud
+      storage, external databases, or any form of data transmission.
     </p>
 
     <h2>5. Third-Party Services</h2>
-    <h3>5.1 Map Services</h3>
+
+    <h3>5.1 Expo Platform Services</h3>
     <p>
-      Our app uses MapLibre with OpenFreeMap tiles for offline-capable mapping functionality. Map
-      tiles are downloaded locally to your device for offline use and are not transmitted to
-      external servers during normal operation.
+      The app uses Expo's native modules for device functionality. These services operate locally on
+      your device:
+    </p>
+    <ul>
+      <li>
+        <strong>Camera access</strong> for photo capture (only when you choose to take photos)
+      </li>
+      <li>
+        <strong>Location services</strong> for GPS coordinates (only when you choose to add
+        location)
+      </li>
+      <li><strong>File system access</strong> for storing photos locally on your device</li>
+      <li><strong>Image processing</strong> for photo editing and thumbnail generation</li>
+    </ul>
+
+    <h3>5.2 Map Services</h3>
+    <p>
+      For offline-capable mapping, we use MapLibre with OpenFreeMap tiles. Map tiles are downloaded
+      locally to your device for offline use. Your location data is never transmitted to mapping
+      service providers.
     </p>
 
-    <h3>5.2 Other Third-Party Services</h3>
+    <h3>5.3 Error Reporting</h3>
     <p>
-      Our app may use other third-party services that may collect information used to identify you.
-      These services have their own privacy policies governing the use of your information.
+      We use Sentry for crash reporting in production builds only. Error reports may include
+      technical information about app crashes but do not include your personal data, photos, or
+      encounter information. Reports are sent only when your device is online and only for debugging
+      purposes to improve app stability.
     </p>
 
     <h2>6. Your Rights</h2>
-    <p>You have the right to:</p>
+    <p>You have full control over your data:</p>
     <ul>
-      <li>Access your personal data</li>
-      <li>Request correction of your data</li>
-      <li>Request deletion of your data</li>
-      <li>Opt-out of certain data collection</li>
-      <li>Withdraw consent at any time</li>
+      <li>
+        <strong>View your data</strong>: Access all stored encounters and photos within the app
+      </li>
+      <li>
+        <strong>Delete encounters</strong>: Remove individual encounters by long-pressing them in
+        the app
+      </li>
+      <li>
+        <strong>Control permissions</strong>: Grant or deny camera/location access at any time
+        through device settings
+      </li>
+      <li><strong>Delete all data</strong>: Uninstall the app to remove all stored data</li>
     </ul>
 
-    <h2>7. Children's Privacy</h2>
+    <h2>7. Data Transmission</h2>
     <p>
-      Our service is not directed to children under the age of 13. We do not knowingly collect
-      personal information from children under 13.
+      Purrsuit operates completely offline. No user data, photos, encounter information, or location
+      data is transmitted to external servers. The app only downloads map tiles (stored locally) and
+      may send anonymous error reports for debugging purposes.
     </p>
 
-    <h2>8. Changes to This Privacy Policy</h2>
+    <h2>8. Children's Privacy</h2>
+    <p>
+      This app is designed for pet owners of all ages. We recommend parental guidance for users
+      under 13. The app does not collect any personal information that would identify individual
+      users.
+    </p>
+
+    <h2>9. Changes to This Privacy Policy</h2>
     <p>
       We may update our Privacy Policy from time to time. We will notify you of any changes by
       posting the new Privacy Policy on this page and updating the "Last Updated" date.
     </p>
 
-    <h2>9. Data Retention</h2>
+    <h2>10. Data Retention</h2>
     <p>
-      We retain your personal information only for as long as necessary to fulfill the purposes
-      outlined in this privacy policy.
+      Your data remains on your device until you choose to delete encounters or uninstall the app.
+      We do not retain any data on external servers.
     </p>
 
     <div class="contact">
-      <h2>10. Contact Us</h2>
+      <h2>11. Contact Us</h2>
       <p>If you have any questions about this Privacy Policy, please contact us at:</p>
       <p><strong>Email:</strong> wake-encore-preset@duck.com</p>
     </div>
