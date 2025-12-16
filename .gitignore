@@ -102,3 +102,8 @@ web-build/
 app-dependency-graph.svg
 app-dependency-graph.png
 .env.local
+
+# AI Assistant Configurations
+.claude/
+.gemini/
+.qwen/
