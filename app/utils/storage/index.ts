@@ -1,6 +1,40 @@
 import { MMKV } from "react-native-mmkv"
+import * as SecureStore from "expo-secure-store"
+import * as Crypto from "expo-crypto"
 
-export const storage = new MMKV()
+const STORAGE_KEY = "mmkv-encryption-key"
+
+/**
+ * Retrieve or generate a secure encryption key for MMKV.
+ * Uses Expo SecureStore to persist the key securely on the device.
+ */
+function getEncryptionKey(): string {
+  try {
+    // Try to retrieve existing key
+    const existingKey = SecureStore.getItem(STORAGE_KEY)
+    if (existingKey) {
+      return existingKey
+    }
+
+    // Generate new secure key if none exists
+    const newKey = Crypto.randomUUID()
+    SecureStore.setItem(STORAGE_KEY, newKey)
+    return newKey
+  } catch (error) {
+    console.error("Critical: Failed to manage encryption key", error)
+    // Fallback: If SecureStore fails completely, we can't encrypt safely.
+    // Returning undefined will result in unencrypted storage, which is better than crashing,
+    // but this error should be monitored.
+    return ""
+  }
+}
+
+// Initialize MMKV with encryption
+// We use a specific ID to separate our storage from default instances
+export const storage = new MMKV({
+  id: "purrsuit-storage",
+  encryptionKey: getEncryptionKey(),
+})
 
 /**
  * Loads a string from storage.

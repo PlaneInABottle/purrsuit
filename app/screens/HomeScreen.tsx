@@ -15,6 +15,7 @@ import { Svg, Defs, Pattern, Circle, Rect } from "react-native-svg"
 import { BackgroundDecorations } from "@/components/BackgroundDecorations"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
+import { translate } from "@/i18n"
 import { useStores } from "@/models"
 import type { MainTabScreenProps } from "@/navigators/navigationTypes"
 import { useAppTheme } from "@/theme/context"
@@ -30,12 +31,12 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
   // Handle delete encounter with confirmation
   const handleDeleteEncounter = (id: string, petType: string) => {
     Alert.alert(
-      "Delete Encounter",
-      `Are you sure you want to delete this ${petType} encounter? This cannot be undone.`,
+      translate("homeScreen.deleteAlertTitle"),
+      translate("homeScreen.deleteAlertMessage", { petType }),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: translate("common.cancel"), style: "cancel" },
         {
-          text: "Delete",
+          text: translate("common.delete"),
           style: "destructive",
           onPress: () => encountersStore.removeEncounter(id),
         },
@@ -88,30 +89,33 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
         {/* Header */}
         <View style={$headerContainer}>
           <View style={$headerTop}>
-            <Text preset="heading" text="🏠 My Collection" />
+            <Text preset="heading" tx="homeScreen.headerTitle" />
           </View>
         </View>
 
         {/* Enhanced Empty State */}
         <View style={$emptyStateContainer}>
           <Text style={$emptyIcon} text="📷🐾" />
-          <Text preset="subheading" text="No encounters yet" style={$emptyStateTitle} />
+          <Text preset="subheading" tx="homeScreen.emptyState.title" style={$emptyStateTitle} />
           <Text
             style={[$emptyDescription, { color: colors.textDim }]}
-            text="Tap the camera to start your pet collection journey!"
+            tx="homeScreen.emptyState.description"
           />
 
           {/* Suggestions Card */}
           <View style={[$suggestionCard, { backgroundColor: colors.palette.primary100 }]}>
-            <Text style={$suggestionTitle} text="💡 Try capturing:" />
+            <Text style={$suggestionTitle} tx="homeScreen.emptyState.suggestionTitle" />
             <Text
               style={[$suggestionItem, { color: colors.textDim }]}
-              text="• Your neighbor's cat or dog"
+              tx="homeScreen.emptyState.suggestion1"
             />
-            <Text style={[$suggestionItem, { color: colors.textDim }]} text="• Pets at the park" />
             <Text
               style={[$suggestionItem, { color: colors.textDim }]}
-              text="• Wildlife you encounter"
+              tx="homeScreen.emptyState.suggestion2"
+            />
+            <Text
+              style={[$suggestionItem, { color: colors.textDim }]}
+              tx="homeScreen.emptyState.suggestion3"
             />
           </View>
         </View>
@@ -132,8 +136,8 @@ export const HomeScreen = observer(function HomeScreen(_props: MainTabScreenProp
 
       {/* Header Section with Gradient */}
       <View style={$headerContainer}>
-        <Text preset="heading" text="My Collection" style={$headerTitle} />
-        <Text text="Your captured moments" style={$headerSubtitle} />
+        <Text preset="heading" tx="homeScreen.title" style={$headerTitle} />
+        <Text tx="homeScreen.subtitle" style={$headerSubtitle} />
       </View>
 
       {/* Grid List */}

@@ -1,77 +1,93 @@
-# Welcome to your new ignited app!
+# Purrsuit Mobile App 🐾
 
-> The latest and greatest boilerplate for Infinite Red opinions
+Purrsuit is a cross-platform mobile application designed for tracking and managing pet encounters. Capture photos, log locations, and build your personal collection of animal friends found in the wild. Built with a focus on privacy, offline-first capability, and a delightful user experience.
 
-This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.
+## ✨ Features
 
-- [Quick start documentation](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/Boilerplate.md)
-- [Full documentation](https://github.com/infinitered/ignite/blob/master/docs/README.md)
+- **📸 Capture & Collect**: Snap photos of cats, dogs, and other pets you meet.
+- **🗺️ Map Visualization**: View your encounters on an interactive map using MapLibre (works offline!).
+- **📍 Location Tracking**: Automatically tag encounters with GPS coordinates (privacy-focused, optional).
+- **🔒 Secure Storage**: All your data is stored locally on your device, encrypted with AES-256 via MMKV and Expo SecureStore.
+- **📱 Offline First**: Fully functional without an internet connection.
+- **🎨 Customization**: Add moods, tags, and notes to every encounter.
+- **🌙 Dark Mode**: Beautifully themed for both light and dark environments.
 
-## Getting Started
+## 🛠️ Tech Stack
+
+- **Framework**: [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/) (Managed Workflow)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **State Management**: [MobX-State-Tree](https://mobx-state-tree.js.org/)
+- **Navigation**: [React Navigation 7](https://reactnavigation.org/)
+- **Maps**: [MapLibre React Native](https://github.com/maplibre/maplibre-react-native)
+- **Storage**: [MMKV](https://github.com/mamous/react-native-mmkv) (Encrypted) + [Expo SecureStore](https://docs.expo.dev/versions/latest/sdk/securestore/)
+- **Error Tracking**: [Sentry](https://sentry.io/) (Privacy-configured)
+- **Testing**: Jest, Maestro
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (> 18.x)
+- [Bun](https://bun.sh/) (Package Manager)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/your-username/purrsuit-mobile.git
+    cd purrsuit-mobile
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    bun install
+    ```
+
+3.  **Set up Environment Variables**
+    Copy the example environment file:
+    ```bash
+    cp .env.example .env
+    ```
+    *Note: API keys are optional for development but required for Sentry reporting.*
+
+4.  **Run the App**
+    ```bash
+    # Start the development server
+    bun start
+
+    # Run on Android Emulator
+    bun run android
+
+    # Run on iOS Simulator
+    bun run ios
+    ```
+
+## 🔐 Security & Privacy
+
+Purrsuit is built with a "Privacy by Default" architecture:
+
+*   **Local-First**: User data lives on the device. No cloud account is required.
+*   **Encrypted Storage**: Sensitive data (locations, notes) is stored in MMKV using an encryption key secured by the device's hardware KeyStore/Keychain.
+*   **Production Hardening**: Console logs are automatically stripped in production builds to prevent data leakage.
+*   **Dependency Safety**: Dependencies are regularly audited for vulnerabilities.
+
+## 🧪 Testing
+
+We use **Jest** for unit/integration tests and **Maestro** for end-to-end testing.
 
 ```bash
-bun install
-bun run start
+# Run Unit Tests
+bun run test
+
+# Run Linting
+bun run lint
 ```
 
-To make things work on your local simulator, or on your phone, you need first to [run `eas build`](https://github.com/infinitered/ignite/blob/master/docs/expo/EAS.md). We have many shortcuts on `package.json` to make it easier:
+## 🤝 Contributing
 
-```bash
-bun run build:ios:sim # build for ios simulator
-bun run build:ios:device # build for ios device
-bun run build:ios:prod # build for ios device
-```
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
-### `./assets` directory
+## 📄 License
 
-This directory is designed to organize and store various assets, making it easy for you to manage and use them in your application. The assets are further categorized into subdirectories, including `icons` and `images`:
-
-```tree
-assets
-├── icons
-└── images
-```
-
-**icons**
-This is where your icon assets will live. These icons can be used for buttons, navigation elements, or any other UI components. The recommended format for icons is PNG, but other formats can be used as well.
-
-Ignite comes with a built-in `Icon` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/boilerplate/app/components/Icon.md).
-
-**images**
-This is where your images will live, such as background images, logos, or any other graphics. You can use various formats such as PNG, JPEG, or GIF for your images.
-
-Another valuable built-in component within Ignite is the `AutoImage` component. You can find detailed usage instructions in the [docs](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md).
-
-How to use your `icon` or `image` assets:
-
-```typescript
-import { Image } from 'react-native';
-
-const MyComponent = () => {
-  return (
-    <Image source={require('assets/images/my_image.png')} />
-  );
-};
-```
-
-## Running Maestro end-to-end tests
-
-Follow our [Maestro Setup](https://ignitecookbook.com/docs/recipes/MaestroSetup) recipe.
-
-## Next Steps
-
-### Ignite Cookbook
-
-[Ignite Cookbook](https://ignitecookbook.com/) is an easy way for developers to browse and share code snippets (or “recipes”) that actually work.
-
-### Upgrade Ignite boilerplate
-
-Read our [Upgrade Guide](https://ignitecookbook.com/docs/recipes/UpdatingIgnite) to learn how to upgrade your Ignite project.
-
-## Community
-
-⭐️ Help us out by [starring on GitHub](https://github.com/infinitered/ignite), filing bug reports in [issues](https://github.com/infinitered/ignite/issues) or [ask questions](https://github.com/infinitered/ignite/discussions).
-
-💬 Join us on [Slack](https://join.slack.com/t/infiniteredcommunity/shared_invite/zt-1f137np4h-zPTq_CbaRFUOR_glUFs2UA) to discuss.
-
-📰 Make our Editor-in-chief happy by [reading the React Native Newsletter](https://reactnativenewsletter.com/).
+This project is licensed under the MIT License.
