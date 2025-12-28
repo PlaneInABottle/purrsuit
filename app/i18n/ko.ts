@@ -12,8 +12,7 @@ const ko: Translations = {
     headerTitle: "🏠 나의 컬렉션",
     subtitle: "포착된 순간들",
     deleteAlertTitle: "만남 삭제",
-    deleteAlertMessage:
-      "이 {{petType}}와의 만남을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    deleteAlertMessage: "이 {{petType}}와의 만남을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
     emptyState: {
       title: "아직 만남이 없습니다",
       description: "카메라를 탭하여 반려동물 수집 여행을 시작하세요!",

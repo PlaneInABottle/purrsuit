@@ -12,8 +12,7 @@ const ja: Translations = {
     headerTitle: "🏠 マイコレクション",
     subtitle: "捕まえた瞬間",
     deleteAlertTitle: "出会いを削除",
-    deleteAlertMessage:
-      "本当にこの{{petType}}との出会いを削除しますか？この操作は取り消せません。",
+    deleteAlertMessage: "本当にこの{{petType}}との出会いを削除しますか？この操作は取り消せません。",
     emptyState: {
       title: "まだ出会いがありません",
       description: "カメラをタップして、ペットコレクションの旅を始めましょう！",
