@@ -45,11 +45,11 @@ The following specialized skills are available in `.claude/skills/` and should b
 
 ## Development Workflow
 
-- **Run Dev Client**: `npm start` (expo start --dev-client)
+- **Run Dev Client**: `bun start` (expo start --dev-client)
 - **Build Local**: `eas build --profile development --local`
-- **Linting**: `npm run lint`
-- **Testing**: `npm test`
-- **E2E**: `npm run test:maestro`
+- **Linting**: `bun run lint`
+- **Testing**: `bun test`
+- **E2E**: `bun run test:maestro`
 
 ## Project Conventions
 
