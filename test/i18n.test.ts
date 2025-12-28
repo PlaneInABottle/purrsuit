@@ -57,7 +57,8 @@ describe("i18n", () => {
     // grep "[T\|t]x=[{]\?\"\S*\"[}]\?\|translate(\"\S*\"" -ohr './app' | grep -o "\".*\""
     const command = `grep "[T\\|t]x=[{]\\?\\"\\S*\\"[}]\\?\\|translate(\\"\\S*\\"" -ohr './app' | grep -o "\\".*\\""`
     exec(command, (_, stdout) => {
-      const allTranslationsDefined = iterate(en, "", [])
+      const allTranslationsDefinedOld = iterate(en, "", [])
+      const allTranslationsDefined = allTranslationsDefinedOld.map((key) => key.replace(".", ":"))
       const allTranslationsUsed = stdout.replace(/"/g, "").split("\n")
       allTranslationsUsed.splice(-1, 1)
 

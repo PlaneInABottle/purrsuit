@@ -5,6 +5,23 @@ const ar: Translations = {
     ok: "نعم",
     cancel: "حذف",
     back: "خلف",
+    delete: "Delete",
+  },
+  homeScreen: {
+    title: "My Collection",
+    headerTitle: "🏠 My Collection",
+    subtitle: "Your captured moments",
+    deleteAlertTitle: "Delete Encounter",
+    deleteAlertMessage:
+      "Are you sure you want to delete this {{petType}} encounter? This cannot be undone.",
+    emptyState: {
+      title: "No encounters yet",
+      description: "Tap the camera to start your pet collection journey!",
+      suggestionTitle: "💡 Try capturing:",
+      suggestion1: "• Your neighbor's cat or dog",
+      suggestion2: "• Pets at the park",
+      suggestion3: "• Wildlife you encounter",
+    },
   },
   welcomeScreen: {
     postscript:
