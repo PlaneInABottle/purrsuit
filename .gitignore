@@ -104,7 +104,5 @@ app-dependency-graph.png
 .env.local
 
 # AI Assistant Configurations
-.claude/
-.gemini/
 .qwen/
 AGENTS.md
